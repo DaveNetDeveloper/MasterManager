@@ -50,10 +50,17 @@ public class DALVisitante : DbAccess
         return base.ExecuteNonQuery(querySql) == 1;
     }
 
-    public bool InsertarArea(string nombreArea)
+    public bool Insert(string nombreArea)
     {
         string querySql = String.Format("INSERT INTO AREA (Nombre, Descripción, Responsable) VALUES('{0}', '{1}', '{2}')", nombreArea, "Descripción del area", "xxxx@biosystems.es");
         return base.ExecuteNonQuery(querySql) == 1;
     }
+
+    public bool UpdateById(int Id, string nombreArea)
+    {
+        string querySql = String.Format("UPDATE AREA SET Nombre = '{0}' WHERE ID = {1}", nombreArea, Id);
+        return base.ExecuteNonQuery(querySql) == 1;
+    }
+    
 }
 

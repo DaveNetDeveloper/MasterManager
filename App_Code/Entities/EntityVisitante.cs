@@ -9,9 +9,9 @@ public class EntityVisitante : IEntity
         _dalVisitante = new DALVisitante();
     }
 
-    public IModel GetById(int Id)
+    public IModel GetById(int idArea)
     {   
-        return _dalVisitante.GetVisitante(Id); 
+        return _dalVisitante.GetVisitante(idArea); 
     }
 
     public IEnumerable<IModel> GetList()
@@ -19,13 +19,18 @@ public class EntityVisitante : IEntity
         return _dalVisitante.GetList();
     }
 
-    public bool RemoveById(int Id)
+    public bool RemoveById(int idArea)
     {
-        return _dalVisitante.RemoveById(Id);
+        return _dalVisitante.RemoveById(idArea);
     }
  
-    public bool InsertarArea(string nombreArea)
+    public bool Insert(string nombreArea)
     {
-        return _dalVisitante.InsertarArea(nombreArea);
+        return _dalVisitante.Insert(nombreArea);
+    }
+
+    public bool UpdateById(int idArea, string nombreArea)
+    {
+        return _dalVisitante.UpdateById(idArea, nombreArea);
     }
 }

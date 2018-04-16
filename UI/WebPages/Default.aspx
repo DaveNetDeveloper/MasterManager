@@ -11,19 +11,29 @@
     <form id="form" runat="server"> 
         <input name="inputIdArea" type="text" value="" /> 
         <input id="btnGetAreaById" type="button" value="Cargar un area desde base de datos" onclick="GetAreaById(document.getElementsByName('inputIdArea')[0].value);" />
-        <div style="border:solid 1px black;" id="ContainerAreaById"></div> 
-        <br /><br /> 
+        <div id="ContainerAreaById"></div> 
+        <br />
+        <hr />
+        <br />
         <input id="btnGetAllAreas" type="button" value="Cargar todas las areas desde base de datos" onclick="javascript:GetAllAreas();" />
-        <div style="border:solid 1px black;" id="ContainerAllAreas"></div>
+        <div id="ContainerAllAreas"></div>
         <br /><br />
         <hr />
-        <label id="inputLabel">Id de area a eliminar</label>
+        <label id="inputLabel">Id del area a eliminar</label>
         <input name="inputEliminarArea" type="text" value="" /> 
         <input id="btnEliminarAreaById" type="button" value="Eliminar area" onclick="javascript: EliminarAreaByIdArea(document.getElementsByName('inputEliminarArea')[0].value);" />
         <hr />
+
         <label id="inputLabelInsertar">Insertar nueva area con el siguiente nombre</label>
         <input name="inputNombreArea" type="text" value="" /> 
         <input id="btnInsertarArea" type="button" value="Insertar nueva area" onclick="javascript:InsertarArea(document.getElementsByName('inputNombreArea')[0].value);" />
+
+         <hr />
+        <label id="inputLabelUpdateId">Actualizar el area</label>
+        <input name="inputUpdateAreaId" type="text" value="6" /> 
+        <label id="inputLabelUpdateNombre">con el siguiente nombre</label>
+        <input name="inputUpdateAreaNombre" type="text" value="" /> 
+        <input id="btnUpdateArea" type="button" value="Modificar area existentes" onclick="javascript: UpdateAreaByIdArea(document.getElementsByName('inputUpdateAreaId')[0].value, document.getElementsByName('inputUpdateAreaNombre')[0].value);" />
 
         <asp:GridView Visible="false" ID="gvDocumentos" Width="100%" runat="server" OnRowDataBound="gvDocumentos_RowDataBound" OnRowCommand="gvDocumentos_RowCommand" DataKeyNames="Id" AutoGenerateColumns="false" CssClass ="gridClass" EmptyDataText="No hay datos.">
         <Columns> 
@@ -151,6 +161,25 @@
                     alert('El area [' + nombreArea + '] se ha creado correctamente');
                 else
                     alert('La creación del area ha fallado');
+            },
+            error: function (error) {
+                alert(error.responseText);
+            }
+        });
+    }
+    function UpdateAreaByIdArea(idArea, nombreArea) { 
+        $.ajax({
+            type: "POST",
+            url: "../WebServices/wsVisitante.asmx/UpdateAreaById",
+            async: true,
+            data: "{idArea:" + JSON.stringify(idArea) + ", nombreArea:" + JSON.stringify(nombreArea) + "}",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                if (data.d)
+                    alert('El area ' + idArea + ' se ha modificado correctamente');
+                else
+                    alert('La modificación del area ha fallado');
             },
             error: function (error) {
                 alert(error.responseText);

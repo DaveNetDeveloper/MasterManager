@@ -63,12 +63,26 @@ public class wsVisitante : WebService
         try
         {
             IEntity eVisitante = new EntityVisitante();
-            return eVisitante.InsertarArea(nombreArea);
+            return eVisitante.Insert(nombreArea);
         }
         catch (Exception ex)
         {
             throw new Exception(ex.Message);
         }
     }
+
+    [WebMethod(EnableSession = true)]
+    public bool UpdateAreaById(int idArea, string nombreArea)
+    {
+        try
+        {
+            IEntity eVisitante = new EntityVisitante();
+            return eVisitante.UpdateById(idArea, nombreArea);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+
 }
- 
