@@ -1,8 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
 
 public interface IDbAccess
-{ 
-    string Connection_biointranet { get; }
-    string Connection_qsg265 { get; }
+{  
+    string ConnectionString { get; }
     MySqlConnection ExecuteDataReader(string querySql, ref MySqlDataReader mySqlDataReader);
 }

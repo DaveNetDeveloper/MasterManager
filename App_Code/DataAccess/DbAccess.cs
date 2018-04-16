@@ -3,6 +3,14 @@ using System.Configuration;
 
 public class DbAccess : IDbAccess
 {
+    public string ConnectionString
+    {
+        get
+        {
+            return string.Empty;
+        }
+    }
+
     public string Connection_biointranet
     {
         get
