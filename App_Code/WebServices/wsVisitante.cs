@@ -1,0 +1,74 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Web.Services;
+  
+[WebService(Namespace = "http://tempuri.org/")]
+[WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
+[System.ComponentModel.ToolboxItem(true)]
+[System.Web.Script.Services.ScriptService] 
+public class wsVisitante : WebService 
+{ 
+    [WebMethod(EnableSession = true)]
+    public IModel GetById(ModelVisitante pVisitante)
+    {
+        IModel visitante = null; 
+        try
+        {
+             if(null != pVisitante)
+             {
+                IEntity eVisitante = new EntityVisitante();
+                visitante = eVisitante.GetById(pVisitante.Id);
+             }
+        }
+        catch(Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return visitante;
+    }
+
+    [WebMethod(EnableSession = true)]
+    public IEnumerable<IModel> GetVisitors()
+    { 
+        IEnumerable<IModel> listVisitantes = null;
+        try
+        {
+            IEntity eVisitante = new EntityVisitante();
+            listVisitantes = eVisitante.GetList();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return listVisitantes;
+    }
+
+    [WebMethod(EnableSession = true)]
+    public bool EliminarAreaById(int idArea)
+    {
+        try
+        {
+            IEntity eVisitante = new EntityVisitante();
+            return eVisitante.RemoveById(idArea);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        } 
+    }   
+
+    [WebMethod(EnableSession = true)]
+    public bool InsertarArea(string nombreArea)
+    {
+        try
+        {
+            IEntity eVisitante = new EntityVisitante();
+            return eVisitante.InsertarArea(nombreArea);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+}
+ 
