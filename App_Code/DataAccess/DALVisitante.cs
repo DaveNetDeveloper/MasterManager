@@ -7,7 +7,7 @@ public class DALVisitante : DbAccess
     MySqlDataReader drVisitantes = null;
     MySqlConnection mySqlConnection = null;
      
-    public IModel GetVisitante(int Id)
+    public IModel GetById(int Id)
     {
         IModel visitante = null;
         string querySql = String.Format("SELECT * FROM AREA WHERE ID = {0} ", Id);

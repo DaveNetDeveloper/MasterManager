@@ -11,7 +11,7 @@ public class EntityVisitante : IEntity
 
     public IModel GetById(int idArea)
     {   
-        return _dalVisitante.GetVisitante(idArea); 
+        return _dalVisitante.GetById(idArea); 
     }
 
     public IEnumerable<IModel> GetList()

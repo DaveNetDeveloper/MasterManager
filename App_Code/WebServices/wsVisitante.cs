@@ -9,15 +9,15 @@ using System.Web.Services;
 public class wsVisitante : WebService 
 { 
     [WebMethod(EnableSession = true)]
-    public IModel GetById(ModelVisitante pVisitante)
+    public IModel GetById(ModelVisitante pArea)
     {
         IModel visitante = null; 
         try
         {
-             if(null != pVisitante)
+             if(null != pArea)
              {
                 IEntity eVisitante = new EntityVisitante();
-                visitante = eVisitante.GetById(pVisitante.Id);
+                visitante = eVisitante.GetById(pArea.Id);
              }
         }
         catch(Exception ex)
@@ -28,7 +28,7 @@ public class wsVisitante : WebService
     }
 
     [WebMethod(EnableSession = true)]
-    public IEnumerable<IModel> GetVisitors()
+    public IEnumerable<IModel> GetAllAreas()
     { 
         IEnumerable<IModel> listVisitantes = null;
         try

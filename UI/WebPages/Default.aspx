@@ -6,36 +6,41 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Default Page</title>
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>   
+
+    <script src="../CRUD_Area.js"></script>
+
 </head> 
 <body>
     <form id="form" runat="server"> 
-        <input name="inputIdArea" type="text" value="" /> 
+
+        
+    <input name="inputIdArea" type="text" value="" /> 
         <input id="btnGetAreaById" type="button" value="Cargar un area desde base de datos" onclick="GetAreaById(document.getElementsByName('inputIdArea')[0].value);" />
         <div id="ContainerAreaById"></div> 
         <br />
         <hr />
         <br />
-        <input id="btnGetAllAreas" type="button" value="Cargar todas las areas desde base de datos" onclick="javascript:GetAllAreas();" />
+        <input id="btnGetAllAreas" type="button" value="Cargar todas las areas desde base de datos" onclick="javascript: GetAllAreas();" />
         <div id="ContainerAllAreas"></div>
         <br /><br />
         <hr />
         <label id="inputLabel">Id del area a eliminar</label>
         <input name="inputEliminarArea" type="text" value="" /> 
-        <input id="btnEliminarAreaById" type="button" value="Eliminar area" onclick="javascript: EliminarAreaByIdArea(document.getElementsByName('inputEliminarArea')[0].value);" />
+        <input id="btnEliminarAreaById" type="button" value="Eliminar area" onclick="javascript: DeleteAreaById(document.getElementsByName('inputEliminarArea')[0].value);" />
         <hr />
 
         <label id="inputLabelInsertar">Insertar nueva area con el siguiente nombre</label>
         <input name="inputNombreArea" type="text" value="" /> 
-        <input id="btnInsertarArea" type="button" value="Insertar nueva area" onclick="javascript:InsertarArea(document.getElementsByName('inputNombreArea')[0].value);" />
+        <input id="btnInsertarArea" type="button" value="Insertar nueva area" onclick="javascript: CreateArea(document.getElementsByName('inputNombreArea')[0].value);" />
 
          <hr />
         <label id="inputLabelUpdateId">Actualizar el area</label>
-        <input name="inputUpdateAreaId" type="text" value="6" /> 
+        <input name="inputUpdateAreaId" type="text" value="" /> 
         <label id="inputLabelUpdateNombre">con el siguiente nombre</label>
         <input name="inputUpdateAreaNombre" type="text" value="" /> 
-        <input id="btnUpdateArea" type="button" value="Modificar area existentes" onclick="javascript: UpdateAreaByIdArea(document.getElementsByName('inputUpdateAreaId')[0].value, document.getElementsByName('inputUpdateAreaNombre')[0].value);" />
+        <input id="btnUpdateArea" type="button" value="Modificar area existentes" onclick="javascript: UpdateAreaById(document.getElementsByName('inputUpdateAreaId')[0].value, document.getElementsByName('inputUpdateAreaNombre')[0].value);" />
 
-        <asp:GridView Visible="false" ID="gvDocumentos" Width="100%" runat="server" OnRowDataBound="gvDocumentos_RowDataBound" OnRowCommand="gvDocumentos_RowCommand" DataKeyNames="Id" AutoGenerateColumns="false" CssClass ="gridClass" EmptyDataText="No hay datos.">
+        <%--       <asp:GridView Visible="false" ID="gvDocumentos" Width="100%" runat="server" OnRowDataBound="gvDocumentos_RowDataBound" OnRowCommand="gvDocumentos_RowCommand" DataKeyNames="Id" AutoGenerateColumns="false" CssClass ="gridClass" EmptyDataText="No hay datos.">
         <Columns> 
               <asp:TemplateField>
                 <HeaderStyle HorizontalAlign="Center" Width="50px" />
@@ -60,35 +65,35 @@
              
             <asp:BoundField DataField="Ciudad" DataFormatString="{0:dd/MM/yyyy}" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="125px" HeaderText="Ciudad" />
              
-            <%--<asp:TemplateField ItemStyle-VerticalAlign="Middle" HeaderStyle-VerticalAlign="Middle" HeaderText="" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="50px">
+            <asp:TemplateField ItemStyle-VerticalAlign="Middle" HeaderStyle-VerticalAlign="Middle" HeaderText="" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="50px">
             <ItemTemplate> 
                     <asp:ImageButton ImageAlign="Middle" CommandName='<%# Eval("Ubicacion") %>' Height="25px" ImageUrl='<%# Eval("Tipo").Equals("pdf") ? "~/Images/pdf.png" : "~/Images/doc.png" %>' ID="btnVerDocumento" 
                                      runat="server" CommandArgument="<%# ((GridViewRow) Container).RowIndex %>" />
             </ItemTemplate>
-            </asp:TemplateField>--%>
+            </asp:TemplateField> 
         </Columns>
-        </asp:GridView>
+        </asp:GridView>--%>
+
     </form>
-</body> 
+
+</body>   
+     
 <script type="text/javascript">
     function GetAreaById(idArea) { 
-        var visitante = {};
-        visitante.Id = idArea;
-        //visitante.NavegadorCookkies = navigator.cookieEnabled;
-        //visitante.NavegadorPlataforma = navigator.platform
-        //visitante.IP = '';
+        var areaInPut = {};
+        areaInPut.Id = idArea; 
              
         $.ajax({
             type: "POST",
             url: "../WebServices/wsVisitante.asmx/GetById",
             async: true,
-            data: "{pVisitante:" + JSON.stringify(visitante) + "}",
+            data: "{pArea:" + JSON.stringify(areaInPut) + "}",
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (data) {
 
-                var visitante = data.d;
-                $("#ContainerAreaById").html("Id = " + visitante.Id + " = " + visitante.IP);
+                var areaOutPut = data.d;
+                $("#ContainerAreaById").html("Id = " + areaOutPut.Id + " = " + areaOutPut.IP);
                 //alert("El DIV con id 'Container' contiene:  " + $("#ContainerAreaById").html());
                 //debugger;
             },
@@ -101,7 +106,7 @@
     function GetAllAreas() { 
         $.ajax({
             type: "POST",
-            url: "../WebServices/wsVisitante.asmx/GetVisitors",
+            url: "../WebServices/wsVisitante.asmx/GetAllAreas",
             async: true,
             contentType: "application/json; charset=utf-8",
             dataType: "json",
@@ -113,23 +118,22 @@
 
                 var hrElement = document.createElement("hr");
                 $("#ContainerAllAreas").append(hrElement);
-                data.d.forEach(function (visitante) {
+                data.d.forEach(function (area) {
 
-                    var itemCcontent = visitante.Id.toString() + " - " + visitante.IP + " - " + visitante.Region + " - " + visitante.Ciudad;
+                    var itemCcontent = area.Id.toString() + " - " + area.IP + " - " + area.Region + " - " + area.Ciudad;
                     var pElement = document.createElement("p");
-                    pElement.id = "p" + visitante.Id.toString();
+                    pElement.id = "p" + area.Id.toString();
                     pElement.innerHTML = itemCcontent;
 
                     $("#ContainerAllAreas").append(pElement);
-                });
-                
+                }); 
             },
             error: function (error) {
                 alert(error.responseText);
             }
         }); 
     }  
-    function EliminarAreaByIdArea(idArea) {
+    function DeleteAreaById(idArea) {
         $.ajax({
             type: "POST",
             url: "../WebServices/wsVisitante.asmx/EliminarAreaById",
@@ -148,7 +152,7 @@
             }
         });
     }
-    function InsertarArea(nombreArea) {
+    function CreateArea(nombreArea) {
         $.ajax({
             type: "POST",
             url: "../WebServices/wsVisitante.asmx/InsertarArea",
@@ -167,7 +171,7 @@
             }
         });
     }
-    function UpdateAreaByIdArea(idArea, nombreArea) { 
+    function UpdateAreaById(idArea, nombreArea) { 
         $.ajax({
             type: "POST",
             url: "../WebServices/wsVisitante.asmx/UpdateAreaById",
@@ -186,5 +190,5 @@
             }
         });
     }
-</script> 
+</script>  
 </html> 
