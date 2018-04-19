@@ -25,12 +25,10 @@
     	<script type="text/javascript" src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
-    <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>   
-    
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script> 
 </head>
 <body>
-    <input id="btnUpdateArea" type="button" value="Cargar areas desde base de datos" onclick="FillAreas();"/>
-
+    <input id="btnUpdateArea" type="button" value="Cargar areas desde base de datos" onclick="FillAreas();"/> 
 	<div class="row">
 		<div class="column width-12">
 			<div class="row content-grid-3">
@@ -43,7 +41,7 @@
 						<h4 id="Area1Name" class="mb-5"></h4>
 						<h4 id="Area1Owner" class="occupation"></h4>
 						<p id="Area1Description"></p>
-						<ul class="social-list list-horizontal">
+						<ul  class="social-list list-horizontal">
 							<li><a href="#"><span class="icon-facebook small"></span></a></li>
 							<li><a href="#"><span class="icon-twitter small"></span></a></li>
 							<li><a href="#"><span class="icon-dribbble small"></span></a></li>
@@ -81,16 +79,12 @@
 							<li><a href="#"><span class="icon-dribbble small"></span></a></li>
 						</ul>
 					</div>
-				</div>
-                 
-
+				</div> 
 			</div>
 		</div>
-	 </div>
-     
+	 </div> 
 	<script src="js/timber.master.min.js"></script>
-</body>
-    
+</body> 
 <script type="text/javascript">
      
     function FillAreas() { 
@@ -109,12 +103,19 @@
                      
                     $(tagName).html(area.IP);
                     $(tagOwner).html(area.Region); 
-                    $(tagDescription).html(area.Ciudad); 
-                     
+                    $(tagDescription).html(area.Ciudad);   
+                }); 
+                 
+                $('.social-list').each(function () {
+
+                    var pElement = document.createElement("p");
+                    pElement.id = "p1";
+                    pElement.textContent = "Texto de prueba injectado desde Javascript";
+
+                    $(this).append(pElement);
                 }); 
             },
             error: function (error) {
-
                 alert("error");
                 alert(error.responseText);
             }

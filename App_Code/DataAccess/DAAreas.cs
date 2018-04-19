@@ -42,19 +42,19 @@ public class DAAreas : DbAccess
     public bool RemoveById(int Id)
     {
         QuerySql = String.Format("DELETE FROM AREA WHERE ID = {0}", Id);
-        return ExecuteNonQuery().Equals(1);
+        return ExecuteNonQuery();
     }
 
     public bool Insert(string nombreArea)
     {
         QuerySql = String.Format("INSERT INTO AREA (Nombre, Descripción, Responsable) VALUES('{0}', '{1}', '{2}')", nombreArea, "Descripción del area", "xxxx@biosystems.es");
-        return ExecuteNonQuery().Equals(1);
+        return ExecuteNonQuery();
     }
 
     public bool UpdateById(int Id, string nombreArea)
     {
         QuerySql = String.Format("UPDATE AREA SET Nombre = '{0}' WHERE ID = {1}", nombreArea, Id);
-        return ExecuteNonQuery().Equals(1);
+        return ExecuteNonQuery();
     }
 }
 

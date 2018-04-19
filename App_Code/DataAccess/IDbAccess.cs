@@ -8,5 +8,5 @@ public interface IDbAccess
     MySqlConnection DbConnection { get; set; }
 
     MySqlConnection ExecuteDataReader();
-    int ExecuteNonQuery();
+    bool ExecuteNonQuery();
 }

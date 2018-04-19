@@ -35,14 +35,14 @@ public class DbAccess : IDbAccess
         return (DrData != null) ? DbConnection : null;
     }
 
-    public int ExecuteNonQuery()
+    public bool ExecuteNonQuery()
     {
         DbConnection = new MySqlConnection(Connection_biointranet);
         Command = new MySqlCommand(QuerySql, DbConnection);
 
         DbConnection.Open();
-        int returnValue = Command.ExecuteNonQuery();
+        int affectedRecords = Command.ExecuteNonQuery();
         DbConnection.Close();
-        return returnValue;
+        return affectedRecords > 0; ;
     }
 }
