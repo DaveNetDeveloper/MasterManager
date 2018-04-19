@@ -9,12 +9,14 @@
 	<meta property="og:type" content="website" />
 	<meta property="og:image" content="Your-Image-Url" />
 	<meta property="og:description" content="Your-Page-Description" />
-	<title>Sartre | Multipurpose HTML5 Template - About Style One</title>
+	<title>Test Template </title>
 	<link rel="shortcut icon" type="image/x-icon" href="images/theme-mountain-favicon.ico">
 
 	<!-- Font -->
 	<link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700%7CLato:300,400,700' rel='stylesheet' type='text/css'>
 	
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
 	<!-- Css -->
 	<link rel="stylesheet" href="css/core.min.css" />
 	<link rel="stylesheet" href="css/skin.css" />
@@ -32,7 +34,6 @@
 	<div class="row">
 		<div class="column width-12">
 			<div class="row content-grid-3">
-
                                  
 				<div class="grid-item horizon" data-animate-in="preset:slideInUpShort;duration:1000ms;" data-threshold="0.3">
 					<div class="thumbnail no-margin-bottom" data-hover-easing="easeInOut" data-hover-speed="500" data-hover-bkg-color="#ffffff" data-hover-bkg-opacity="0.9">
@@ -86,10 +87,7 @@
 			</div>
 		</div>
 	 </div>
-
-	<!-- Js -->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-	<script src="http://maps.googleapis.com/maps/api/js?v=3"></script>
+     
 	<script src="js/timber.master.min.js"></script>
 </body>
     
@@ -98,18 +96,17 @@
     function FillAreas() { 
         $.ajax({
             type: "POST",
-            url: "WebServices/wsVisitante.asmx/GetAllAreas",
+            url: "WebServices/wsAreas.asmx/GetAllAreas",
             async: true,
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (data) {
-
                 data.d.forEach(function (area) {
 
                     var tagName = "#Area" + area.Id + "Name";
                     var tagOwner = "#Area" + area.Id + "Owner";
                     var tagDescription = "#Area" + area.Id + "Description"; 
-                      
+                     
                     $(tagName).html(area.IP);
                     $(tagOwner).html(area.Region); 
                     $(tagDescription).html(area.Ciudad); 
@@ -117,6 +114,8 @@
                 }); 
             },
             error: function (error) {
+
+                alert("error");
                 alert(error.responseText);
             }
         }); 

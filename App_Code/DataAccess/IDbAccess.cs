@@ -1,7 +1,12 @@
 ﻿using MySql.Data.MySqlClient;
+using System;
 
 public interface IDbAccess
 {  
-    string ConnectionString { get; }
-    MySqlConnection ExecuteDataReader(string querySql, ref MySqlDataReader mySqlDataReader);
+    String QuerySql { get; set; }
+    MySqlDataReader DrData { get; set; }
+    MySqlConnection DbConnection { get; set; }
+
+    MySqlConnection ExecuteDataReader();
+    int ExecuteNonQuery();
 }

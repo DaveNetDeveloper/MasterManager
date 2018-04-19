@@ -1,50 +1,48 @@
 ﻿using MySql.Data.MySqlClient;
+using System;
 using System.Configuration;
 
 public class DbAccess : IDbAccess
 {
-    public string ConnectionString
+    public String QuerySql { get; set; }
+    public MySqlDataReader DrData { get; set; }
+    public MySqlConnection DbConnection { get; set; }
+
+    private MySqlCommand Command { get; set; }
+    private string ConnectionString
     {
         get
         {
             return string.Empty;
         }
     }
-
-    public string Connection_biointranet
+    private string Connection_biointranet
     {
         get
         {
             return ConfigurationManager.ConnectionStrings["Connection_biointranet"].ConnectionString;
+            //return ConfigurationManager.ConnectionStrings["Connection_qsg265"].ConnectionString;
         }
     }
 
-    public string Connection_qsg265
+    public MySqlConnection ExecuteDataReader()
     {
-        get
-        {
-            return ConfigurationManager.ConnectionStrings["Connection_qsg265"].ConnectionString;
-        }
+        DbConnection = new MySqlConnection(Connection_biointranet);
+        Command = new MySqlCommand(QuerySql, DbConnection);
+
+        DbConnection.Open();
+        DrData = Command.ExecuteReader();
+        return (DrData != null) ? DbConnection : null;
     }
 
-    public MySqlConnection ExecuteDataReader(string querySql, ref MySqlDataReader mySqlDataReader)
-    { 
-        MySqlConnection connection = new MySqlConnection(Connection_biointranet);
-        MySqlCommand command = new MySqlCommand(querySql, connection); 
+    public int ExecuteNonQuery()
+    {
+        DbConnection = new MySqlConnection(Connection_biointranet);
+        Command = new MySqlCommand(QuerySql, DbConnection);
 
-        connection.Open();
-        mySqlDataReader = command.ExecuteReader();
-        return connection;
-    }
-
-    public int ExecuteNonQuery(string querySql)
-    { 
-        MySqlConnection connection = new MySqlConnection(Connection_biointranet);
-        MySqlCommand command = new MySqlCommand(querySql, connection);
-
-        connection.Open();
-        int returnValue = command.ExecuteNonQuery();
-        connection.Close();
+        DbConnection.Open();
+        int returnValue = Command.ExecuteNonQuery();
+        DbConnection.Close();
         return returnValue;
     }
 }
