@@ -1,6 +1,6 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="TestTemplate.aspx.cs" Inherits="TestTemplate" %>
 
-<%@ Register Src="~/UI/UserControls/SectionNewForEntity.ascx" TagPrefix="ucNews" TagName="SectionNewForEntity" %>
+<%@ Register Src="~/UI/UserControls/NewsByEntity.ascx" TagPrefix="ucNews" TagName="NewsByEntity" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -30,7 +30,7 @@
 <body onload="FillAreasFromDataBase()">
 
     <br /><br />
-    <ucNews:SectionNewForEntity runat="server" ID="SectionNewByEntity" />
+    <ucNews:NewsByEntity runat="server" ID="NewsByEntity" />
 
     <script type="text/javascript">
 

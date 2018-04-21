@@ -1,7 +1,5 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="SectionNewForEntity.ascx.cs" Inherits="SectionNewForEntity" %>
- 
-<%--<button value="click" onclick="FillAreasFromDataBase()">Cargar areas desde base de datos</button>--%>
-
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="NewsByEntity.ascx.cs" Inherits="NewsByEntity" %>
+   
 <div class="row">
 	<div class="column width-12">
 		<div class="row content-grid-3"> 
@@ -128,6 +126,6 @@
             element.removeClass(oldClass);
             element.addClass(newClass);
         }
-    }
+    } 
 
 </script> 

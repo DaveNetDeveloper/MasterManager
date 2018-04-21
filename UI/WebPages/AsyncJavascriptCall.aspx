@@ -1,8 +1,9 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="~/UI/WebPages/AsyncJavascriptCall.aspx.cs" Inherits="AsyncJavascriptCall" %> 
 
+<%@ Register Src="~/UI/UserControls/LisOftDocuments.ascx" TagPrefix="ucDocuments" TagName="LisOftDocuments" %>
+
 <!DOCTYPE html> 
 <html xmlns="http://www.w3.org/1999/xhtml">
-
 <head runat="server">
 
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -93,8 +94,9 @@
     </style>  
 </head> 
 <body>
-    <form id="form" runat="server">
+<form id="form" runat="server">
 
+    <div>
         <br />
         <input id="inputIdArea" type="text" value="" /> 
         <input id="btnGetAreaById" type="button" value="Cargar un area desde base de datos" onclick="GetAreaById($('#inputIdArea').val());" />
@@ -122,49 +124,15 @@
         <label id="inputLabelUpdateNombre">con el siguiente nombre</label>
         <input id="inputUpdateAreaNombre" type="text" value="" /> 
         <input id="btnUpdateArea" type="button" value="Modificar area existentes" onclick="UpdateAreaById($('#inputUpdateAreaId').val(), $('#inputUpdateAreaNombre').val());" />
+    </div>
 
-        <br /><br />
-        <hr />
-        <br />
+    <br /><br />
 
-        <asp:GridView Visible="true" ID="gvDocumentos" Width="100%" runat="server" OnRowDataBound="gvDocumentos_RowDataBound" OnRowCommand="gvDocumentos_RowCommand" DataKeyNames="Id" AutoGenerateColumns="false" CssClass ="gridClass" EmptyDataText="No hay datos.">
-        <Columns> 
-              <asp:TemplateField>
-                <HeaderStyle HorizontalAlign="Center" Width="50px" />
-                <ItemStyle HorizontalAlign="Center" Width="50px" />
-                <HeaderTemplate> 
-                        <asp:CheckBox AutoPostBack="false" OnCheckedChanged="chkSelAll_Checked"  Enabled="true"  ID="chkSel" CssClass="chkSel" runat="server" />
-                </HeaderTemplate>
-                <ItemTemplate>
-                    <asp:CheckBox AutoPostBack="false" onClick="$('#buttonDonwload').addClass('btn-primary');$('#buttonDonwload').removeClass('buttondisable');" Enabled="true"  ID="chkSel" CssClass="chkSel" runat="server" />
-                </ItemTemplate>
-            </asp:TemplateField>
+    <ucDocuments:LisOftDocuments runat="server" ID="LisOftDocuments" Visible="true"/>
 
-            <asp:BoundField DataField="Id" HeaderStyle-HorizontalAlign="Left" ItemStyle-Width="150px" ItemStyle-HorizontalAlign="Center" HeaderText="Id" />
-          
-            <asp:BoundField DataField="Nombre" HeaderStyle-HorizontalAlign="Left" ItemStyle-Width="200px" ItemStyle-HorizontalAlign="Left" HeaderText="Nombre" />
-
-            <asp:TemplateField ItemStyle-VerticalAlign="Middle" HeaderStyle-HorizontalAlign="Center" HeaderStyle-VerticalAlign="Middle" HeaderText="Tamaño" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="100px">
-            <ItemTemplate>
-                    <asp:Label runat="server" ID="lblTamaño" Text='<%# Eval("Tamaño") + " Mb" %>'></asp:Label> 
-            </ItemTemplate>
-            </asp:TemplateField>  
-             
-            <asp:BoundField DataField="Descripcion" HeaderStyle-HorizontalAlign="Left" ItemStyle-Width="200px" ItemStyle-HorizontalAlign="Left" HeaderText="Descripcion" />
-
-            <asp:BoundField DataField="Ubicacion" DataFormatString="{0:dd/MM/yyyy}" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="125px" HeaderText="Ubicacion" />
-             
-            <asp:TemplateField ItemStyle-VerticalAlign="Middle" HeaderStyle-VerticalAlign="Middle" HeaderText="" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="50px">
-            <ItemTemplate> 
-                    <asp:ImageButton ImageAlign="Middle" CommandName='<%# Eval("Ubicacion") %>' Height="25px" ImageUrl='<%# Eval("Tipo").Equals("pdf") ? "~/Images/pdf.png" : "~/Images/doc.png" %>' ID="btnVerDocumento" runat="server" CommandArgument="<%# ((GridViewRow) Container).RowIndex %>" />
-            </ItemTemplate>
-            </asp:TemplateField> 
-        </Columns>
-        </asp:GridView>
-
-    </form>
+</form>
 </body>   
-     
+
 <script type="text/javascript">
 
     function GetAreaById(idArea) { 
@@ -280,6 +248,5 @@
             }
         });
     }
-
 </script>  
 </html> 
