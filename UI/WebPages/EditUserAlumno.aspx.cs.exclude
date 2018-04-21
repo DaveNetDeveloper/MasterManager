@@ -1,0 +1,515 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Data;
+using System.Net.Mail;
+using System.Text;
+using MySql.Data;
+using System.Net;
+using System.Configuration;
+using MySql.Data.MySqlClient;
+using System.Globalization;
+using System.Threading;
+using System.Resources;
+using System.Collections;
+using System.Web.Configuration;
+
+public partial class EditUserAlumno : BasePage
+{
+    #region [ PROPERTIES ]
+
+    public string mode
+    {
+        get
+        {
+            return Session["mode"] as string;
+        }
+        set
+        {
+            Session["mode"] = (string)value;
+        }
+
+    }
+
+    public string Id
+    {
+        get
+        {
+            return Session["Id"] as string;
+        }
+        set
+        {
+            Session["Id"] = (string)value;
+        }
+
+    }
+
+    #endregion
+
+    #region [ PAGE EVENTS ]
+     
+    protected void Page_Init(object sender, EventArgs e)
+    {
+        try
+        {
+            if (!this.IsPostBack)
+            {
+                if (Request.QueryString["M"] != null)
+                {
+                    mode = Request.QueryString["M"].ToString();
+                }
+                else { mode = string.Empty; }
+
+                if (Request.QueryString["Id"] != null)
+                {
+                    Id = Request.QueryString["Id"].ToString();
+                }
+                else { Id = string.Empty; }
+
+                ApplyLayout();
+            }
+            else
+            {
+                
+            }
+        }
+        catch (Exception ex)
+        {
+            Session["error"] = ex;
+
+            //((MasterPage)(this.Master)).SetLOG("ERROR", "Loading Page", "EditCenter.aspx", "Center", "Page_Init()", ex.Message, DateTime.Now, 1);
+
+            //this.SetLOG("ERROR", "Loading Page", "EditUserContact.aspx", "Center", "Page_Init()", ex.Message, DateTime.Now, 1);
+
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+        }
+    }
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        try
+        { 
+            if (!this.IsPostBack)
+            {
+            
+            }
+            else
+            {
+
+            }
+
+            this.Title = "Edición Alumno";
+        }
+        catch (Exception ex)
+        {
+            Session["error"] = ex;
+           // this.SetLOG("ERROR", "Loading Page", "EditUserContact.aspx", "Center", "Page_Load()", ex.Message, DateTime.Now, 1);
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+        }
+    }
+
+    #endregion
+
+    #region [ METHODS ]
+
+    protected void ApplyLayout()
+    {
+        try
+        {
+            switch (mode)
+            {
+                case "N":
+                    btnGuardar.Visible = true;
+                    btnVolver.Visible = true;
+
+                    privateUserName.Enabled = true;
+                    privateUserSurname.Enabled = true;
+                    privateUserMail.Enabled = true;
+                    privateUserPhone.Enabled = true;
+                    privateUserUserName.Enabled = true;
+                    privateUserPassword.Enabled = true;
+                    
+                    privateUserEntered.Enabled = false;
+                    privateUserCreated.Enabled = false;
+
+                    divDateUpdated.Visible = false;
+                    privateUserUpdated.Enabled = false;
+
+                    privateUserBirthDate.Enabled = true;
+                    privateUserActive.Enabled = true;
+
+                    ResetFields();
+
+                    break;
+
+                case "V":
+                    btnGuardar.Visible = false;
+                    btnVolver.Visible = true;
+
+                    privateUserName.Enabled = false;
+                    privateUserSurname.Enabled = false;
+                    privateUserMail.Enabled = false;
+                    privateUserPhone.Enabled = false;
+                    privateUserUserName.Enabled = false;
+                    privateUserPassword.Enabled = false;
+                    privateUserEntered.Enabled = false;
+                    privateUserCreated.Enabled = false;
+                    privateUserBirthDate.Enabled = false;
+                    privateUserActive.Enabled = false;
+                    privateUserUpdated.Enabled = false;
+
+                    if (Id != null && Id != string.Empty)
+                    {
+                        FillPrivateUser();
+                    }
+
+                    break;
+                     
+                case "E":
+                    btnGuardar.Visible = true;
+                    btnVolver.Visible = true;
+
+                    privateUserName.Enabled = true;
+                    privateUserSurname.Enabled = true;
+                    privateUserMail.Enabled = true;
+                    privateUserPhone.Enabled = true;
+                    privateUserUserName.Enabled = true;
+                    privateUserPassword.Enabled = true;
+                    privateUserEntered.Enabled = false;
+                    privateUserCreated.Enabled = false;
+                    privateUserUpdated.Enabled = false;
+                    privateUserBirthDate.Enabled = true;
+                    privateUserActive.Enabled = true;
+
+                    if (Id != null && Id != string.Empty)
+                    {
+                        FillPrivateUser();
+                    }
+
+                    break;
+                     
+                default:
+                    break;
+            } 
+        }
+        catch (Exception ex)
+        {
+            Session["error"] = ex;
+            // this.SetLOG("ERROR", "Loading Page", "EditUserContact.aspx", "Center", "ApplyLayout()", ex.Message, DateTime.Now, 1);
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+        }
+    }
+
+    protected void ResetFields()
+    {
+        privateUserName.Text = String.Empty;
+        privateUserSurname.Text = String.Empty;
+        privateUserMail.Text = String.Empty;
+        privateUserPhone.Text = String.Empty;
+        privateUserUserName.Text = String.Empty;
+        privateUserPassword.Text = String.Empty;
+        privateUserEntered.Checked = false;
+        privateUserCreated.Text = DateTime.Now.ToString("dd/MM/yyyy");
+        //privateUserUpdated.Text = String.Empty;
+        privateUserBirthDate.Text = String.Empty;
+        privateUserActive.Checked = false;
+    }
+
+    protected void FillPrivateUser()
+    {
+        try
+        {
+           string cadenaConexion = ConfigurationManager.ConnectionStrings["Connection_qsg265"].ConnectionString;
+           string consulta = "SELECT id, name, surname, birth_date, mail, user_name, password, entered, active, created, updated, phone FROM USER_ALUMNO WHERE USER_ALUMNO.id =" + Id;
+           
+           MySqlConnection cnn = new MySqlConnection(cadenaConexion);
+           MySqlCommand mc = new MySqlCommand(consulta, cnn);
+
+           cnn.Open();
+           MySqlDataReader dr = mc.ExecuteReader();
+
+           if (!dr.IsClosed)
+            {
+                while (dr.Read())
+                {
+                    if (!dr.IsDBNull(1))
+                    {
+                        privateUserName.Text = dr.GetString(1);
+                    }
+
+                    if (!dr.IsDBNull(2))
+                    {
+                        privateUserSurname.Text = dr.GetString(2);
+                    }
+
+                    if (!dr.IsDBNull(3))
+                    {
+                        privateUserBirthDate.Text = dr.GetDateTime(3).ToString("dd/MM/yyyy");
+                    }
+
+                    if (!dr.IsDBNull(4))
+                    {
+                        privateUserMail.Text = dr.GetString(4);
+                    }
+
+                    if (!dr.IsDBNull(5))
+                    {
+                        privateUserUserName.Text = dr.GetString(5);
+                    }
+
+                    if (!dr.IsDBNull(6))
+                    {
+                        privateUserPassword.Text = dr.GetString(6).ToString();
+                    }
+
+                    if (!dr.IsDBNull(7))
+                    {
+                        privateUserEntered.Checked = ((dr.GetInt32(7) == 0) ? false : true);
+                    }
+
+                    if (!dr.IsDBNull(8))
+                    {
+                        privateUserActive.Checked = ((dr.GetInt32(8) == 0) ? false : true);
+                    }
+
+                    if (!dr.IsDBNull(9))
+                    {
+                        if (mode == "N")
+                        {
+                            privateUserCreated.Text = DateTime.Now.ToString("dd/MM/yyyy");
+                        }
+                        else if (mode == "E")
+                        {
+                            privateUserCreated.Text = dr.GetDateTime(9).ToString("dd/MM/yyyy");
+                        }
+                        else if (mode == "V")
+                        {
+                            privateUserCreated.Text = dr.GetDateTime(9).ToString("dd/MM/yyyy");
+                        }
+                    }
+
+                    if (!dr.IsDBNull(10))
+                    {
+                        if (mode=="E")
+                        {
+                            privateUserUpdated.Text = DateTime.Now.ToString("dd/MM/yyyy");
+                        }
+                        else if (mode=="V")
+                        {
+                            privateUserUpdated.Text = dr.GetDateTime(10).ToString("dd/MM/yyyy");
+                        }
+                    }
+
+                    if (!dr.IsDBNull(11))
+                    {
+                        privateUserPhone.Text = dr.GetInt32(11).ToString();
+                    }
+
+                }
+            }
+            cnn.Close();
+         }
+        catch (Exception ex)
+        {
+            Session["error"] = ex;
+            //this.SetLOG("ERROR", "Loading Page", "EditUserContact.aspx", "Center", "FillCenter()", ex.Message, DateTime.Now, 1);
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+        }
+    }
+
+    public bool ValidarCampos()
+    {
+        try
+        {
+            bool validationResult = true;
+
+            privateUserName.BorderColor = System.Drawing.ColorTranslator.FromHtml("#e2e2e2");
+           // privateUserSurname.BorderColor = System.Drawing.ColorTranslator.FromHtml("#e2e2e2");
+            privateUserMail.BorderColor = System.Drawing.ColorTranslator.FromHtml("#e2e2e2");
+            privateUserBirthDate.BorderColor = System.Drawing.ColorTranslator.FromHtml("#e2e2e2");
+            privateUserPhone.BorderColor = System.Drawing.ColorTranslator.FromHtml("#e2e2e2");
+            privateUserUserName.BorderColor = System.Drawing.ColorTranslator.FromHtml("#e2e2e2");
+            privateUserPassword.BorderColor = System.Drawing.ColorTranslator.FromHtml("#e2e2e2");
+            
+
+            if (privateUserName.Text.Trim() == String.Empty)
+            {
+                validationResult = false;
+                privateUserName.BorderColor = System.Drawing.Color.Red;
+                privateUserName.BorderWidth = new Unit(1);
+            }
+
+            /*if (privateUserSurname.Text.Trim() == String.Empty)
+            {
+                validationResult = false;
+                privateUserSurname.BorderColor = System.Drawing.Color.Red;
+                privateUserSurname.BorderWidth = new Unit(1);
+            }*/
+
+            if (privateUserMail.Text.Trim() == String.Empty)
+            {
+                validationResult = false;
+                privateUserMail.BorderColor = System.Drawing.Color.Red;
+                privateUserMail.BorderWidth = new Unit(1);
+            }
+             
+            if (privateUserBirthDate.Text.Trim() == String.Empty)
+            {
+                validationResult = false;
+                privateUserBirthDate.BorderColor = System.Drawing.Color.Red;
+                privateUserBirthDate.BorderWidth = new Unit(1);
+            }
+            
+            if (privateUserPhone.Text.Trim() == String.Empty)
+            {
+                validationResult = false;
+                privateUserPhone.BorderColor = System.Drawing.Color.Red;
+                privateUserPhone.BorderWidth = new Unit(1);
+            }
+            
+            if (privateUserUserName.Text.Trim() == String.Empty)
+            {
+                validationResult = false;
+                privateUserUserName.BorderColor = System.Drawing.Color.Red;
+                privateUserUserName.BorderWidth = new Unit(1);
+            }
+             
+            if (privateUserPassword.Text.Trim() == String.Empty)
+            {
+                validationResult = false;
+                privateUserPassword.BorderColor = System.Drawing.Color.Red;
+                privateUserPassword.BorderWidth = new Unit(1);
+            }
+
+            return validationResult;
+        }
+        catch (Exception ex)
+        {
+            Session["error"] = ex;
+            //this.SetLOG("ERROR", "Loading Page", "EditUserContact.aspx", "Center", "FillCenter()", ex.Message, DateTime.Now, 1);
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+            return false;
+        }
+    }
+
+    protected Int32 GetLastPrivateUserId()
+    {
+        try
+        {
+            string cadenaConexion = "Database=qsg265;Data Source=localhost;User Id=dbUser;Password=123";
+            string Consulta = "SELECT max(Id)FROM USER_ALUMNO";
+            MySqlConnection cnn = new MySqlConnection(cadenaConexion);
+            MySqlCommand mc = new MySqlCommand(Consulta, cnn);
+
+            cnn.Open();
+            MySqlDataReader dr = mc.ExecuteReader();
+
+            Int32 maxId = 0;
+            if (!dr.IsClosed)
+            {
+                while (dr.Read())
+                {
+                    if (!dr.IsDBNull(0))
+                    {
+                        maxId = dr.GetInt32(0);
+                    }
+                }
+            }
+            cnn.Close();
+
+            return maxId;
+        }
+        catch (Exception ex)
+        {
+            Session["error"] = ex;
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+            return 0;
+        }
+    }
+
+    public void GuardarPrivateUser()
+    {
+        try
+        {
+           string cadenaConexion = ConfigurationManager.ConnectionStrings["Connection_qsg265"].ConnectionString;
+           string consulta = "";
+           int _id = 0;
+
+           int active = privateUserActive.Checked ? 1 : 0;
+
+            ///Utils. var arr = privateUserBirthDate.Text.Split('/');
+           DateTime dt = Utils.GetDateTimeFromText(privateUserBirthDate.Text, Constantes.inputDateTimeFormat_ddmmaaaa, CultureInfo.CurrentCulture);
+           
+            string cadenaDateTime = dt.ToString("d", CultureInfo.CurrentCulture);
+
+           if(ValidarCampos())
+           {
+               switch (mode)
+               {
+                   //Nuevo
+                   case "N":
+
+                       _id = GetLastPrivateUserId() + 1;
+                       consulta = "INSERT INTO USER_ALUMNO(id, NAME, surname, birth_date, mail, user_name, PASSWORD, entered, active, created, updated, phone) VALUES(" + _id + ",'" + privateUserName.Text + "','" + privateUserSurname.Text + "','" + dt.ToString("yyyy-MM-dd HH:mm:ss") + "','" + privateUserMail.Text + "','" + privateUserUserName.Text + "','" + privateUserPassword.Text + "', 0, " + active + ",'" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "', null, " + privateUserPhone.Text + ")";
+
+                       break;
+                   //Editar
+                   case "E":
+
+                       _id = int.Parse(Id);
+                       consulta = "UPDATE USER_ALUMNO SET NAME='" + privateUserName.Text + "', surname='" + privateUserSurname.Text + "', birth_date='" + dt.ToString("yyyy-MM-dd HH:mm:ss") + "', mail='" + privateUserMail.Text + "', user_name='" + privateUserUserName.Text + "', PASSWORD='" + privateUserPassword.Text + "', active=" + active + ", updated='" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "', phone=" + privateUserPhone.Text + " WHERE ID=" + _id;
+                       break;
+               }
+
+               MySqlConnection cnn = new MySqlConnection(cadenaConexion);
+               MySqlCommand mc = new MySqlCommand(consulta, cnn);
+               cnn.Open();
+               mc.ExecuteNonQuery();
+               cnn.Close();
+           }
+        }
+        catch (Exception ex)
+        {
+            Session["error"] = ex;
+            //this.SetLOG("ERROR", "Loading Page", "EditUserContact.aspx", "Center", "FillCenter()", ex.Message, DateTime.Now, 1);
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+        }
+
+        Response.Redirect(Constantes.PAGE_TITLE_UserAlumnoList + Constantes.ASP_PAGE_EXTENSION);
+    }
+
+    #endregion
+
+    #region [ BUTTON EVENTS ]
+
+    protected void btnVolver_Click(object sender, EventArgs e)
+    {
+        Response.Redirect(Constantes.PAGE_TITLE_UserAlumnoList + Constantes.ASP_PAGE_EXTENSION);
+    }
+
+    [System.Web.Services.WebMethod]
+    public static string Guardar(string name)
+    {
+        // string var =  "Hello " + name + Environment.NewLine + "The Current Time is: "
+        // + DateTime.Now.ToString();
+
+       
+         
+
+       //this.GuardarPrivateUser();
+       //return HttpContext.Current.Session["SelectedContactID"].ToString();
+
+        return "OK";
+    }
+     
+    protected void btnGuardar_Click(object sender, EventArgs e)
+    {
+        GuardarPrivateUser();
+    }
+
+    #endregion
+
+}

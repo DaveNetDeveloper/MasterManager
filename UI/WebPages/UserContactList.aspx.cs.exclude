@@ -1,0 +1,920 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Data;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.IO;
+using System.Net.Mail;
+using System.Text;
+using MySql.Data;
+using System.Net;
+using System.Configuration;
+using MySql.Data.MySqlClient;
+using System.Globalization;
+using System.Threading;
+using System.Resources;
+using System.Collections;
+using System.Web.UI.HtmlControls;
+
+public partial class UserContactList : BasePage
+{
+    protected void Page_Init(object sender, EventArgs e)
+    {
+       
+        if (!this.IsPostBack)
+        {
+            Session["SelectedContactID"] = null;
+            Session["Checkall_selected"] = false;
+            
+            SetUserAgentCulture();
+
+            Session["rm"] = (ResourceManager)Application["RM"];
+        }
+       else
+       {
+
+
+       }
+    }
+
+    protected void SetUserAgentCulture()
+    {
+        //Todos los lengaujes del navegador
+        /*StringBuilder sb = new StringBuilder();
+        string _lng = string.Empty;
+        foreach (string lng in Request.UserLanguages)
+        {
+            sb.Append(lng);
+            sb.Append("<br />");
+        }*/
+
+        //Label1.Text = sb.ToString();
+
+        //if (Session["CultureInfoByUser"] == null)
+        //{ 
+            Session["CultureInfoByUser"] = CultureInfo.CreateSpecificCulture(Request.UserLanguages[0]);//new CultureInfo(Constantes.CULTURE_INFO_INGLES);
+       /* }
+        else
+        {
+
+        }*/
+    }
+     
+    protected override void InitializeCulture()
+    {
+        //La cultura debería de venir de la información del usuario logeado en el sistema y seteada en la Session["CultureInfoByUser"]
+        //CultureInfo culture = new CultureInfo(Constantes.CULTURE_INFO_CATALAN);
+        if (null != Session["CultureInfoByUser"] && Session["CultureInfoByUser"].ToString().Length > 2)
+        {
+                Thread.CurrentThread.CurrentCulture = (CultureInfo)Session["CultureInfoByUser"];
+                Thread.CurrentThread.CurrentUICulture = (CultureInfo)Session["CultureInfoByUser"];
+        }
+        base.InitializeCulture();
+    }
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        try
+        {
+            if (!this.IsPostBack)
+            {
+                //Session["dtContact"] = null;
+                if (null != Request["__EVENTTARGET"] && Request["__EVENTTARGET"].Contains("ctl00$FeaturedContent$"))
+                {
+                    dtContact = CargarGridView();
+                    gvUContact.DataSource = dtContact;
+                    //setCheckInGridView();
+                    gvUContact.DataBind();
+                }
+                else
+                {
+
+                    dtContact = CargarGridView();
+                    gvUContact.DataSource = dtContact;
+                    gvUContact.DataBind();
+                }
+
+                Session["SelectedContact"] = 0;
+            }
+            else
+            {
+                gvUContact.DataSource = (DataTable)Session["dtContact"];
+
+                if (Request["__EVENTTARGET"] != null && Request["__EVENTTARGET"] == Constantes.ACTIONS_LIST_PAGE_DELETE)
+                {
+                    EliminarSeleccionados();
+                    Session["SelectedContactID"] = null;
+                    Session["Checkall_selected"] = false;
+
+                    dtContact = CargarGridView();
+
+                    gvUContact.DataSource = dtContact;
+                    gvUContact.DataBind();
+                }
+                if (Request["__EVENTTARGET"] != null && Request["__EVENTTARGET"] == Constantes.ACTIONS_LIST_PAGE_IMPRIMIR)
+                {
+                    Response.Redirect(Constantes.PAGE_TITLE_PrintUserContactList + Constantes.ASP_PAGE_EXTENSION, true);
+                }
+                else if (Request["__EVENTTARGET"] != null && Request["__EVENTTARGET"] == Constantes.ACTIONS_LIST_EXPORT_EXCEL)
+                {
+                    ExportExcel();
+
+                }
+                else if (Request["__EVENTTARGET"] != null && Request["__EVENTTARGET"] == Constantes.ACTIONS_LIST_FILTRAR_LISTADO)
+                {
+                    HtmlInputText txtSearch2 = (HtmlInputText)Master.FindControl("txtSearch2");
+                    if (txtSearch2.Value.Trim() != string.Empty)
+                    {
+                        gvUContact.DataSource = CargarGridView(txtSearch2.Value);
+                        gvUContact.DataSource = dtContact;
+                        gvUContact.DataBind();
+                    }
+                    else
+                    {
+                        gvUContact.DataSource = CargarGridView(string.Empty);
+                        gvUContact.DataSource = dtContact;
+                        gvUContact.DataBind();
+                    }
+                }
+            }
+
+            LinkButton1.Text = Thread.CurrentThread.CurrentCulture.DisplayName;
+
+            //int width = Screen.PrimaryScreen.Bounds.Width;
+            //int heigth = Screen.PrimaryScreen.Bounds.Height;
+
+            //Response.Write(width.ToString());
+            //Response.Write(heigth.ToString());
+
+
+            
+            
+            //ResourceManager manager = new ResourceManager(this.GetType());
+            //CultureInfo ci = Thread.CurrentThread.CurrentCulture;
+            //string textFromResourceFile = manager.GetString("key", ci);
+
+            /*string LiteralCultura = "";
+            ResourceSet resourceSet = null;
+
+            ResourceManager rm = new ResourceManager(typeof(Resources.ResourcesCA));
+
+            resourceSet = (rm.GetResourceSet((CultureInfo)Session["CultureInfoByUser"], true, true));
+            
+            foreach (DictionaryEntry entry in resourceSet)
+             {
+                if (entry.Key.ToString() == "idioma")
+                {
+                    LiteralCultura = entry.Value.ToString();
+                }
+                string resourceKey = entry.Key.ToString();
+                object resource = entry.Value;
+            }*/
+
+
+          
+        }
+        catch (Exception ex)
+        {
+            //Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+            Session["error"] = ex;
+        }
+    }
+
+    protected void ExportExcel()
+    {
+
+     try
+        {
+             
+            StringBuilder sb = new StringBuilder();
+            StringWriter sw = new StringWriter(sb);
+            HtmlTextWriter htw = new HtmlTextWriter(sw);
+            Page pagina = new Page();
+            System.Web.UI.HtmlControls.HtmlForm form = new System.Web.UI.HtmlControls.HtmlForm();
+
+            GridView gridToExport = new GridView();
+
+            DataTable tableToExport = dtContact;
+            tableToExport.Columns.RemoveAt(6);
+
+            gridToExport.DataSource = dtContact;
+            gridToExport.DataBind();
+
+            foreach (TableCell cell in gridToExport.HeaderRow.Cells)
+            {
+                cell.BackColor = System.Drawing.Color.DeepSkyBlue;
+            }
+
+            gridToExport.EnableViewState = false;
+
+            pagina.EnableEventValidation = false;
+            pagina.DesignerInitialize();
+            pagina.Controls.Add(form);
+
+            form.Controls.Add(gridToExport);
+
+            pagina.RenderControl(htw);
+            Response.Clear();
+            Response.Buffer = true;
+
+            //Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            Response.ContentType = "application/vnd.ms-excel";
+        
+            Response.AddHeader("Content-Disposition", "attachment;filename=UserContactsList" + "_" + DateTime.Now.ToShortDateString() + ".xls");
+            Response.Charset = "UTF-8";
+            Response.ContentEncoding = System.Text.Encoding.Default;
+            Response.Write(sb.ToString());
+            Response.End();
+
+            DataView dv = dtContact.DefaultView;
+        }
+        catch (Exception ex)
+        {
+            DataView dv = dtContact.DefaultView;
+            //Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+            //Session["error"] = ex;
+        }
+    }
+
+    protected bool getCheckByRowIndex(int rowIndex)
+    {
+        try
+        {
+
+            //Int32 idcontact = Convert.ToInt32(((DataTable)Session["dtContact"]).Rows[rowIndex]["ID"]);
+            if (((List<Int32>)Session["SelectedContactID"])!=null)
+            {
+                if (((List<Int32>)Session["SelectedContactID"]).Contains(rowIndex))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false; 
+                    }
+            }
+            else
+            {
+               return false;
+            }
+
+            ///por cada rowIndex igualar el campo check a la columna check
+            //string checkString = (((DataTable)Session["dtContact"]).Rows[rowIndex]["chkSelect"]).ToString();
+            //return bool.Parse(checkString);
+              
+        }
+        catch (Exception ex)
+        {
+            Session["error"] = ex;
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+            return false;
+        }
+    }
+
+    #region [ PROPERTIES ]
+
+    public DataTable dtContact
+    {
+        get
+        {
+            return Session["dtContact"] as DataTable;
+        }
+        set
+        {
+            Session["dtContact"] = (DataTable)value;
+        }
+    }
+
+    #endregion
+
+    #region [ DATABASE FUNCTIONS  ]
+
+    protected DataTable CargarGridView(string filter = "")
+    {
+        try
+        {
+            string cadenaConexion = ConfigurationManager.ConnectionStrings["Connection_qsg265"].ConnectionString;
+            string language_code = CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToString();
+            string sConsulta = string.Empty;
+            
+            if(filter == String.Empty)
+            {
+                sConsulta = " SELECT contact.id, contact.name, contact.email, contact.phone, contact.body, contact.IsNew, created FROM contact ORDER BY ID ASC ";
+            }
+            else
+            {
+                sConsulta = " SELECT contact.id, contact.name, contact.email, contact.phone, contact.body, contact.IsNew, created ";
+                sConsulta += " FROM contact "; 
+                sConsulta += " WHERE (contact.name like '%" + filter + "%') ";
+                sConsulta += " OR (contact.email like '%" + filter + "%') ";
+                sConsulta += " OR (contact.phone like '%" + filter + "%') ";
+                sConsulta += " OR (contact.body like '%" + filter + "%') ";
+
+                sConsulta += " ORDER BY contact.ID DESC ";
+            }
+
+            MySqlConnection cnn = new MySqlConnection(cadenaConexion);
+            MySqlCommand mc = new MySqlCommand(sConsulta, cnn);
+
+            cnn.Open();
+            MySqlDataReader dr = mc.ExecuteReader();
+
+            dtContact = new DataTable();
+            dtContact.Columns.AddRange(new DataColumn[8] { new DataColumn("ID"), new DataColumn("NAME"), new DataColumn("EMAIL"), new DataColumn("PHONE"), new DataColumn("BODY"), new DataColumn("chkSelect"), new DataColumn("IS_NEW"), new DataColumn("CREATED") });
+            string phone = "";
+            string asunto = "";
+
+            if (!dr.IsClosed)
+            {
+                while (dr.Read())
+                {
+                    phone = "";
+                    if (!dr.IsDBNull(3))
+                    {
+                        phone = dr.GetString(3);
+                    }
+
+                    asunto = dr.GetString(4);
+                    if (dr.GetString(4).Length > 80)
+                    {
+                        asunto = dr.GetString(4).Substring(0, 65);
+                    }
+
+                    dtContact.Rows.Add(dr.GetInt32(0), dr.GetString(1), dr.GetString(2), phone, asunto + "...", false, dr.GetInt32(5), dr.GetDateTime(6));
+                }
+            }
+            cnn.Close();
+        }
+        catch (Exception ex)
+        {
+            Session["error"] = ex;
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+
+        }
+
+        return dtContact;
+    } 
+
+    #endregion
+
+    #region [ EVENTS BUTTONS ]
+
+    protected void LbCatalan_Click(object sender, EventArgs e)
+    {
+        Session["CultureInfoByUser"] = new CultureInfo(Constantes.CULTURE_INFO_CATALAN);
+        setCulture(Session["CultureInfoByUser"] as CultureInfo);
+    }
+
+    protected void LbSpanish_Click(object sender, EventArgs e)
+    {
+        Session["CultureInfoByUser"] = new CultureInfo(Constantes.CULTURE_INFO_ESPAÑOL);
+        setCulture(Session["CultureInfoByUser"] as CultureInfo);
+    }
+
+    protected void LbEnglish_Click(object sender, EventArgs e)
+    {
+        Session["CultureInfoByUser"] = new CultureInfo(Constantes.CULTURE_INFO_INGLES);
+        setCulture(Session["CultureInfoByUser"] as CultureInfo);
+    }
+
+    private void setCulture(CultureInfo c)
+    {
+        //System.Threading.Thread.CurrentThread.CurrentCulture = c;
+        //System.Threading.Thread.CurrentThread.CurrentUICulture = c;
+
+       Server.Transfer(this.Request.Path);
+    }
+     
+    protected void btnExport_Click(object sender, System.EventArgs e)
+    {
+        ExportExcel();
+
+       /* StringBuilder sb = new StringBuilder();
+            sb.Append("<table><tr><td><img src='http://gps.geoconecta.com/gps/imagenes/integradores/geoConecta/geoConectaLogoAccesoWeb.png'></td></tr></table><br/><br/><br/><br/><br/>");
+            sb.Append("<table border='" + "2px" + "'b>");
+            //write column headings
+            sb.Append("<tr>");
+            foreach (System.Data.DataColumn dc in dtContact.Columns)
+            {
+                sb.Append("<td><b><font face=Arial size=2>" + dc.ColumnName + "</font></b></td>");
+            }
+            sb.Append("</tr>");
+
+            //write table data
+            foreach (System.Data.DataRow dr in dtContact.Rows)
+            {
+                sb.Append("<tr>");
+                foreach (System.Data.DataColumn dc in dtContact.Columns)
+                {
+                    sb.Append("<td><font face=Arial size=" + "14px" + ">" + dr[dc].ToString() + "</font></td>");
+                }
+                sb.Append("</tr>");
+            }
+            sb.Append("</table>");
+
+            this.Response.AddHeader("Content-Disposition", "attachment; filename=ListUserContact_"+ "_" + DateTime.Now + ".xls");
+            this.Response.ContentType = "application/vnd.ms-excel";
+            byte[] buffer = System.Text.Encoding.UTF8.GetBytes(sb.ToString());
+            
+        
+            File(buffer, "application/vnd.ms-excel");
+
+            FileStream file ) new FileStream()*/
+
+
+       
+    }
+
+    protected void btnExportPDF_Click(object sender, System.EventArgs e)
+    {
+         
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append("<html><head></head><body><table><tr><td><img src=\"http://gps.geoconecta.com/gps/imagenes/integradores/geoConecta/geoConectaLogoAccesoWeb.png\"></td></tr></table><br/><br/><br/><br/><br/>");
+            sb.Append("<table border=\"2px\">");
+            //write column headings
+            sb.Append("<tr>");
+            foreach (System.Data.DataColumn dc in dtContact.Columns)
+            {
+                sb.Append("<td>" + dc.ColumnName + "</td>");
+            }
+            sb.Append("</tr>");
+
+            //write table data
+            foreach (System.Data.DataRow dr in dtContact.Rows)
+            {
+                sb.Append("<tr>");
+                foreach (System.Data.DataColumn dc in dtContact.Columns)
+                {
+                    sb.Append("<td>" + dr[dc].ToString() + "</td>");
+                }
+                sb.Append("</tr>");
+            }
+            sb.Append("</table></body></html>");
+
+            var pdfBytes = (new NReco.PdfGenerator.HtmlToPdfConverter()).GeneratePdf("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
+
+            this.Response.AddHeader("Content-Disposition", "attachment; filename=UserContactsList" + "_" + DateTime.Now.ToShortDateString() + ".pdf");
+            this.Response.ContentType = "application/pdf";
+            
+            Response.Clear();
+            Response.Buffer = true;
+            //return File.Open(pdfBytes, "application/pdf"));
+
+            //System.IO.FileInfo file = new System.IO.FileInfo("Content/fichero.pdf");
+            //file.Create();
+
+
+            Response.Write(pdfBytes);
+            Response.End();
+
+           
+
+
+
+    }
+
+    public string ReplaceAccutes(string original)
+    {
+
+        original = original.Replace("À", "&Agrave;");
+        original = original.Replace("Ç", "&Ccedil;");
+        original = original.Replace("È", "&Egrave;");
+        original = original.Replace("É", "&Eacute;");
+        original = original.Replace("Í", "&Iacute;");
+        original = original.Replace("Ï", "&Iuml;");
+        original = original.Replace("Ò", "&Ograve;");
+        original = original.Replace("Ó", "&Oacute;");
+        original = original.Replace("Ú", "&Uacute;");
+        original = original.Replace("Ü", "&Uuml;");
+        original = original.Replace("·", "&middot;");
+        original = original.Replace("à", "&agrave;");
+        original = original.Replace("ç", "&ccedil;");
+        original = original.Replace("è", "&egrave;");
+        original = original.Replace("é", "&eacute;");
+        original = original.Replace("í", "&iacute;");
+        original = original.Replace("ï", "&iuml;");
+        original = original.Replace("ò", "&ograve;");
+        original = original.Replace("ó", "&oacute;");
+        original = original.Replace("ú", "&uacute;");
+        original = original.Replace("ü", "&uuml;");
+        original = original.Replace("Á", "&Aacute;");
+        original = original.Replace("Ñ", "&Ntilde;");
+        original = original.Replace("Ü", "&Uuml;");
+        original = original.Replace("¡", "&iexcl;");
+        original = original.Replace("¿", "&iquest;");
+        original = original.Replace("á", "&aacute;");
+        original = original.Replace("é", "&eacute;");
+        original = original.Replace("í", "&iacute;");
+        original = original.Replace("ó", "&oacute;");
+        original = original.Replace("ñ", "&ntilde;");
+        original = original.Replace("ú", "&uacute;");
+        original = original.Replace("ü", "&uuml;");
+        original = original.Replace("ª", "&ordf;");
+        original = original.Replace("º", "&ordm;");
+
+
+        return original;
+
+    }
+
+    protected void EliminarSeleccionados()
+    {
+        string cadenaConexion = ConfigurationManager.ConnectionStrings["Connection_qsg265"].ConnectionString;
+
+        foreach(Int32 id in (List<Int32>)Session["SelectedContactID"])
+        {
+            string consulta = "DELETE FROM contact WHERE ID =" + id;
+            MySqlConnection cnn = new MySqlConnection(cadenaConexion);
+            MySqlCommand mc = new MySqlCommand(consulta, cnn);
+            cnn.Open();
+            mc.ExecuteNonQuery();
+            cnn.Close();  
+        }
+    }
+
+    [System.Web.Services.WebMethod]
+    public static int Ver()
+    {
+        // string var =  "Hello " + name + Environment.NewLine + "The Current Time is: "
+        // + DateTime.Now.ToString();
+
+        if(HttpContext.Current.Session["SelectedContactID"] != null)
+        {
+            if (((List<int>)HttpContext.Current.Session["SelectedContactID"]).Count > 1)
+            {
+                return -1;
+            }
+            else
+            {
+                return ((int)((List<int>)HttpContext.Current.Session["SelectedContactID"])[0]);
+            }
+        }
+        else { return 0; }
+    }
+
+    [System.Web.Services.WebMethod]
+    public static int Eliminar()
+    {
+        if (HttpContext.Current.Session["SelectedContactID"] != null && ((List<int>)HttpContext.Current.Session["SelectedContactID"]).Count > 0)
+        {
+            if (((List<int>)HttpContext.Current.Session["SelectedContactID"]).Count > 1)
+            {
+                return -1;
+            }
+            else
+            {
+                return 1;
+            }
+        }
+        else { return 0; }
+    }
+
+    #endregion
+
+    #region [ OTHER EVENTS ]
+
+    protected void chkSelAll_Checked(object sender, System.EventArgs e)
+    {
+        //Dim rowSelectedRow As Integer = TryCast(TryCast(sender, CheckBox).Parent.Parent, GridViewRow).RowIndex
+
+        System.Drawing.Color color;
+        Boolean check;
+
+        if (((CheckBox)sender).Checked)
+        {
+            check = true;
+            color = System.Drawing.ColorTranslator.FromHtml("lemonchiffon");
+            Session["SelectedContact"] = dtContact.Rows.Count;
+
+            Int32 SelectedRow = ((GridViewRow)(((CheckBox)sender).Parent.Parent)).RowIndex;
+
+            // Session["SelectedContactID"] = SelectedRow;
+
+            ////btnEditar.Attributes.Add("class", "action");
+            ////btnVer.Attributes.Add("class", "action");
+           // //btnEliminar.Attributes.Add("class", "action red");
+        }
+        else
+        {
+            check = false;
+            color = System.Drawing.Color.White;
+           
+            ////btnEditar.Attributes.Add("class", "action");
+           // //btnVer.Attributes.Add("class", "action");
+           // //btnEliminar.Attributes.Add("class", "action");
+
+        }
+
+        Session["Checkall_selected"] = check;
+
+        foreach (GridViewRow row in gvUContact.Rows)
+        {
+            CheckBox cb = (CheckBox)(row.FindControl("chkSel"));         
+            cb.Checked = check;
+            row.BackColor = color;
+
+            Int32 idselected = Convert.ToInt32(gvUContact.DataKeys[row.RowIndex].Value);
+            if (check)
+            {
+                controlSelectedContacts(idselected);
+            }
+            else
+            {
+                controlSelectedContacts(idselected);
+                //lo elimino aki fuera, pk no me va bien meter dentro el remove.
+                ((List<Int32>)Session["SelectedContactID"]).Remove(idselected);
+            }
+            
+        }
+
+    }
+     
+    protected List<Int32> controlSelectedContacts (Int32 _idSC) 
+      {
+        
+           if (Session["SelectedContactID"] != null)
+            {
+               List<Int32> lst = (List<Int32>)Session["SelectedContactID"];
+               if (lst.Count() != 0)
+               {
+                   if (!lst.Contains(_idSC))
+                   {
+                       lst.Add(_idSC);
+                       Session["SelectedContactID"] = lst;
+                   }
+               }
+               else
+               {
+                   //Error?¿?
+               }
+            }
+            else
+           {
+		       List<Int32> lstSelectedContactsbyID = new List<Int32>();
+               lstSelectedContactsbyID.Add(_idSC);
+               Session["SelectedContactID"]= lstSelectedContactsbyID;
+           }
+
+           return (List<Int32>)Session["SelectedContactID"];
+
+        }
+
+    protected void chkSel_Checked(object sender, System.EventArgs e)
+    {
+
+        Int32 rowSelectedRow = ((GridViewRow)((CheckBox)sender).Parent.Parent).RowIndex;
+        Int32 idselected = Convert.ToInt32(gvUContact.DataKeys[rowSelectedRow].Value);
+        List<Int32> lst = controlSelectedContacts(Convert.ToInt32(gvUContact.DataKeys[rowSelectedRow].Value));
+        //Session["SelectedContactID"] = gvUContact.DataKeys[rowSelectedRow].Value.ToString();
+
+        if (((CheckBox)sender).Checked)
+        {
+            gvUContact.Rows[rowSelectedRow].BackColor = System.Drawing.ColorTranslator.FromHtml("lemonchiffon");
+            
+            ////btnEliminar.Attributes.Add("class", "action red");
+            
+            Session["SelectedContact"] = (Int32)Session["SelectedContact"] + 1;
+            Int32 SelectedRow = ((GridViewRow)(((CheckBox)sender).Parent.Parent)).RowIndex;
+
+            if (lst.Contains(idselected))
+            {
+                ////btnEditar.Attributes.Add("class", "action");
+                ////btnVer.Attributes.Add("class", "action");
+            }
+            else
+            {
+                ////btnEditar.Attributes.Add("class", "action green");
+                ////btnVer.Attributes.Add("class", "action blue");
+            }
+
+            dtContact.Rows[rowSelectedRow]["chkSelect"] = true;
+        }
+        else
+        {
+            gvUContact.Rows[rowSelectedRow].BackColor = System.Drawing.Color.White;
+
+            Session["SelectedContact"] = (Int32)Session["SelectedContact"] - 1;
+
+            if (lst.Contains(idselected))
+            {
+                ////btnEditar.Attributes.Add("class", "action");
+                ////btnVer.Attributes.Add("class", "action");
+            }
+            else
+            {
+                ////btnEditar.Attributes.Add("class", "action green");
+                ////btnVer.Attributes.Add("class", "action blue");
+            }
+            
+            lst.Remove(idselected);
+            Session["SelectedContactID"] = lst;
+            dtContact.Rows[rowSelectedRow]["chkSelect"] = false;
+        }
+
+        List<Int32> newlst = (List<Int32>)Session["SelectedContactID"];
+
+        if (newlst.Count() == 0)
+        {
+            ////btnEditar.Attributes.Add("class", "action");
+            ////btnVer.Attributes.Add("class", "action");
+            ////btnEliminar.Attributes.Add("class", "action");
+        }
+        else
+        {
+            ////btnEliminar.Attributes.Add("class", "action red");
+        }
+
+        //updatePanel.Update();
+         
+    }
+ 
+    #endregion
+
+    #region [ ACTIONS GRIDVIEW ]
+
+    protected void setCheckInGridView()
+    {
+        try
+        {
+            //Recorrer el gridview
+
+            foreach(GridViewRow row in gvUContact.Rows)
+            {
+                CheckBox checkItem = (CheckBox)row.FindControl("chkSel");
+
+                dtContact.Rows[row.RowIndex]["chkSelect"] = checkItem.Checked;
+                
+                checkItem.Checked = getCheckByRowIndex(row.RowIndex);
+
+               //if (null != row.Cells[5] && row.Cells[5].Text != string.Empty)
+               // {
+
+
+               // }
+               // else
+               // {
+
+
+               // }
+                 
+
+            } 
+            /*if(e.Row.RowType == DataControlRowType.DataRow)
+            {
+               int i = e.Row.DataItemIndex;
+
+               CheckBox checkItem = (CheckBox)(e.Row.FindControl("chkSel"));
+
+               //getCheckByRowIndex(e.Row.RowIndex);
+
+               checkItem.Checked = getCheckByRowIndex(i);
+
+                //["chkSelect"] = getCheckByRowIndex(e.Row.RowIndex);
+
+            }*/
+ 
+
+        }
+        catch (Exception ex)
+        {
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+            Session["error"] = ex;
+        }
+    }
+      
+    #endregion
+
+    protected void gvUContact_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        
+        
+        //ToolkitScriptManager2.RegisterAsyncPostBackControl(_chkSel);
+
+       
+        if ((bool)Session["Checkall_selected"])
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                e.Row.BackColor = System.Drawing.ColorTranslator.FromHtml("lemonchiffon");
+                ((CheckBox)(e.Row.FindControl("chkSel"))).Checked = true;
+
+                if(((HiddenField)(e.Row.FindControl("hdnIsNew"))).Value.Contains("1"))
+                {
+                    e.Row.BackColor = System.Drawing.Color.Yellow;
+                }
+
+            }
+        }
+        else
+        { 
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                //CheckBox _chkSel = ((CheckBox)(e.Row.FindControl("chkSel")));
+                //AsyncPostBackTrigger asynTrigger = new AsyncPostBackTrigger();
+                //asynTrigger.ControlID = _chkSel.ClientID;
+                //asynTrigger.EventName = "CheckedChanged";
+                //updatePanel.Triggers.Add(asynTrigger);
+
+
+                Int32 idselected = Convert.ToInt32(gvUContact.DataKeys[e.Row.RowIndex].Value);
+                //((CheckBox)(e.Row.FindControl("chkSel"))).Checked = getCheckByRowIndex(idselected);
+
+                if (getCheckByRowIndex(idselected))
+                {
+                    e.Row.BackColor = System.Drawing.ColorTranslator.FromHtml("lemonchiffon");
+                    ((CheckBox)(e.Row.FindControl("chkSel"))).Checked = true;
+                }
+                else
+                {
+                    e.Row.BackColor = System.Drawing.Color.White;
+                    ((CheckBox)(e.Row.FindControl("chkSel"))).Checked = false;
+                }
+
+                if (((Label)(e.Row.FindControl("txtPhone"))).Text == string.Empty)
+                {
+                    ((Label)(e.Row.FindControl("txtPhone"))).Text = "-";
+                }
+
+                //Si no se ha consultado este contacto, se muestra resaltado
+                if (((HiddenField)(e.Row.FindControl("hdnIsNew"))).Value.Contains("1"))
+                {
+                    ((RadioButton)(e.Row.FindControl("rbtnIsNew"))).Checked = false;
+
+                    e.Row.BackColor = System.Drawing.ColorTranslator.FromHtml("#FAFAFA");
+
+                    ((Label)(e.Row.FindControl("txtName"))).Font.Bold = true;
+                    ((Label)(e.Row.FindControl("txtMail"))).Font.Bold = true;
+                    ((Label)(e.Row.FindControl("txtBody"))).Font.Bold = true;
+                    ((Label)(e.Row.FindControl("txtPhone"))).Font.Bold = true;
+                    ((Label)(e.Row.FindControl("txtfecha"))).Font.Bold = true;
+                }
+                else
+                {
+                    ((RadioButton)(e.Row.FindControl("rbtnIsNew"))).Checked = true;
+                }
+                
+            }
+        }
+    }
+
+    #region SORTING
+
+    public SortDirection dir
+    {
+        get
+        {
+            if (Session["dirState"] == null)
+            {
+                Session["dirState"] = SortDirection.Ascending;
+            }
+            return (SortDirection)Session["dirState"];
+        }
+        set
+        {
+            Session["dirState"] = value;
+        }
+
+    }
+
+    protected void gvUContact_Sorting(object sender, GridViewSortEventArgs e)
+    {
+        string SortDir = string.Empty;
+        if (dir == SortDirection.Ascending)
+        {
+            dir = SortDirection.Descending;
+            SortDir = "Desc";
+        }
+        else
+        {
+            dir = SortDirection.Ascending;
+            SortDir = "Asc";
+        }
+
+        //DataTable dt = CargarGridView();
+        DataView sortedView = new DataView(dtContact);
+        sortedView.Sort = e.SortExpression + " " + SortDir;
+
+        gvUContact.DataSource = sortedView;
+        gvUContact.DataBind();
+
+        dtContact = sortedView.Table;
+
+    }
+
+    #endregion
+
+    #region PAGINING
+
+    protected void OnPaging(object sender, GridViewPageEventArgs e)
+    {
+        gvUContact.PageIndex = e.NewPageIndex;
+        gvUContact.DataBind();
+    }
+
+    #endregion
+
+    
+}

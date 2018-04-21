@@ -1,0 +1,358 @@
+﻿<%@ Page Title="UserContactList" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeFile="UserContactList.aspx.cs" Inherits="UserContactList" %>
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajax" %>
+<%@ Import Namespace="System.Resources" %>
+
+<asp:Content runat="server" ID="HeaderContent" ContentPlaceHolderID="HeadContent">
+
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+ 
+    <script type = "text/javascript">
+
+        //AJAX for web method
+        function Ver() {
+            $.ajax({
+                type: "POST",
+                url: "UserContactList.aspx/Ver",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: OnSuccessVer,
+                failure: function (response) {
+                    //alert('FAIL: ' + response.d);
+
+                }
+            });
+        }
+
+        function OnSuccessVer(response)
+        {
+            if (response.d > 0)
+            {
+                window.location.href = 'EditUserContact.aspx?M=V&Id=' + response.d;
+            }
+            else if (response.d == -1)
+            {
+                alert("Solamente se pueden consultar los detalles de un elemento.");
+            }
+            else if (response.d == 0)
+            {
+                alert("Al menos un elemento de la lista ha de estar seleccionado.");
+            }
+        }
+
+        function ExportarExcel() {
+
+            __doPostBack('ExportarExcel', 'ExportarExcel');
+        }
+
+        function Eliminar() {
+
+            /*if (confirm("¿Está seguro de que quiere eliminar los elementos seleccionados?")) {
+                __doPostBack('Eliminar', 'Eliminar');
+
+            }*/
+
+            $.ajax({
+                type: "POST",
+                url: "UserContactList.aspx/Eliminar",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: OnSuccessEliminar,
+                failure: function (response) {
+
+                    //alert('FAIL');
+                }
+            });
+        }
+
+        function OnSuccessEliminar(response)
+        {
+            //alert('response.d --> ' + response.d);
+
+            var confirmText = '';
+            var alertText = '';
+
+            if (response.d > 0) {
+                
+                confirmText = '¿Está seguro de que quiere eliminar el elemento seleccionados?';
+                alertText = '';
+            }
+            else if (response.d == -1) {
+                
+                confirmText = '¿Está seguro de que quiere eliminar los elementos seleccionados?';
+                alertText = '';
+            }
+            else if (response.d == 0) {
+                //confirmText = 'Al menos un elemento de la lista ha de estar seleccionado.';
+                alertText = 'Al menos un elemento de la lista ha de estar seleccionado.';
+            }
+
+            if (alertText== '' && confirm(confirmText)) {
+                __doPostBack('Eliminar', 'Eliminar');
+            }
+            else
+            {
+                alert(alertText.toString());
+            }
+        }
+
+        //Page print
+        function Imprimir()
+        {
+            //window.print();
+            var ficha = document.getElementById('divToPrint'); var ventimp = window.open(' ', 'popimpr'); ventimp.document.write(ficha.innerHTML); ventimp.document.close(); ventimp.print(); ventimp.close();
+        }
+
+        function FiltrarListado() {
+            __doPostBack('FiltrarListado', 'FiltrarListado');
+        }
+
+    </script> 
+
+    <script type="text/javascript">
+
+        $(function () {
+ 
+            $("#<%= gvUContact.ID %> tr").hover(
+                 
+                function () {
+
+                    if ($(this).hasClass('pgr')) {
+
+                        //nothing
+                        //  alert('tiene pgr');
+                    }
+                    else {
+                        //alert('no tiene pgr, le añadimos highlight');
+
+                        //alert('add highlight');
+
+                        $(this).addClass('highlight');
+                    }
+
+                },
+                function () {
+                    //alert('remove highlight');
+
+                    $(this).removeClass('highlight');
+                }
+            )
+        })
+
+    </script>
+ 
+    <style type="text/css">
+
+        .marginrRight 
+        { 
+            float: right; 
+        }
+         
+    </style>
+           
+    <link href='http://fonts.googleapis.com/css?family=PT+Sans' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Molengo' rel='stylesheet' type='text/css'>
+  
+    <!-- Using TipTip jQuery plugin for the tooltips 
+    <link rel="stylesheet" href="tiptip.css" type="text/css"  media="screen">
+    <script src="jquery.tiptip.js"></script> -->
+
+    <!-- Style Buttons -->
+    <link rel="stylesheet" href="css/css3-buttons.css" type="text/css"  media="screen" />
+   
+    <!-- Kept Scroll Window--> 
+    <script>
+
+        window.onload = function () {
+            var pos = window.name || 0;
+            window.scrollTo(0, pos);
+        }
+        window.onunload = function () {
+            window.name = self.pageYOffset || (document.documentElement.scrollTop + document.body.scrollTop);
+        }
+
+    </script>
+     
+</asp:Content>
+
+<asp:Content runat="server" ID="FeaturedContent" ContentPlaceHolderID="FeaturedContent">
+
+     <section  class="featured" style="margin-top: 86px;display:none;">
+        <div class="content-wrapper" style="max-width: 100%; padding-left: 366px; height: 40px;">
+            <!-- SELECCIÓN DE IDIOMA -->
+            <div style="text-align: right; float: right; margin-right: 57px;" id="languageBar">
+                
+                <asp:Label ID="LinkButton1" style="color: #4b6c9e;font-weight: bold;font-family: Tahoma;font-size: 11px; margin-top: 8px;" runat="server" Text="" />
+                
+                <br/>
+                <asp:Button ID="lbSpanish" UseSubmitBehavior="false" CssClass="btnLanguage" runat="server" OnClick="LbSpanish_Click" Text="ES" />
+                <asp:Button ID="lbCatalan" UseSubmitBehavior="false" CssClass="btnLanguage" runat="server" OnClick="LbCatalan_Click" Text="CA" />
+                <asp:Button ID="lbEnglish" UseSubmitBehavior="false" CssClass="btnLanguage" runat="server" OnClick="LbEnglish_Click" Text="EN" />
+
+            </div>
+
+            <div style="float:left; font-family: Arial;  color: white;   font-weight: bold; font-size: 14px;margin-top: 8px;">
+                <asp:Literal runat="server" meta:resourcekey="literalTitulo2" id="literalTitulo2"></asp:Literal> 
+            </div>
+           
+        </div>
+    </section>
+
+</asp:Content>
+
+<asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
+
+      <!-- Para Geo-Conecta--> 
+        <!--<asp:TextBox ID="txtCardColor" AutoCompleteType="None" Height="20px" runat="server"></asp:TextBox>
+        <asp:Button Height="27px" ID="btnPickColor" Text="Pick Color" runat="server" />
+        <asp:Label ID="lblSample" runat="server"> Sample </asp:Label>        
+
+        <ajax:ColorPickerExtender  
+            ID="txtCardColor_ColorPickerExtender"  
+            TargetControlID="txtCardColor"
+            PopupButtonID="btnPickColor"
+            PopupPosition="TopRight"
+            SampleControlID="lblSample"            
+            Enabled="True" 
+            runat="server">
+        </ajax:ColorPickerExtender> -->
+     
+    <div>
+        <table style="display:none; width:100%;">
+            <tr>
+                <td>
+                      <!-- TEST EJECUCIÓN AJAX -->
+                    <div>
+                        <input id="btnGetTime" class="btnLanguage" style="width: auto;"" type="button" value="Método Ajax" onclick = "Ver()" />
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+ 
+    <br />
+
+    <asp:UpdatePanel ID="updatePanel" ClientIDMode="Static" runat="server">
+    <ContentTemplate>
+ 
+    <div id="divToPrint">
+        <asp:GridView   ID="gvUContact" 
+            ClientIDMode="Static"            
+            FooterStyle-CssClass="mGrid"
+                        HeaderStyle-Font-Bold="true"
+                        HeaderStyle-BackColor="Transparent" 
+                        HeaderStyle-HorizontalAlign="Center" 
+                        HeaderStyle-Height="40px" 
+                        DataKeyNames="ID"
+                        runat="server"
+                        AutoGenerateColumns="False" 
+                        GridLines="Horizontal"
+                        AllowPaging="true"
+                        OnPageIndexChanging = "OnPaging"
+                        AllowSorting="true"
+                        OnSorting="gvUContact_Sorting"          
+                        CssClass="mGrid"  
+                        PagerStyle-CssClass="pgr" 
+                        PageSize="15"
+                        ShowFooter="false" 
+                        AutoGenerateSelectButton="False"
+                        PagerStyle-Font-Bold="true" 
+                        PagerStyle-HorizontalAlign="Center" 
+                        PagerStyle-Height="40px"       
+                        OnRowDataBound="gvUContact_RowDataBound"
+                        meta:resourcekey="gvUContact" >
+        <PagerSettings Mode="NumericFirstLast" PageButtonCount="5" Position="Bottom" />
+        <HeaderStyle Font-Bold="true" BackColor="DimGray" />
+        <Columns>
+            <asp:TemplateField ItemStyle-HorizontalAlign="Center"  HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="50px" ItemStyle-Width="50px">
+            
+                <HeaderTemplate> 
+                        <asp:CheckBox AutoPostBack="true" OnCheckedChanged="chkSelAll_Checked" Enabled="true"  ID="chkSelAll" CssClass="chkSel" runat="server" />
+                </HeaderTemplate>
+
+                <ItemTemplate>
+                    <asp:CheckBox AutoPostBack="true" OnCheckedChanged="chkSel_Checked" Enabled="true"  ID="chkSel" CssClass="chkSel" runat="server" />
+                </ItemTemplate>
+            </asp:TemplateField>
+        
+            <asp:TemplateField ItemStyle-HorizontalAlign="Left" SortExpression="NAME"  HeaderStyle-HorizontalAlign="Left">
+                <HeaderTemplate>
+                    <asp:Label Visible="true" ID="lblName" Text='<%# GetLocalResourceObject("gvUContact.lblName.Text").ToString()%>' runat="server"></asp:Label>
+                </HeaderTemplate> 
+                <ItemTemplate>
+                    <asp:Label Visible="true" ID="txtName" Text='<%#Eval("NAME") %>' runat="server"></asp:Label>
+                </ItemTemplate>
+            </asp:TemplateField>
+
+            <asp:TemplateField ItemStyle-HorizontalAlign="Left" SortExpression="Email" HeaderStyle-HorizontalAlign="Left"> 
+                <HeaderTemplate>
+                    <asp:Label Visible="true" ID="lblEmail" Text='<%# GetLocalResourceObject("gvUContact.lblEmail.Text").ToString()%>' runat="server"></asp:Label>
+                </HeaderTemplate> 
+                <ItemTemplate>
+                    <asp:Label Visible="true" ID="txtMail" Text='<%#Eval("Email") %>' runat="server"></asp:Label>
+                </ItemTemplate>
+            </asp:TemplateField>
+
+            <asp:TemplateField ItemStyle-HorizontalAlign="Left"  SortExpression="phone" HeaderStyle-HorizontalAlign="Left"> 
+                  <HeaderTemplate>
+                    <asp:Label Visible="true" ID="lblPhone" Text='<%# GetLocalResourceObject("gvUContact.lblPhone.Text").ToString()%>' runat="server"></asp:Label>
+                </HeaderTemplate> 
+                <ItemTemplate>
+                    <asp:Label Visible="true" ID="txtPhone" Text='<%#Eval("phone") %>' runat="server"></asp:Label>
+                </ItemTemplate>
+            </asp:TemplateField>
+
+            <asp:TemplateField ItemStyle-HorizontalAlign="Left"  SortExpression="body"  HeaderStyle-HorizontalAlign="Left" > 
+                  <HeaderTemplate>
+                    <asp:Label Visible="true" ID="lblMeesage" Text='<%# GetLocalResourceObject("gvUContact.lblMeesage.Text").ToString()%>' runat="server"></asp:Label>
+                </HeaderTemplate> 
+                <ItemTemplate>
+                    <asp:Label Visible="true" ID="txtBody" Text='<%#Eval("body") %>' runat="server"></asp:Label>
+                </ItemTemplate>
+            </asp:TemplateField>
+         
+            <asp:TemplateField ItemStyle-HorizontalAlign="Left" SortExpression="created" HeaderStyle-HorizontalAlign="Left"> 
+                  <HeaderTemplate>
+                    <asp:Label Visible="true" ID="lblFecha" Text='<%# GetLocalResourceObject("gvUContact.lblFecha.Text").ToString()%>' runat="server"></asp:Label>
+                </HeaderTemplate> 
+                <ItemTemplate>
+                    <asp:Label Visible="true" ID="txtFecha" Text='<%#Eval("created") %>' runat="server"></asp:Label>
+                </ItemTemplate>
+            </asp:TemplateField>
+
+            <asp:TemplateField ItemStyle-Width="80px" HeaderStyle-Width="80px" SortExpression="IS_NEW" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center" >                 
+                  <HeaderTemplate>
+                    <asp:Label Visible="true" ID="lblIsNew" Text='<%# GetLocalResourceObject("gvUContact.lblIsNew.Text").ToString()%>' runat="server"></asp:Label>
+                </HeaderTemplate> 
+                <ItemTemplate>
+                    <asp:RadioButton ID="rbtnIsNew" Enabled="false" runat="server"></asp:RadioButton>
+                </ItemTemplate>
+            </asp:TemplateField>
+
+            <asp:TemplateField Visible="false">                 
+                <ItemTemplate>
+                    <asp:HiddenField ID="hdnIsNew" Value='<%#Eval("IS_NEW") %>' runat="server"></asp:HiddenField>
+                </ItemTemplate>
+            </asp:TemplateField>
+
+        </Columns>
+        <FooterStyle BackColor="#c1c1c1" BorderWidth="1" ForeColor="#c1c1c1" />
+        </asp:GridView>
+    </div>
+        
+    </ContentTemplate>
+      
+    </asp:UpdatePanel>
+
+    <asp:Label ID="lblNoRecords" Text="No records to display" runat="server" Visible="false" ForeColor="red"></asp:Label>
+      
+    <br /><br />
+          
+    <asp:Button Visible="false" Text="Exportar a Excel" Enabled="true" runat="server" ID="btnExportExcel" style="border-radius:0px" CssClass="blue" Width="150px" OnClick="btnExport_Click" meta:resourcekey="ExportToExcel" />
+
+    <asp:Button Visible="false" Text="Exportar a Pdf" Enabled="true" runat="server" ID="btnExportPDF" style="border-radius:0px" CssClass="blue" Width="150px" OnClick="btnExportPDF_Click" meta:resourcekey="ExportToExcel" />
+    
+    <br /><br />
+
+</asp:Content>

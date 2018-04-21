@@ -7,7 +7,7 @@ using System.Web.Configuration;
 using System.Net.Mail;
 using System.Net;
 
-public partial class Contact : Page
+public partial class Contact : BasePage
 {
     public string Id
     {

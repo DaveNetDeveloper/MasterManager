@@ -1,0 +1,151 @@
+﻿<%@ Page  Title="EditUserContact" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true" CodeFile="~/EditUserContact.aspx.cs" Inherits="EditUserContact" %>
+   
+<%@ Import Namespace="System.Resources" %>
+
+<asp:Content runat="server" ID="HeaderContent" ContentPlaceHolderID="HeadContent">
+     
+    <script type="text/javascript" src="js/jquery-1.9.0.min.js"></script>
+    
+    <script type="text/javascript" src="js/jquery-ui-1.10.0.custom.min.js"></script>
+    
+    <link rel="stylesheet" href="css/jquery-ui-1.10.0.custom.min.css" type="text/css"/>
+  
+	<style type="text/css">
+			body { font-family: "HelveticaNeue","Helvetica-Neue", "Helvetica", "Arial", sans-serif; }
+			.big-link { display:block; text-align: center; font-size: 70px; color: #06f; }
+	</style>
+    
+    <!--  <style type="text/css">
+        /* some styling for the page */
+        body { font-size: 10px; /* for the widget natural size */ }
+        #content { font-size: 1.2em; /* for the rest of the page to show at a normal size */
+                   font-family: "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+                   width: 950px; margin: auto;
+        }
+        .code { margin: 6px; padding: 9px; background-color: #fdf5ce; border: 1px solid #c77405; }
+        fieldset { padding: 0.5em 2em }
+        hr { margin: 0.5em 0; clear: both }
+        a { cursor: pointer; }
+        #requirements li { line-height: 1.6em; }
+    </style>
+
+ 
+       
+        <script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-24327002-1']);
+        _gaq.push(['_trackPageview']);
+
+        (function () {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+        function plusone_clicked() {
+            $('#thankyou').fadeIn(300);
+        }
+         
+    </script> -->
+    
+   
+
+</asp:Content>
+
+<asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
+     
+    <div style="margin-top: 20px;">
+            <asp:Button id="btnVolver" OnClick="btnVolver_Click" Text="Volver" runat="server" style="float: right; width: 105px;height:26px;font-family:Verdana;border: 1px solid #D8D8D8 !important;background: #F2F2F2;background: -webkit-linear-gradient(top, #F5F5F5, #F1F1F1);background: -moz-linear-gradient(top, #F5F5F5, #F1F1F1);background: -ms-linear-gradient(top, #F5F5F5, #F1F1F1);background: -o-linear-gradient(top, #F5F5F5, #F1F1F1);-webkit-transition: border .20s;-moz-transition: border .20s;-o-transition: border .20s;transition: border .20s;" />
+        </div>
+
+    <h1 style="display:none;" class="main"> </h1>
+
+    <div style="float: left;"></div>
+
+    <br /><br /><br />
+    <div style="text-align:left;" class="form_row clearfix link">
+       <table>
+            <tr>
+                <td style="width: 200px;">
+
+         <label  class="control-label required" for="userName">Nombre:</label>
+                    </td>
+                <td>
+
+                
+        <asp:TextBox Width="350px"  BorderWidth="1px" runat="server" type="text" id="userName" name="userName"></asp:TextBox>
+                    </td>
+                </tr>
+           </table>
+    </div>
+
+    <br />
+    <div style="text-align:left;" class="form_row clearfix link">
+        <table>
+            <tr>
+                <td style="width: 200px;">
+                     <label  class="control-label required" for="userMail">Email:</label>
+        </td>
+                <td>
+                    <asp:TextBox Width="350px"  BorderWidth="1px" runat="server" type="text" id="userMail" name="userMail"></asp:TextBox>
+                    </td>
+                </tr>
+            </table>
+    </div>
+
+    <br />
+    <div style="text-align:left;" class="form_row clearfix link">
+         <table>
+            <tr>
+                <td style="width: 200px;">
+                    <label  class="control-label required" for="userPhone">Teléfono:</label>
+       
+                    </td>
+                <td>
+
+                 <asp:TextBox Width="350px"  BorderWidth="1px" runat="server" type="text" id="userPhone" name="userPhone"></asp:TextBox>
+                    </td>
+                </tr>
+           </table>
+    </div>
+
+    <br />
+    <div style="text-align:left;height: 95px;" class="form_row clearfix link">
+         <table>
+            <tr>
+                <td style="width: 200px;">
+                    <label class="control-label required" for="userMessage">Mensaje:</label>
+        
+                    </td>
+                <td>
+
+                <asp:TextBox BorderWidth="1px" TextMode="MultiLine" Width="350px"  Height="75px" runat="server" Enabled="false" ID="userMessage"></asp:TextBox>
+                    </td>
+                </tr>
+           </table>
+    </div>
+
+    <div style="text-align:left;" class="form_row clearfix link">
+         <table>
+            <tr>
+                <td style="width: 200px;">
+                    <label class="control-label required" for="userDate">Fecha contacto:</label>
+        
+                    </td>
+                <td>
+
+                <asp:TextBox BorderWidth="1px" Enabled="false" runat="server" ID="userDate"></asp:TextBox>
+                    </td>
+                </tr>
+           </table>
+    </div>
+
+    <div id="myModal" style="visibility:hidden;" class="reveal-modal">
+			
+        <asp:Image Width="260" Height="275" runat="server" ID="FeatureImage" />
+        <a class="close-reveal-modal">×</a>
+
+    </div>
+
+</asp:Content>
