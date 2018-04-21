@@ -12,4 +12,6 @@ public static class Constants
     public const string CULTURE_INFO_ESPAÑOL = "es-ES";
     public const string CULTURE_INFO_CATALAN = "ca-ES";
     public const string CULTURE_INFO_INGLES = "en-US";
+
+    public const string NoImageParaPreguntaTestOnline = "~/Images/NoImage.jpg";
 }
