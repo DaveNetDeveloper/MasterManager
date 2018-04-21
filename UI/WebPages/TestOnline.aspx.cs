@@ -77,16 +77,15 @@ public partial class TestOnline : BasePage
     {
           if (!IsPostBack)
           {
-              
           }
           else
           {
-              ContentPlaceHolder myPlaceHolder = (ContentPlaceHolder)Master.FindControl("MainContent");
-              HtmlGenericControl divResultadoTest = (HtmlGenericControl)myPlaceHolder.FindControl("divResultadoTest");
-              HtmlGenericControl divResultadoTestHeader = (HtmlGenericControl)myPlaceHolder.FindControl("divResultadoTestHeader");
+                Control myPlaceHolder = Page.FindControl("form");
+                HtmlGenericControl divResultadoTest = (HtmlGenericControl)myPlaceHolder.FindControl("divResultadoTest");
+                HtmlGenericControl divResultadoTestHeader = (HtmlGenericControl)myPlaceHolder.FindControl("divResultadoTestHeader");
 
-              divResultadoTest.Visible = false;
-              divResultadoTestHeader.Visible = true;
+                divResultadoTest.Visible = false;
+                divResultadoTestHeader.Visible = true;
           }
 
           FillTest();
@@ -503,7 +502,7 @@ public partial class TestOnline : BasePage
                     }
                 }
 
-                ContentPlaceHolder myPlaceHolder = (ContentPlaceHolder)Master.FindControl("MainContent");
+                Control myPlaceHolder = Page.FindControl("form");
                 HtmlGenericControl divResultadoTest = (HtmlGenericControl)myPlaceHolder.FindControl("divResultadoTest");
                 HtmlGenericControl divResultadoTestHeader = (HtmlGenericControl)myPlaceHolder.FindControl("divResultadoTestHeader");
 

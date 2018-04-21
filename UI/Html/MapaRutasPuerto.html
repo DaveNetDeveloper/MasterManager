@@ -1,0 +1,214 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <style>
+        html, body, #map-canvas {
+            height: 500px;
+            margin: 0px;
+            padding: 0px;
+        }
+    </style>
+    
+    <!-- <meta name="google-site-verification" content="Z7rR8_dPAsZ2H317AZ_lpaV9GSk5DCSO-oYma5U6ihs"> -->
+
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyA3ndfeZn4Tuk8_DS3bVmKM9YX7odJZzkA&sensor=false"></script>
+    
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script>
+var map;
+function initialize() {
+  var mapOptions = {
+    zoom: 16,
+    center: new google.maps.LatLng(41.3868397, 2.2026136)
+  };
+
+  var myLatlng = new google.maps.LatLng(41.3868397, 2.2026136);
+  
+  map = new google.maps.Map(document.getElementById('map-canvas'),
+      mapOptions);
+
+  var marker = new google.maps.Marker({
+      position: myLatlng,
+      map: map,
+      title: "Escuela Nautica Santaló"
+
+  });
+}
+
+google.maps.event.addDomListener(window, 'load', initialize);
+
+    </script>
+    <script>
+
+    $(document).ready(function () {
+        initialize();
+    });
+
+    var map;
+    var directionsPanel;
+    var directions;
+    var directionsDisplay;
+    var directionsService;
+    var polylineOptions;
+    var pos = new google.maps.LatLng(41.40013, 2.140364);
+
+    /*function initialize(){
+        polylineOptions = new google.maps.Polyline({
+            strokeColor: '#E44D1C',
+            strokeOpacity: 0.7,
+            strokeWeight: 4
+        });
+
+        google.maps.event.addDomListener(window, 'load', initialize);
+    }*/
+
+    function createMarker(location, title, icon) {
+        var marker;
+        marker = new google.maps.Marker({
+            position: location,
+            map: map,
+            icon: icon,
+            title: title,
+            flat: true,
+            image: image
+        });
+    }
+
+    function createStartMarker(location, title) {
+        createMarker(location, title, '');
+    }
+
+    function createEndMarker(location, title, letter) {
+        createMarker(location, title, 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=' + letter + '|008000|000000');
+    }
+
+    function createIntermediateMarker(location, title, letter) {
+        createMarker(location, title, 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=' + letter + '|0000FF|000000');
+    }
+
+    function initialize() {
+        directionsDisplay = new google.maps.DirectionsRenderer();
+        var mapOptions = {
+            zoom: 16,
+            panControl: false,
+            scrollwheel: true,
+            zoomControl: true,
+            scaleControl: false,
+            mapTypeControl: false,
+            streetViewControl: false,
+            zoomControlOptions: {
+                style: google.maps.ZoomControlStyle.SMALL
+            },
+            styles: [{ "stylers": [{ "visibility": "off" }] }, { "featureType": "water", "elementType": "geometry", "stylers": [{ "visibility": "on" }] }, { "featureType": "road", "elementType": "geometry.fill", "stylers": [{ "visibility": "on" }] }, { "featureType": "road", "elementType": "labels.text", "stylers": [{ "visibility": "on" }] }, { "featureType": "road", "elementType": "geometry.stroke", "stylers": [{ "visibility": "on" }, { "weight": 0.5 }] }, { "featureType": "transit.station.rail", "elementType": "labels.icon", "stylers": [{ "visibility": "on" }] }, { "featureType": "landscape.natural", "stylers": [{ "visibility": "on" }, { "color": "#e5f3ff" }] }],
+            center: pos,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        }
+
+        map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
+        directionsDisplay.setMap(map);
+
+        var marker = new google.maps.Marker({
+            position: pos,
+            map: map
+        });
+
+        alert('aaaa');
+    }
+
+    function calcRoute() {
+
+        var selectedMode = document.getElementById("mode").value;
+        directionsDisplay.setMap(null);
+        directionsPanel = document.getElementById("route");
+        if (google.maps.DirectionsService) {
+            directionsService = new google.maps.DirectionsService();
+            directionsDisplay = new google.maps.DirectionsRenderer({
+                map: map,
+                polylineOptions: polylineOptions
+            });
+
+            navigator.geolocation.getCurrentPosition(function (position) {
+                var request = {
+                    origin: new google.maps.LatLng(position.coords.latitude, position.coords.longitude),
+                    destination: pos,
+                    travelMode: google.maps.TravelMode[selectedMode],
+                    unitSystem: google.maps.DirectionsUnitSystem.METRIC
+                };
+
+                directionsService.route(request, function (response, status) {
+                    if (status == google.maps.DirectionsStatus.OK) {
+                        console.info(response);
+                        directionsDisplay.setDirections(response);
+                        directionsPanel.innerHTML = "";
+                        directionsDisplay.setPanel(directionsPanel);
+
+                        console.info('There are %d trips in the calculated route', response.routes.length);
+                        if (response.routes.length > 0) {
+                            createStartMarker(response.routes[0].legs[0].start_location,
+                                response.routes[0].legs[0].start_address);
+                            createEndMarker(response.routes[0].legs[response.routes[0].legs.length - 1].end_location,
+                                response.routes[0].legs[response.routes[0].legs.length - 1].end_address,
+                                String.fromCharCode(65 + response.routes[0].legs.length));
+
+                            for (var routeNo = 1; routeNo < response.routes[0].legs.length; routeNo++) {
+                                createIntermediateMarker(response.routes[0].legs[routeNo].start_location,
+                                    response.routes[0].legs[routeNo].start_address,
+                                    String.fromCharCode(65 + routeNo));
+                            }
+
+                            //var thePoints = new google.maps.MVCArray();
+
+                            directionsDisplay.setMap(map);
+                            map.fitBounds(response.routes[0].bounds);
+                        }
+                    } else {
+                        directionsPanel.innerHTML = "the googlemaps direction calculation returned status \"" + status + "\" which is not ok";
+                    }
+
+                });//direction
+
+            });//geolocalization
+        } else {
+            directionsPanel.innerHTML = "DIRECTIONS NOT IMPLEMENTED";
+        }
+    }
+
+    function getLatLong(address, callback) {
+        var geo = new google.maps.Geocoder;
+
+        geo.geocode({ 'address': address }, function (results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                if (callback && typeof (callback) === "function") {
+                    callback(results[0].geometry.location);
+                }
+            } else {
+                alert("Geocode was not successful for the following reason: " + status);
+            }
+
+        });
+
+    }
+
+    </script>
+     
+</head>
+<body>
+
+    <select onchange="calcRoute();" id="mode" style="width:304px;float: right;">
+        <option selected="" value="DRIVING">Selecione transporte</option>
+        <option value="DRIVING">Vehiculo</option>
+        <option value="WALKING">Andando</option>
+        <option value="BICYCLING">Bicicleta</option>
+        <option value="TRANSIT">Transporte Publico</option>
+    </select>
+
+    <br /><br />
+
+    <div id="map-canvas"></div>
+
+    <div id="route" style="background-color: white;"></div>
+
+</body>
+</html>
