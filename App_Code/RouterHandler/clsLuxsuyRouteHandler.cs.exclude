@@ -1,0 +1,20 @@
+﻿using System.Web;
+using System.Web.Compilation;
+using System.Web.Routing;
+using System.Web.UI;
+
+/// <summary>
+/// Summary description for LuxsuyRouteHandler
+/// </summary>
+public class LuxsuyRouteHandler : IRouteHandler
+{
+    public LuxsuyRouteHandler() { }
+
+    public IHttpHandler GetHttpHandler(RequestContext requestContext)
+    { 
+        //string cat = requestContext.RouteData.Values["id"] as string;
+        //int catid = awe.ProductCategories.Where(x => x.Name == cat).FirstOrDefault().ProductCategoryID; 
+        //HttpContext.Current.Items["catid"] = catid; 
+        return BuildManager.CreateInstanceFromVirtualPath("~/Luxsuy.aspx", typeof(Page)) as Page;
+    }
+}

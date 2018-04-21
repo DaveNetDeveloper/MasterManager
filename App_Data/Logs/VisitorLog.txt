@@ -1,0 +1,514 @@
+
+-----------------------------------------------------------------------------------------------
+Data Time: 12/05/2016 1:54:39
+Log Type: VISITOR
+IP: 
+Region: Catalunya
+Pais: Spain
+CodigoZIP: 08036
+CodigoPais: ES
+Latitud: 41.3888
+Longitud: 2.15899
+ZonaHoraria: +01:00
+Ciudad: Barcelona
+NavegadorCookkies: True
+NavegadorLenguaje: es
+NavegadorPlataforma: Win32
+NavegadorProducto: Gecko
+NavegadorAgente: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+NavegadorCompañia: Google Inc.
+-----------------------------------------------------------------------------------------------
+Data Time: 12/05/2016 1:55:08
+Log Type: VISITOR
+IP: 
+Region: Catalunya
+Pais: Spain
+CodigoZIP: 08036
+CodigoPais: ES
+Latitud: 41.3888
+Longitud: 2.15899
+ZonaHoraria: +01:00
+Ciudad: Barcelona
+NavegadorCookkies: True
+NavegadorLenguaje: es
+NavegadorPlataforma: Win32
+NavegadorProducto: Gecko
+NavegadorAgente: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+NavegadorCompañia: Google Inc.
+-----------------------------------------------------------------------------------------------
+Data Time: 12/05/2016 1:55:19
+Log Type: VISITOR
+IP: 
+Region: Catalunya
+Pais: Spain
+CodigoZIP: 08036
+CodigoPais: ES
+Latitud: 41.3888
+Longitud: 2.15899
+ZonaHoraria: +01:00
+Ciudad: Barcelona
+NavegadorCookkies: True
+NavegadorLenguaje: es
+NavegadorPlataforma: Win32
+NavegadorProducto: Gecko
+NavegadorAgente: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+NavegadorCompañia: Google Inc.
+-----------------------------------------------------------------------------------------------
+Data Time: 12/05/2016 1:55:31
+Log Type: VISITOR
+IP: 
+Region: Catalunya
+Pais: Spain
+CodigoZIP: 08036
+CodigoPais: ES
+Latitud: 41.3888
+Longitud: 2.15899
+ZonaHoraria: +01:00
+Ciudad: Barcelona
+NavegadorCookkies: True
+NavegadorLenguaje: es
+NavegadorPlataforma: Win32
+NavegadorProducto: Gecko
+NavegadorAgente: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+NavegadorCompañia: Google Inc.
+-----------------------------------------------------------------------------------------------
+Data Time: 12/05/2016 2:06:55
+Log Type: VISITOR
+IP: 
+Region: Catalunya
+Pais: Spain
+CodigoZIP: 08036
+CodigoPais: ES
+Latitud: 41.3888
+Longitud: 2.15899
+ZonaHoraria: +01:00
+Ciudad: Barcelona
+NavegadorCookkies: True
+NavegadorLenguaje: es
+NavegadorPlataforma: Win32
+NavegadorProducto: Gecko
+NavegadorAgente: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+NavegadorCompañia: Google Inc.
+-----------------------------------------------------------------------------------------------
+Data Time: 12/05/2016 2:09:09
+Log Type: VISITOR
+IP: 
+Region: Catalunya
+Pais: Spain
+CodigoZIP: 08036
+CodigoPais: ES
+Latitud: 41.3888
+Longitud: 2.15899
+ZonaHoraria: +01:00
+Ciudad: Barcelona
+NavegadorCookkies: True
+NavegadorLenguaje: es
+NavegadorPlataforma: Win32
+NavegadorProducto: Gecko
+NavegadorAgente: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+NavegadorCompañia: Google Inc.
+-----------------------------------------------------------------------------------------------
+Data Time: 12/05/2016 2:09:23
+Log Type: VISITOR
+IP: 
+Region: Catalunya
+Pais: Spain
+CodigoZIP: 08036
+CodigoPais: ES
+Latitud: 41.3888
+Longitud: 2.15899
+ZonaHoraria: +01:00
+Ciudad: Barcelona
+NavegadorCookkies: True
+NavegadorLenguaje: es
+NavegadorPlataforma: Win32
+NavegadorProducto: Gecko
+NavegadorAgente: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+NavegadorCompañia: Google Inc.
+-----------------------------------------------------------------------------------------------
+Data Time: 12/05/2016 2:09:25
+Log Type: VISITOR
+IP: 
+Region: Catalunya
+Pais: Spain
+CodigoZIP: 08036
+CodigoPais: ES
+Latitud: 41.3888
+Longitud: 2.15899
+ZonaHoraria: +01:00
+Ciudad: Barcelona
+NavegadorCookkies: True
+NavegadorLenguaje: es
+NavegadorPlataforma: Win32
+NavegadorProducto: Gecko
+NavegadorAgente: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+NavegadorCompañia: Google Inc.
+-----------------------------------------------------------------------------------------------
+Data Time: 12/05/2016 2:11:19
+Log Type: VISITOR
+IP: 
+Region: Catalunya
+Pais: Spain
+CodigoZIP: 08036
+CodigoPais: ES
+Latitud: 41.3888
+Longitud: 2.15899
+ZonaHoraria: +01:00
+Ciudad: Barcelona
+NavegadorCookkies: True
+NavegadorLenguaje: es
+NavegadorPlataforma: Win32
+NavegadorProducto: Gecko
+NavegadorAgente: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+NavegadorCompañia: Google Inc.
+-----------------------------------------------------------------------------------------------
+Data Time: 12/05/2016 2:13:02
+Log Type: VISITOR
+IP: 
+Region: Catalunya
+Pais: Spain
+CodigoZIP: 08036
+CodigoPais: ES
+Latitud: 41.3888
+Longitud: 2.15899
+ZonaHoraria: +01:00
+Ciudad: Barcelona
+NavegadorCookkies: True
+NavegadorLenguaje: es
+NavegadorPlataforma: Win32
+NavegadorProducto: Gecko
+NavegadorAgente: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+NavegadorCompañia: Google Inc.
+-----------------------------------------------------------------------------------------------
+Data Time: 12/05/2016 2:14:02
+Log Type: VISITOR
+IP: 
+Region: Catalunya
+Pais: Spain
+CodigoZIP: 08036
+CodigoPais: ES
+Latitud: 41.3888
+Longitud: 2.15899
+ZonaHoraria: +01:00
+Ciudad: Barcelona
+NavegadorCookkies: True
+NavegadorLenguaje: es
+NavegadorPlataforma: Win32
+NavegadorProducto: Gecko
+NavegadorAgente: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+NavegadorCompañia: Google Inc.
+-----------------------------------------------------------------------------------------------
+Data Time: 12/05/2016 11:34:28
+Log Type: VISITOR
+IP: 
+Region: Catalunya
+Pais: Spain
+CodigoZIP: 08036
+CodigoPais: ES
+Latitud: 41.3888
+Longitud: 2.15899
+ZonaHoraria: +01:00
+Ciudad: Barcelona
+NavegadorCookkies: True
+NavegadorLenguaje: es
+NavegadorPlataforma: Win32
+NavegadorProducto: Gecko
+NavegadorAgente: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+NavegadorCompañia: Google Inc.
+-----------------------------------------------------------------------------------------------
+Data Time: 12/05/2016 11:37:23
+Log Type: VISITOR
+IP: 
+Region: Catalunya
+Pais: Spain
+CodigoZIP: 08036
+CodigoPais: ES
+Latitud: 41.3888
+Longitud: 2.15899
+ZonaHoraria: +01:00
+Ciudad: Barcelona
+NavegadorCookkies: True
+NavegadorLenguaje: es
+NavegadorPlataforma: Win32
+NavegadorProducto: Gecko
+NavegadorAgente: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+NavegadorCompañia: Google Inc.
+-----------------------------------------------------------------------------------------------
+Data Time: 12/05/2016 11:55:58
+Log Type: VISITOR
+IP: 
+Region: Catalunya
+Pais: Spain
+CodigoZIP: 08036
+CodigoPais: ES
+Latitud: 41.3888
+Longitud: 2.15899
+ZonaHoraria: +01:00
+Ciudad: Barcelona
+NavegadorCookkies: True
+NavegadorLenguaje: es
+NavegadorPlataforma: Win32
+NavegadorProducto: Gecko
+NavegadorAgente: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+NavegadorCompañia: Google Inc.
+-----------------------------------------------------------------------------------------------
+Data Time: 12/05/2016 11:56:26
+Log Type: VISITOR
+IP: 
+Region: Catalunya
+Pais: Spain
+CodigoZIP: 08036
+CodigoPais: ES
+Latitud: 41.3888
+Longitud: 2.15899
+ZonaHoraria: +01:00
+Ciudad: Barcelona
+NavegadorCookkies: True
+NavegadorLenguaje: es
+NavegadorPlataforma: Win32
+NavegadorProducto: Gecko
+NavegadorAgente: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+NavegadorCompañia: Google Inc.
+-----------------------------------------------------------------------------------------------
+Data Time: 12/05/2016 11:56:41
+Log Type: VISITOR
+IP: 
+Region: Catalunya
+Pais: Spain
+CodigoZIP: 08036
+CodigoPais: ES
+Latitud: 41.3888
+Longitud: 2.15899
+ZonaHoraria: +01:00
+Ciudad: Barcelona
+NavegadorCookkies: True
+NavegadorLenguaje: es
+NavegadorPlataforma: Win32
+NavegadorProducto: Gecko
+NavegadorAgente: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+NavegadorCompañia: Google Inc.
+-----------------------------------------------------------------------------------------------
+Data Time: 12/05/2016 12:11:11
+Log Type: VISITOR
+IP: 
+Region: Catalunya
+Pais: Spain
+CodigoZIP: 08036
+CodigoPais: ES
+Latitud: 41.3888
+Longitud: 2.15899
+ZonaHoraria: +01:00
+Ciudad: Barcelona
+NavegadorCookkies: True
+NavegadorLenguaje: es
+NavegadorPlataforma: Win32
+NavegadorProducto: Gecko
+NavegadorAgente: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+NavegadorCompañia: Google Inc.
+-----------------------------------------------------------------------------------------------
+Data Time: 12/05/2016 12:11:44
+Log Type: VISITOR
+IP: 
+Region: 
+Pais: 
+CodigoZIP: 
+CodigoPais: 
+Latitud: 0
+Longitud: 0
+ZonaHoraria: 
+Ciudad: 
+NavegadorCookkies: True
+NavegadorLenguaje: es
+NavegadorPlataforma: Win32
+NavegadorProducto: Gecko
+NavegadorAgente: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+NavegadorCompañia: Google Inc.
+-----------------------------------------------------------------------------------------------
+Data Time: 12/05/2016 12:12:00
+Log Type: VISITOR
+IP: 
+Region: Catalunya
+Pais: Spain
+CodigoZIP: 08036
+CodigoPais: ES
+Latitud: 41.3888
+Longitud: 2.15899
+ZonaHoraria: +01:00
+Ciudad: Barcelona
+NavegadorCookkies: True
+NavegadorLenguaje: es
+NavegadorPlataforma: Win32
+NavegadorProducto: Gecko
+NavegadorAgente: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+NavegadorCompañia: Google Inc.
+-----------------------------------------------------------------------------------------------
+Data Time: 12/05/2016 12:12:56
+Log Type: VISITOR
+IP: 
+Region: Catalunya
+Pais: Spain
+CodigoZIP: 08036
+CodigoPais: ES
+Latitud: 41.3888
+Longitud: 2.15899
+ZonaHoraria: +01:00
+Ciudad: Barcelona
+NavegadorCookkies: True
+NavegadorLenguaje: es
+NavegadorPlataforma: Win32
+NavegadorProducto: Gecko
+NavegadorAgente: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+NavegadorCompañia: Google Inc.
+-----------------------------------------------------------------------------------------------
+Data Time: 12/05/2016 12:34:34
+IP: 
+Region: Catalunya
+Pais: Spain
+CodigoZIP: 08036
+CodigoPais: ES
+Latitud: 41.3888
+Longitud: 2.15899
+ZonaHoraria: +01:00
+Ciudad: Barcelona
+NavegadorCookkies: True
+NavegadorLenguaje: es
+NavegadorPlataforma: Win32
+NavegadorProducto: Gecko
+NavegadorAgente: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+NavegadorCompañia: Google Inc.
+-----------------------------------------------------------------------------------------------
+Data Time: 12/05/2016 12:36:23
+IP: 
+Region: Catalunya
+Pais: Spain
+CodigoZIP: 08036
+CodigoPais: ES
+Latitud: 41.3888
+Longitud: 2.15899
+ZonaHoraria: +01:00
+Ciudad: Barcelona
+NavegadorCookkies: True
+NavegadorLenguaje: es
+NavegadorPlataforma: Win32
+NavegadorProducto: Gecko
+NavegadorAgente: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+NavegadorCompañia: Google Inc.
+-----------------------------------------------------------------------------------------------
+Data Time: 12/05/2016 12:37:46
+IP: 
+Region: Catalunya
+Pais: Spain
+CodigoZIP: 08036
+CodigoPais: ES
+Latitud: 41.3888
+Longitud: 2.15899
+ZonaHoraria: +01:00
+Ciudad: Barcelona
+NavegadorCookkies: True
+NavegadorLenguaje: es
+NavegadorPlataforma: Win32
+NavegadorProducto: Gecko
+NavegadorAgente: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+NavegadorCompañia: Google Inc.
+-----------------------------------------------------------------------------------------------
+Data Time: 12/05/2016 12:38:49
+IP: 
+Region: Catalunya
+Pais: Spain
+CodigoZIP: 08036
+CodigoPais: ES
+Latitud: 41.3888
+Longitud: 2.15899
+ZonaHoraria: +01:00
+Ciudad: Barcelona
+NavegadorCookkies: True
+NavegadorLenguaje: es
+NavegadorPlataforma: Win32
+NavegadorProducto: Gecko
+NavegadorAgente: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+NavegadorCompañia: Google Inc.
+-----------------------------------------------------------------------------------------------
+Data Time: 12/05/2016 12:38:53
+IP: 
+Region: Catalunya
+Pais: Spain
+CodigoZIP: 08036
+CodigoPais: ES
+Latitud: 41.3888
+Longitud: 2.15899
+ZonaHoraria: +01:00
+Ciudad: Barcelona
+NavegadorCookkies: True
+NavegadorLenguaje: es
+NavegadorPlataforma: Win32
+NavegadorProducto: Gecko
+NavegadorAgente: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+NavegadorCompañia: Google Inc.
+-----------------------------------------------------------------------------------------------
+Data Time: 12/05/2016 12:39:05
+IP: 
+Region: Catalunya
+Pais: Spain
+CodigoZIP: 08036
+CodigoPais: ES
+Latitud: 41.3888
+Longitud: 2.15899
+ZonaHoraria: +01:00
+Ciudad: Barcelona
+NavegadorCookkies: True
+NavegadorLenguaje: es
+NavegadorPlataforma: Win32
+NavegadorProducto: Gecko
+NavegadorAgente: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+NavegadorCompañia: Google Inc.
+-----------------------------------------------------------------------------------------------
+Data Time: 12/05/2016 12:39:16
+IP: 
+Region: Catalunya
+Pais: Spain
+CodigoZIP: 08036
+CodigoPais: ES
+Latitud: 41.3888
+Longitud: 2.15899
+ZonaHoraria: +01:00
+Ciudad: Barcelona
+NavegadorCookkies: True
+NavegadorLenguaje: es
+NavegadorPlataforma: Win32
+NavegadorProducto: Gecko
+NavegadorAgente: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+NavegadorCompañia: Google Inc.
+-----------------------------------------------------------------------------------------------
+Data Time: 12/05/2016 12:41:48
+IP: 
+Region: Catalunya
+Pais: Spain
+CodigoZIP: 08036
+CodigoPais: ES
+Latitud: 41.3888
+Longitud: 2.15899
+ZonaHoraria: +01:00
+Ciudad: Barcelona
+NavegadorCookkies: True
+NavegadorLenguaje: es
+NavegadorPlataforma: Win32
+NavegadorProducto: Gecko
+NavegadorAgente: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+NavegadorCompañia: Google Inc.
+-----------------------------------------------------------------------------------------------
+Data Time: 12/05/2016 12:44:33
+IP: 
+Region: Catalunya
+Pais: Spain
+CodigoZIP: 08036
+CodigoPais: ES
+Latitud: 41.3888
+Longitud: 2.15899
+ZonaHoraria: +01:00
+Ciudad: Barcelona
+NavegadorCookkies: True
+NavegadorLenguaje: es
+NavegadorPlataforma: Win32
+NavegadorProducto: Gecko
+NavegadorAgente: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+NavegadorCompañia: Google Inc.

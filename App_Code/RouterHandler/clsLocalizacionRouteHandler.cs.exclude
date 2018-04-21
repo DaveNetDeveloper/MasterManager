@@ -1,0 +1,18 @@
+﻿using System.Web;
+using System.Web.Compilation;
+using System.Web.Routing;
+using System.Web.UI;
+
+/// <summary>
+/// Summary description for ContactoRouteHandler
+/// </summary>
+public class TrabajarRouteHandler : IRouteHandler
+{
+    public TrabajarRouteHandler() { }
+
+    public IHttpHandler GetHttpHandler(RequestContext requestContext)
+    {
+        HttpContext.Current.Items["ContactType"] = 6;
+        return BuildManager.CreateInstanceFromVirtualPath("~/Contact.aspx", typeof(Page)) as Page;
+    }
+}

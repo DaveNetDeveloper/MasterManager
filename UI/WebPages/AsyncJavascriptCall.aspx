@@ -2,16 +2,99 @@
 
 <!DOCTYPE html> 
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head runat="server">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Async Javascript Call Page</title>
-   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
-    <%--<script src="../CRUD_Area.js"></script>--%>
+     <style type="text/css"> 
+        .gridClass th
+            {  
+                text-align: center;
+                
+            }
+        .gridClass th
+        {       
+                background-image: linear-gradient(to bottom,#337ab7 0,#265a88 100%);
+                color: #ffffff;
+                font-weight: bold;
+                text-transform: uppercase;
+                height: 31px;
+                font-size: 0.9em;
+                cursor: pointer;
+                border: none; 
 
+                
+        }
+        .gridClass th:hover
+        {       
+                border-right: 2px solid #FFFFFF;
+                color: #ffffff; 
+                text-transform: uppercase;
+                height: 31px;
+                font-size: 0.9em; 
+                font-weight: bold;
+                border: none;
+        }
+        .gridClass td
+        {
+            font-size: 14px;
+            border: none;
+            font-weight: 100; 
+             border-left: 2px solid #FFFFFF;    
+        } 
+        .gridClass tr
+        {
+                height: 40px;
+                border: none;
+                border: 1px solid #D8D8D8 !important;
+        } 
+        .gridClass tr:hover
+        {
+            /*background-color: #367fc3; 
+            color: white;
+            cursor: pointer;*/ 
+            /* opacity: 0.8; */
+
+            background-image: -webkit-linear-gradient(top,#fff 0,#F2F2F2  100%);
+            background-image: -o-linear-gradient(top,#fff 0,#F2F2F2  100%);
+            background-image: -webkit-gradient(linear,left top,left bottom,from(#fff),to(#F2F2F2 ));
+            background-image: linear-gradient(to bottom,#fff 0,#F2F2F2  100%);
+
+        } 
+        .gridClass td:hover
+        {
+            /*background-color: #367fc3; 
+            /*color: white;*/
+            cursor: pointer; 
+        } 
+
+        .buttondisable
+        { 
+            background-image: -webkit-linear-gradient(top,#F5F5DC 0,#ffffff 100%);
+            background-image: -o-linear-gradient(top,#F5F5DC 0,#ffffff 100%);
+            background-image: -webkit-gradient(linear,left top,left bottom,from(#F5F5DC),to(#ffffff));
+            background-image: linear-gradient(to bottom,#F5F5DC 0,#ffffff 100%); 
+            background-repeat: repeat-x; 
+            border-color: darkgray;
+
+        } 
+        .buttondisable:hover
+        { 
+            color:#337ab7;
+        } 
+        
+        a:hover 
+        {
+            text-decoration: none;
+        }
+    </style>  
 </head> 
 <body>
-    <form id="form" runat="server"> 
+    <form id="form" runat="server">
+
         <br />
         <input id="inputIdArea" type="text" value="" /> 
         <input id="btnGetAreaById" type="button" value="Cargar un area desde base de datos" onclick="GetAreaById($('#inputIdArea').val());" />
@@ -40,7 +123,11 @@
         <input id="inputUpdateAreaNombre" type="text" value="" /> 
         <input id="btnUpdateArea" type="button" value="Modificar area existentes" onclick="UpdateAreaById($('#inputUpdateAreaId').val(), $('#inputUpdateAreaNombre').val());" />
 
-        <%--       <asp:GridView Visible="false" ID="gvDocumentos" Width="100%" runat="server" OnRowDataBound="gvDocumentos_RowDataBound" OnRowCommand="gvDocumentos_RowCommand" DataKeyNames="Id" AutoGenerateColumns="false" CssClass ="gridClass" EmptyDataText="No hay datos.">
+        <br /><br />
+        <hr />
+        <br />
+
+        <asp:GridView Visible="true" ID="gvDocumentos" Width="100%" runat="server" OnRowDataBound="gvDocumentos_RowDataBound" OnRowCommand="gvDocumentos_RowCommand" DataKeyNames="Id" AutoGenerateColumns="false" CssClass ="gridClass" EmptyDataText="No hay datos.">
         <Columns> 
               <asp:TemplateField>
                 <HeaderStyle HorizontalAlign="Center" Width="50px" />
@@ -53,26 +140,27 @@
                 </ItemTemplate>
             </asp:TemplateField>
 
-            <asp:BoundField DataField="IP" HeaderStyle-HorizontalAlign="Left" ItemStyle-Width="200px" ItemStyle-HorizontalAlign="Left" HeaderText="IP" />
-
             <asp:BoundField DataField="Id" HeaderStyle-HorizontalAlign="Left" ItemStyle-Width="150px" ItemStyle-HorizontalAlign="Center" HeaderText="Id" />
+          
+            <asp:BoundField DataField="Nombre" HeaderStyle-HorizontalAlign="Left" ItemStyle-Width="200px" ItemStyle-HorizontalAlign="Left" HeaderText="Nombre" />
 
-            <asp:TemplateField ItemStyle-VerticalAlign="Middle" HeaderStyle-HorizontalAlign="Center" HeaderStyle-VerticalAlign="Middle" HeaderText="Region" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="100px">
+            <asp:TemplateField ItemStyle-VerticalAlign="Middle" HeaderStyle-HorizontalAlign="Center" HeaderStyle-VerticalAlign="Middle" HeaderText="Tamaño" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="100px">
             <ItemTemplate>
-                    <asp:Label runat="server" ID="lblRegion" Text='<%# Eval("Region") + " x" %>'></asp:Label> 
+                    <asp:Label runat="server" ID="lblTamaño" Text='<%# Eval("Tamaño") + " Mb" %>'></asp:Label> 
             </ItemTemplate>
             </asp:TemplateField>  
              
-            <asp:BoundField DataField="Ciudad" DataFormatString="{0:dd/MM/yyyy}" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="125px" HeaderText="Ciudad" />
+            <asp:BoundField DataField="Descripcion" HeaderStyle-HorizontalAlign="Left" ItemStyle-Width="200px" ItemStyle-HorizontalAlign="Left" HeaderText="Descripcion" />
+
+            <asp:BoundField DataField="Ubicacion" DataFormatString="{0:dd/MM/yyyy}" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="125px" HeaderText="Ubicacion" />
              
             <asp:TemplateField ItemStyle-VerticalAlign="Middle" HeaderStyle-VerticalAlign="Middle" HeaderText="" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="50px">
             <ItemTemplate> 
-                    <asp:ImageButton ImageAlign="Middle" CommandName='<%# Eval("Ubicacion") %>' Height="25px" ImageUrl='<%# Eval("Tipo").Equals("pdf") ? "~/Images/pdf.png" : "~/Images/doc.png" %>' ID="btnVerDocumento" 
-                                     runat="server" CommandArgument="<%# ((GridViewRow) Container).RowIndex %>" />
+                    <asp:ImageButton ImageAlign="Middle" CommandName='<%# Eval("Ubicacion") %>' Height="25px" ImageUrl='<%# Eval("Tipo").Equals("pdf") ? "~/Images/pdf.png" : "~/Images/doc.png" %>' ID="btnVerDocumento" runat="server" CommandArgument="<%# ((GridViewRow) Container).RowIndex %>" />
             </ItemTemplate>
             </asp:TemplateField> 
         </Columns>
-        </asp:GridView>--%>
+        </asp:GridView>
 
     </form>
 </body>   

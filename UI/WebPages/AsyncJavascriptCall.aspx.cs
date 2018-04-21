@@ -8,26 +8,24 @@ public partial class AsyncJavascriptCall : Page
     {
         if (!IsPostBack)
         {
-            //CargarDocumentos();
+            CargarDocumentos();
         }
     }
 
-    //private void CargarDocumentos()
-    //{
-    //    try
-    //    {
-    //        //var eVisitante = new EntityVisitante();
-    //        //var visitantes = eVisitante.GetList();
+    private void CargarDocumentos()
+    {
+        try
+        {
+            var entityDocumentos = new EntityDocumento();  
+            gvDocumentos.DataSource = entityDocumentos.GetList();
+            gvDocumentos.DataBind();
 
-    //        //gvDocumentos.DataSource = visitantes;
-    //        //gvDocumentos.DataBind();
-
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        Session["error"] = ex;
-    //    }
-    //}
+        }
+        catch (Exception ex)
+        {
+            Session["error"] = ex;
+        }
+    }
 
     protected void chkSel_Checked(object sender, EventArgs e)
     {
@@ -83,9 +81,9 @@ public partial class AsyncJavascriptCall : Page
 
     protected void gvDocumentos_RowCommand(object sender, GridViewCommandEventArgs e)
     {
-        //int rowIndex = int.Parse(e.CommandArgument.ToString());
-        //string idDocumento = gvDocumentos.DataKeys[rowIndex]["Id"].ToString();
+        int rowIndex = int.Parse(e.CommandArgument.ToString());
+        string idDocumento = gvDocumentos.DataKeys[rowIndex]["Id"].ToString();
 
-        //Response.Redirect(e.CommandName);
+        Response.Redirect(e.CommandName);
     }
 }

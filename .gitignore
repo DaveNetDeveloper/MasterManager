@@ -1,3 +1,10 @@
 .vs/MasterManager/v15/Server/sqlite3/storage.ide
 .vs/MasterManager/v15/.suo
 vwd.webinfo
+.vs/MasterManager/v15/Server/sqlite3/storage.ide-shm
+.vs/MasterManager/v15/Server/sqlite3/storage.ide-wal
+.vs
+.git
+obj
+website.publishproj
+vwd.webinfo
