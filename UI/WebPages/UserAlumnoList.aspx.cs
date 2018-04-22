@@ -450,8 +450,10 @@ public partial class UserAlumnoList : BasePage
         }
         else
         {
-            List<Int32> lstSelectedPrivateUsersbyID = new List<Int32>();
-            lstSelectedPrivateUsersbyID.Add(_idSC);
+            List<Int32> lstSelectedPrivateUsersbyID = new List<Int32>
+            {
+                _idSC
+            };
             Session["SelectedPrivateUserID"] = lstSelectedPrivateUsersbyID;
         }
 
@@ -870,8 +872,10 @@ public partial class UserAlumnoList : BasePage
         }
 
         //DataTable dt = CargarGridView();
-        DataView sortedView = new DataView(dtPrivateUser);
-        sortedView.Sort = e.SortExpression + " " + SortDir;
+        DataView sortedView = new DataView(dtPrivateUser)
+        {
+            Sort = e.SortExpression + " " + SortDir
+        };
 
         gvPrivateUser.DataSource = sortedView;
         gvPrivateUser.DataBind();

@@ -1164,7 +1164,7 @@ public partial class EditTest : BasePage
         catch (Exception ex)
         {
             Session["error"] = ex;
-            throw ex;
+            throw;
         }
     }
 

@@ -99,10 +99,12 @@ public partial class TestOnline : BasePage
             HtmlGenericControl h2TituloTest, pPresentaciónTest;
 
             string cadenaConexion = "Database=qsg265;Data Source=localhost;User Id=dbUser;Password=123;sslMode=none;";
-            string Consulta = "SELECT ID, NOMBRE, CODIGO, TITULO, DESCRIPCION, CLAVE, ORIGEN, FIRMA, FECHA, NOTA_INSTRUCCIONES1, NOTA_INSTRUCCIONES2, NOTA_CABECERA, NOTA_PIE, PRODUCT_ID, ACTIVE, CREATED, UPDATED FROM TEST WHERE ID =" + Id;
+            string Consulta = "SELECT ID, NOMBRE, CODIGO, TITULO, DESCRIPCION, CLAVE, ORIGEN, FIRMA, FECHA, NOTA_INSTRUCCIONES1, NOTA_INSTRUCCIONES2, NOTA_CABECERA, NOTA_PIE, PRODUCT_ID, ACTIVE, CREATED, UPDATED FROM TEST WHERE ID = @Id";
 
             MySqlConnection cnn = new MySqlConnection(cadenaConexion);
             MySqlCommand mc = new MySqlCommand(Consulta, cnn);
+
+            mc.Parameters.Add(new MySqlParameter("@Id", MySqlDbType.Int32)).Value = Id;
 
             cnn.Open();
             MySqlDataReader dr = mc.ExecuteReader();
@@ -217,10 +219,12 @@ public partial class TestOnline : BasePage
         try
         {
             string cadenaConexion = "Database=qsg265;Data Source=localhost;User Id=dbUser;Password=123;sslMode=none;";
-            string Consulta = "SELECT ID, PREGUNTA_ID, TIPO, APARTADO, TEXTO, IMAGEN_URL FROM PREGUNTA WHERE TEST_ID =" + Id + " ORDER BY APARTADO, PREGUNTA_ID ASC";
+            string Consulta = "SELECT ID, PREGUNTA_ID, TIPO, APARTADO, TEXTO, IMAGEN_URL FROM PREGUNTA WHERE TEST_ID = @Id ORDER BY APARTADO, PREGUNTA_ID ASC";
 
             MySqlConnection cnn = new MySqlConnection(cadenaConexion);
             MySqlCommand mc = new MySqlCommand(Consulta, cnn);
+
+            mc.Parameters.Add(new MySqlParameter("@Id", MySqlDbType.Int32)).Value = Id;
 
             cnn.Open();
             MySqlDataReader dr = mc.ExecuteReader();
@@ -450,12 +454,14 @@ public partial class TestOnline : BasePage
             dtRespuesta.Columns.AddRange(new DataColumn[5] { new DataColumn("ID"), new DataColumn("PREGUNTA_ID"), new DataColumn("RESPUESTA_ID"), new DataColumn("TEXTO"), new DataColumn("SOLUCION_CORRECTA") });
 
                 string cadenaConexion = "Database=qsg265;Data Source=localhost;User Id=dbUser;Password=123;sslMode=none;";
-                string Consulta = "SELECT ID, PREGUNTA_ID, RESPUESTA_ID, TEXTO, SOLUCION_CORRECTA FROM RESPUESTA WHERE PREGUNTA_ID =" + preguntaID + " ORDER BY RESPUESTA_ID ASC ";
+                string Consulta = "SELECT ID, PREGUNTA_ID, RESPUESTA_ID, TEXTO, SOLUCION_CORRECTA FROM RESPUESTA WHERE PREGUNTA_ID = @Id ORDER BY RESPUESTA_ID ASC ";
 
                 MySqlConnection cnn = new MySqlConnection(cadenaConexion);
                 MySqlCommand mc = new MySqlCommand(Consulta, cnn);
 
-                cnn.Open();
+            mc.Parameters.Add(new MySqlParameter("@Id", MySqlDbType.Int32)).Value = preguntaID;
+
+            cnn.Open();
                 MySqlDataReader dr = mc.ExecuteReader();
 
                 if (!dr.IsClosed)

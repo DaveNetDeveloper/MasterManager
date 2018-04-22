@@ -1,0 +1,346 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="c:\program files (x86)\microsoft visual studio\2017\community\team tools\static analysis tools\fxcop\Xml\CodeAnalysisReport.xsl"?>
+<FxCopReport Version="15.0">
+ <Targets>
+  <Target Name="C:\Users\David\AppData\Local\Temp\tmp26F1.tmp.cadir\bin\App_Code.dll">
+   <Modules>
+    <Module Name="app_code.dll">
+     <Namespaces>
+      <Namespace Name="">
+       <Types>
+        <Type Name="DbAccess" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#ExecuteDataReader()" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="Revisar consultas SQL para comprobar si tienen vulnerabilidades de seguridad" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2018-04-22 00:20:53Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="c:\Users\David\Desktop\Repositorios\mastermanager\App_Code\DataAccess" File="DbAccess.cs" Line="31">La cadena de consulta pasada a 'MySqlCommand.MySqlCommand(string, MySqlConnection)' en 'DbAccess.ExecuteDataReader()' podría contener las siguientes variables: 'base.QuerySql'. Si alguna de estas variables puede proceder de datos proporcionados por el usuario, considere el uso de un procedimiento almacenado o una consulta SQL parametrizada en lugar de compilar la consulta con concatenaciones de cadenas.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#ExecuteNonQuery()" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="Revisar consultas SQL para comprobar si tienen vulnerabilidades de seguridad" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2018-04-22 00:20:53Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="c:\Users\David\Desktop\Repositorios\mastermanager\App_Code\DataAccess" File="DbAccess.cs" Line="41">La cadena de consulta pasada a 'MySqlCommand.MySqlCommand(string, MySqlConnection)' en 'DbAccess.ExecuteNonQuery()' podría contener las siguientes variables: 'base.QuerySql'. Si alguna de estas variables puede proceder de datos proporcionados por el usuario, considere el uso de un procedimiento almacenado o una consulta SQL parametrizada en lugar de compilar la consulta con concatenaciones de cadenas.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="Utils" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#GetUpdatedMailContent(ModelContacto)" Kind="Method" Static="True" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2018-04-22 00:20:53Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="Error" Path="c:\Users\David\Desktop\Repositorios\mastermanager\App_Code\Global" File="Utils.cs" Line="161">'Utils.GetUpdatedMailContent(ModelContacto)' vuelve a producir una excepción detectada y la especifica explícitamente como un argumento. Utilice 'throw' sin un argumento, para mantener la ubicación de la pila donde se provocó inicialmente la excepción.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+       </Types>
+      </Namespace>
+     </Namespaces>
+    </Module>
+   </Modules>
+  </Target>
+  <Target Name="C:\Users\David\AppData\Local\Temp\tmp26F1.tmp.cadir\bin\App_Web_xqbqzaeb.dll">
+   <Modules>
+    <Module Name="app_web_xqbqzaeb.dll">
+     <Namespaces>
+      <Namespace Name="">
+       <Types>
+        <Type Name="Contact" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#EnviarCorreo()" Kind="Method" Static="False" Accessibility="Family" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2018-04-22 00:20:53Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="Error" Path="c:\Users\David\Desktop\Repositorios\mastermanager\UI\WebPages" File="Contact.aspx.cs" Line="204">'Contact.EnviarCorreo()' vuelve a producir una excepción detectada y la especifica explícitamente como un argumento. Utilice 'throw' sin un argumento, para mantener la ubicación de la pila donde se provocó inicialmente la excepción.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#GetConvocation()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2018-04-22 00:20:53Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="Error" Path="c:\Users\David\Desktop\Repositorios\mastermanager\UI\WebPages" File="Contact.aspx.cs" Line="82">'Contact.GetConvocation()' vuelve a producir una excepción detectada y la especifica explícitamente como un argumento. Utilice 'throw' sin un argumento, para mantener la ubicación de la pila donde se provocó inicialmente la excepción.</Issue>
+            </Message>
+            <Message TypeName="Revisar consultas SQL para comprobar si tienen vulnerabilidades de seguridad" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2018-04-22 00:20:53Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="c:\Users\David\Desktop\Repositorios\mastermanager\UI\WebPages" File="Contact.aspx.cs" Line="64">La cadena de consulta pasada a 'MySqlCommand.MySqlCommand(string, MySqlConnection)' en 'Contact.GetConvocation()' podría contener las siguientes variables: 'CultureInfo.CurrentCulture.TwoLetterISOLanguageName', 'this.Id'. Si alguna de estas variables puede proceder de datos proporcionados por el usuario, considere el uso de un procedimiento almacenado o una consulta SQL parametrizada en lugar de compilar la consulta con concatenaciones de cadenas.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#GetProductNameByProductId()" Kind="Method" Static="False" Accessibility="Family" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="Revisar consultas SQL para comprobar si tienen vulnerabilidades de seguridad" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2018-04-22 00:20:53Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="c:\Users\David\Desktop\Repositorios\mastermanager\UI\WebPages" File="Contact.aspx.cs" Line="281">La cadena de consulta pasada a 'MySqlCommand.MySqlCommand(string, MySqlConnection)' en 'Contact.GetProductNameByProductId()' podría contener las siguientes variables: 'this.Id', 'this.Id', 'this.Id', 'this.IdCurso', 'this.IdCurso'. Si alguna de estas variables puede proceder de datos proporcionados por el usuario, considere el uso de un procedimiento almacenado o una consulta SQL parametrizada en lugar de compilar la consulta con concatenaciones de cadenas.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#GuardarInfo()" Kind="Method" Static="False" Accessibility="Family" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="Revisar consultas SQL para comprobar si tienen vulnerabilidades de seguridad" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2018-04-22 00:20:53Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="c:\Users\David\Desktop\Repositorios\mastermanager\UI\WebPages" File="Contact.aspx.cs" Line="158">La cadena de consulta pasada a 'MySqlCommand.MySqlCommand(string, MySqlConnection)' en 'Contact.GuardarInfo()' podría contener las siguientes variables: 'this.contact_name.Value', 'this.contact_email.Value', 'this.contact_phone.Value', 'this.contact_body.Value', 'DateTime.Now.Year', 'DateTime.Now.Month', 'DateTime.Now.Day'. Si alguna de estas variables puede proceder de datos proporcionados por el usuario, considere el uso de un procedimiento almacenado o una consulta SQL parametrizada en lugar de compilar la consulta con concatenaciones de cadenas.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="EditTest" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#btnGuardar_Click(System.Object,System.EventArgs)" Kind="Method" Static="False" Accessibility="Family" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="Revisar consultas SQL para comprobar si tienen vulnerabilidades de seguridad" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2018-04-22 00:20:53Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="c:\Users\David\Desktop\Repositorios\mastermanager\UI\WebPages" File="EditTest.aspx.cs" Line="191">La cadena de consulta pasada a 'MySqlCommand.MySqlCommand(string, MySqlConnection)' en 'EditTest.btnGuardar_Click(object, EventArgs)' podría contener las siguientes variables: 'DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")', 'this.TestName.Text', 'this.TestCode.Text', 'this.TestTitle.Text', 'this.TestDescription.Text', 'this.TestKey.Text', 'this.TestFrom.Text', 'this.TestSign.Text', 'this.TestInstructions1.Text', 'this.TestInstructions2.Text', 'this.TestHeaderNote.Text', 'this.TestFooterNote.Text', 'productId', 'iActive', '_id', 'productId', 'iActive', 'DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")'. Si alguna de estas variables puede proceder de datos proporcionados por el usuario, considere el uso de un procedimiento almacenado o una consulta SQL parametrizada en lugar de compilar la consulta con concatenaciones de cadenas.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#EliminarPreguntas(System.String)" Kind="Method" Static="False" Accessibility="Family" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2018-04-22 00:20:53Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="Error" Path="c:\Users\David\Desktop\Repositorios\mastermanager\UI\WebPages" File="EditTest.aspx.cs" Line="1164">'EditTest.EliminarPreguntas(string)' vuelve a producir una excepción detectada y la especifica explícitamente como un argumento. Utilice 'throw' sin un argumento, para mantener la ubicación de la pila donde se provocó inicialmente la excepción.</Issue>
+            </Message>
+            <Message TypeName="Revisar consultas SQL para comprobar si tienen vulnerabilidades de seguridad" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2018-04-22 00:20:53Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="c:\Users\David\Desktop\Repositorios\mastermanager\UI\WebPages" File="EditTest.aspx.cs" Line="1157">La cadena de consulta pasada a 'MySqlCommand.MySqlCommand(string, MySqlConnection)' en 'EditTest.EliminarPreguntas(string)' podría contener las siguientes variables: 'this.Id'. Si alguna de estas variables puede proceder de datos proporcionados por el usuario, considere el uso de un procedimiento almacenado o una consulta SQL parametrizada en lugar de compilar la consulta con concatenaciones de cadenas.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#EliminarRespuestas(System.String)" Kind="Method" Static="False" Accessibility="Family" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2018-04-22 00:20:53Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="Error" Path="c:\Users\David\Desktop\Repositorios\mastermanager\UI\WebPages" File="EditTest.aspx.cs" Line="1141">'EditTest.EliminarRespuestas(string)' vuelve a producir una excepción detectada y la especifica explícitamente como un argumento. Utilice 'throw' sin un argumento, para mantener la ubicación de la pila donde se provocó inicialmente la excepción.</Issue>
+            </Message>
+            <Message TypeName="Revisar consultas SQL para comprobar si tienen vulnerabilidades de seguridad" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2018-04-22 00:20:53Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="c:\Users\David\Desktop\Repositorios\mastermanager\UI\WebPages" File="EditTest.aspx.cs" Line="1134">La cadena de consulta pasada a 'MySqlCommand.MySqlCommand(string, MySqlConnection)' en 'EditTest.EliminarRespuestas(string)' podría contener las siguientes variables: 'this.Id'. Si alguna de estas variables puede proceder de datos proporcionados por el usuario, considere el uso de un procedimiento almacenado o una consulta SQL parametrizada en lugar de compilar la consulta con concatenaciones de cadenas.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#FillDDLApartados()" Kind="Method" Static="False" Accessibility="Family" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2018-04-22 00:20:53Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="Error" Path="c:\Users\David\Desktop\Repositorios\mastermanager\UI\WebPages" File="EditTest.aspx.cs" Line="680">'EditTest.FillDDLApartados()' vuelve a producir una excepción detectada y la especifica explícitamente como un argumento. Utilice 'throw' sin un argumento, para mantener la ubicación de la pila donde se provocó inicialmente la excepción.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#FillDDLProducts()" Kind="Method" Static="False" Accessibility="Family" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2018-04-22 00:20:53Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="Error" Path="c:\Users\David\Desktop\Repositorios\mastermanager\UI\WebPages" File="EditTest.aspx.cs" Line="286">'EditTest.FillDDLProducts()' vuelve a producir una excepción detectada y la especifica explícitamente como un argumento. Utilice 'throw' sin un argumento, para mantener la ubicación de la pila donde se provocó inicialmente la excepción.</Issue>
+            </Message>
+            <Message TypeName="Revisar consultas SQL para comprobar si tienen vulnerabilidades de seguridad" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2018-04-22 00:20:53Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="c:\Users\David\Desktop\Repositorios\mastermanager\UI\WebPages" File="EditTest.aspx.cs" Line="263">La cadena de consulta pasada a 'MySqlCommand.MySqlCommand(string, MySqlConnection)' en 'EditTest.FillDDLProducts()' podría contener las siguientes variables: 'CultureInfo.CurrentCulture.TwoLetterISOLanguageName'. Si alguna de estas variables puede proceder de datos proporcionados por el usuario, considere el uso de un procedimiento almacenado o una consulta SQL parametrizada en lugar de compilar la consulta con concatenaciones de cadenas.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#FillDDLTypeForPregunta()" Kind="Method" Static="False" Accessibility="Family" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2018-04-22 00:20:53Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="Error" Path="c:\Users\David\Desktop\Repositorios\mastermanager\UI\WebPages" File="EditTest.aspx.cs" Line="649">'EditTest.FillDDLTypeForPregunta()' vuelve a producir una excepción detectada y la especifica explícitamente como un argumento. Utilice 'throw' sin un argumento, para mantener la ubicación de la pila donde se provocó inicialmente la excepción.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#FillPreguntasFromDB()" Kind="Method" Static="False" Accessibility="Family" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2018-04-22 00:20:53Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="Error" Path="c:\Users\David\Desktop\Repositorios\mastermanager\UI\WebPages" File="EditTest.aspx.cs" Line="709">'EditTest.FillPreguntasFromDB()' vuelve a producir una excepción detectada y la especifica explícitamente como un argumento. Utilice 'throw' sin un argumento, para mantener la ubicación de la pila donde se provocó inicialmente la excepción.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#FillTest()" Kind="Method" Static="False" Accessibility="Family" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="Revisar consultas SQL para comprobar si tienen vulnerabilidades de seguridad" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2018-04-22 00:20:53Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="c:\Users\David\Desktop\Repositorios\mastermanager\UI\WebPages" File="EditTest.aspx.cs" Line="303">La cadena de consulta pasada a 'MySqlCommand.MySqlCommand(string, MySqlConnection)' en 'EditTest.FillTest()' podría contener las siguientes variables: 'this.Id'. Si alguna de estas variables puede proceder de datos proporcionados por el usuario, considere el uso de un procedimiento almacenado o una consulta SQL parametrizada en lugar de compilar la consulta con concatenaciones de cadenas.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#GetPreguntas()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2018-04-22 00:20:53Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="Error" Path="c:\Users\David\Desktop\Repositorios\mastermanager\UI\WebPages" File="EditTest.aspx.cs" Line="917">'EditTest.GetPreguntas()' vuelve a producir una excepción detectada y la especifica explícitamente como un argumento. Utilice 'throw' sin un argumento, para mantener la ubicación de la pila donde se provocó inicialmente la excepción.</Issue>
+            </Message>
+            <Message TypeName="Revisar consultas SQL para comprobar si tienen vulnerabilidades de seguridad" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2018-04-22 00:20:53Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="c:\Users\David\Desktop\Repositorios\mastermanager\UI\WebPages" File="EditTest.aspx.cs" Line="899">La cadena de consulta pasada a 'MySqlCommand.MySqlCommand(string, MySqlConnection)' en 'EditTest.GetPreguntas()' podría contener las siguientes variables: 'this.Id'. Si alguna de estas variables puede proceder de datos proporcionados por el usuario, considere el uso de un procedimiento almacenado o una consulta SQL parametrizada en lugar de compilar la consulta con concatenaciones de cadenas.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#GetRespuesta(System.Int32,System.Boolean)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2018-04-22 00:20:53Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="Error" Path="c:\Users\David\Desktop\Repositorios\mastermanager\UI\WebPages" File="EditTest.aspx.cs" Line="970">'EditTest.GetRespuesta(int, bool)' vuelve a producir una excepción detectada y la especifica explícitamente como un argumento. Utilice 'throw' sin un argumento, para mantener la ubicación de la pila donde se provocó inicialmente la excepción.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#GuardarPreguntas()" Kind="Method" Static="False" Accessibility="Family" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2018-04-22 00:20:53Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="Error" Path="c:\Users\David\Desktop\Repositorios\mastermanager\UI\WebPages" File="EditTest.aspx.cs" Line="1046">'EditTest.GuardarPreguntas()' vuelve a producir una excepción detectada y la especifica explícitamente como un argumento. Utilice 'throw' sin un argumento, para mantener la ubicación de la pila donde se provocó inicialmente la excepción.</Issue>
+            </Message>
+            <Message TypeName="Revisar consultas SQL para comprobar si tienen vulnerabilidades de seguridad" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2018-04-22 00:20:53Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="c:\Users\David\Desktop\Repositorios\mastermanager\UI\WebPages" File="EditTest.aspx.cs" Line="1029">La cadena de consulta pasada a 'MySqlCommand.MySqlCommand(string, MySqlConnection)' en 'EditTest.GuardarPreguntas()' podría contener las siguientes variables: 'drRespuesta[0]', 'drRespuesta[1]', 'drRespuesta[2]', 'drRespuesta[3]', 'drR_SOLUCION_CORRECTA'. Si alguna de estas variables puede proceder de datos proporcionados por el usuario, considere el uso de un procedimiento almacenado o una consulta SQL parametrizada en lugar de compilar la consulta con concatenaciones de cadenas.</Issue>
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="c:\Users\David\Desktop\Repositorios\mastermanager\UI\WebPages" File="EditTest.aspx.cs" Line="1007">La cadena de consulta pasada a 'MySqlCommand.MySqlCommand(string, MySqlConnection)' en 'EditTest.GuardarPreguntas()' podría contener las siguientes variables: 'dr["ID"]', 'dr["PREGUNTA_ID"]', 'int.Parse(this.Id)', 'dr["APARTADO"]', 'dr["TEXTO"]', 'dr["IMAGEN_URL"]'. Si alguna de estas variables puede proceder de datos proporcionados por el usuario, considere el uso de un procedimiento almacenado o una consulta SQL parametrizada en lugar de compilar la consulta con concatenaciones de cadenas.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#ResetRowForNewQuestion()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2018-04-22 00:20:53Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="Error" Path="c:\Users\David\Desktop\Repositorios\mastermanager\UI\WebPages" File="EditTest.aspx.cs" Line="799">'EditTest.ResetRowForNewQuestion()' vuelve a producir una excepción detectada y la especifica explícitamente como un argumento. Utilice 'throw' sin un argumento, para mantener la ubicación de la pila donde se provocó inicialmente la excepción.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#UpdateFeaturedImagePath(System.String,System.String)" Kind="Method" Static="False" Accessibility="Family" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="Revisar consultas SQL para comprobar si tienen vulnerabilidades de seguridad" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2018-04-22 00:20:53Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="c:\Users\David\Desktop\Repositorios\mastermanager\UI\WebPages" File="EditTest.aspx.cs" Line="1062">La cadena de consulta pasada a 'MySqlCommand.MySqlCommand(string, MySqlConnection)' en 'EditTest.UpdateFeaturedImagePath(string, string)' podría contener las siguientes variables: 'imagePath', 'this.Id', 'preguntaID'. Si alguna de estas variables puede proceder de datos proporcionados por el usuario, considere el uso de un procedimiento almacenado o una consulta SQL parametrizada en lugar de compilar la consulta con concatenaciones de cadenas.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="ImageUploadExample" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#btnGuardar_Click(System.Object,System.EventArgs)" Kind="Method" Static="False" Accessibility="Family" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="Revisar consultas SQL para comprobar si tienen vulnerabilidades de seguridad" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2018-04-22 00:20:53Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="c:\Users\David\Desktop\Repositorios\mastermanager\UI\WebPages" File="ImageUploadExample.aspx.cs" Line="642">La cadena de consulta pasada a 'MySqlCommand.MySqlCommand(string, MySqlConnection)' en 'ImageUploadExample.btnGuardar_Click(object, EventArgs)' podría contener las siguientes variables: 'base.ToString()', 'this.featured_link.Text', 'CS$0$0003.ToString("yyyy-MM-dd HH:mm:ss")', 'CS$0$0003.ToString("yyyy-MM-dd HH:mm:ss")', 'active', '_id', '_id', 'base.ToString()', 'CS$0$0003.ToString("yyyy-MM-dd HH:mm:ss")', 'CS$0$0003.ToString("yyyy-MM-dd HH:mm:ss")', 'active'. Si alguna de estas variables puede proceder de datos proporcionados por el usuario, considere el uso de un procedimiento almacenado o una consulta SQL parametrizada en lugar de compilar la consulta con concatenaciones de cadenas.</Issue>
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="c:\Users\David\Desktop\Repositorios\mastermanager\UI\WebPages" File="ImageUploadExample.aspx.cs" Line="691">La cadena de consulta pasada a 'MySqlCommand.MySqlCommand(string, MySqlConnection)' en 'ImageUploadExample.btnGuardar_Click(object, EventArgs)' podría contener las siguientes variables: 'this.txtTituloCA.Text', 'this.txtTituloES.Text', 'base.ToString()', 'this.featured_link.Text', 'CS$0$0003.ToString("yyyy-MM-dd HH:mm:ss")', 'CS$0$0003.ToString("yyyy-MM-dd HH:mm:ss")', 'active', '_id', '_id', 'base.ToString()', 'CS$0$0003.ToString("yyyy-MM-dd HH:mm:ss")', 'CS$0$0003.ToString("yyyy-MM-dd HH:mm:ss")', 'active', 'this.txtTituloES.Text', 'this.txtTituloCA.Text'. Si alguna de estas variables puede proceder de datos proporcionados por el usuario, considere el uso de un procedimiento almacenado o una consulta SQL parametrizada en lugar de compilar la consulta con concatenaciones de cadenas.</Issue>
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="c:\Users\David\Desktop\Repositorios\mastermanager\UI\WebPages" File="ImageUploadExample.aspx.cs" Line="762">La cadena de consulta pasada a 'MySqlCommand.MySqlCommand(string, MySqlConnection)' en 'ImageUploadExample.btnGuardar_Click(object, EventArgs)' podría contener las siguientes variables: 'this.txtTituloCA.Text', 'this.txtTituloES.Text', 'this.txtTituloEN.Text', 'this.txtTituloCA.Text', 'this.txtTituloES.Text', 'base.ToString()', 'this.featured_link.Text', 'CS$0$0003.ToString("yyyy-MM-dd HH:mm:ss")', 'CS$0$0003.ToString("yyyy-MM-dd HH:mm:ss")', 'active', '_id', '_id', 'base.ToString()', 'CS$0$0003.ToString("yyyy-MM-dd HH:mm:ss")', 'CS$0$0003.ToString("yyyy-MM-dd HH:mm:ss")', 'active', 'this.txtTituloES.Text', 'this.txtTituloCA.Text', 'this.txtTituloEN.Text', 'this.txtTituloES.Text', 'this.txtTituloCA.Text'. Si alguna de estas variables puede proceder de datos proporcionados por el usuario, considere el uso de un procedimiento almacenado o una consulta SQL parametrizada en lugar de compilar la consulta con concatenaciones de cadenas.</Issue>
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="c:\Users\David\Desktop\Repositorios\mastermanager\UI\WebPages" File="ImageUploadExample.aspx.cs" Line="714">La cadena de consulta pasada a 'MySqlCommand.MySqlCommand(string, MySqlConnection)' en 'ImageUploadExample.btnGuardar_Click(object, EventArgs)' podría contener las siguientes variables: 'this.txtTituloEN.Text', 'this.txtTituloCA.Text', 'this.txtTituloES.Text', 'base.ToString()', 'this.featured_link.Text', 'CS$0$0003.ToString("yyyy-MM-dd HH:mm:ss")', 'CS$0$0003.ToString("yyyy-MM-dd HH:mm:ss")', 'active', '_id', '_id', 'base.ToString()', 'CS$0$0003.ToString("yyyy-MM-dd HH:mm:ss")', 'CS$0$0003.ToString("yyyy-MM-dd HH:mm:ss")', 'active', 'this.txtTituloES.Text', 'this.txtTituloCA.Text', 'this.txtTituloEN.Text'. Si alguna de estas variables puede proceder de datos proporcionados por el usuario, considere el uso de un procedimiento almacenado o una consulta SQL parametrizada en lugar de compilar la consulta con concatenaciones de cadenas.</Issue>
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="c:\Users\David\Desktop\Repositorios\mastermanager\UI\WebPages" File="ImageUploadExample.aspx.cs" Line="785">La cadena de consulta pasada a 'MySqlCommand.MySqlCommand(string, MySqlConnection)' en 'ImageUploadExample.btnGuardar_Click(object, EventArgs)' podría contener las siguientes variables: 'this.txtTituloEN.Text', 'this.txtTituloCA.Text', 'this.txtTituloES.Text', 'this.txtTituloEN.Text', 'this.txtTituloCA.Text', 'this.txtTituloES.Text', 'base.ToString()', 'this.featured_link.Text', 'CS$0$0003.ToString("yyyy-MM-dd HH:mm:ss")', 'CS$0$0003.ToString("yyyy-MM-dd HH:mm:ss")', 'active', '_id', '_id', 'base.ToString()', 'CS$0$0003.ToString("yyyy-MM-dd HH:mm:ss")', 'CS$0$0003.ToString("yyyy-MM-dd HH:mm:ss")', 'active', 'this.txtTituloES.Text', 'this.txtTituloCA.Text', 'this.txtTituloEN.Text', 'this.txtTituloES.Text', 'this.txtTituloCA.Text', 'this.txtTituloEN.Text'. Si alguna de estas variables puede proceder de datos proporcionados por el usuario, considere el uso de un procedimiento almacenado o una consulta SQL parametrizada en lugar de compilar la consulta con concatenaciones de cadenas.</Issue>
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="c:\Users\David\Desktop\Repositorios\mastermanager\UI\WebPages" File="ImageUploadExample.aspx.cs" Line="668">La cadena de consulta pasada a 'MySqlCommand.MySqlCommand(string, MySqlConnection)' en 'ImageUploadExample.btnGuardar_Click(object, EventArgs)' podría contener las siguientes variables: 'this.txtTituloES.Text', 'base.ToString()', 'this.featured_link.Text', 'CS$0$0003.ToString("yyyy-MM-dd HH:mm:ss")', 'CS$0$0003.ToString("yyyy-MM-dd HH:mm:ss")', 'active', '_id', '_id', 'base.ToString()', 'CS$0$0003.ToString("yyyy-MM-dd HH:mm:ss")', 'CS$0$0003.ToString("yyyy-MM-dd HH:mm:ss")', 'active', 'this.txtTituloES.Text'. Si alguna de estas variables puede proceder de datos proporcionados por el usuario, considere el uso de un procedimiento almacenado o una consulta SQL parametrizada en lugar de compilar la consulta con concatenaciones de cadenas.</Issue>
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="c:\Users\David\Desktop\Repositorios\mastermanager\UI\WebPages" File="ImageUploadExample.aspx.cs" Line="739">La cadena de consulta pasada a 'MySqlCommand.MySqlCommand(string, MySqlConnection)' en 'ImageUploadExample.btnGuardar_Click(object, EventArgs)' podría contener las siguientes variables: 'this.txtTituloES.Text', 'this.txtTituloEN.Text', 'this.txtTituloCA.Text', 'this.txtTituloES.Text', 'base.ToString()', 'this.featured_link.Text', 'CS$0$0003.ToString("yyyy-MM-dd HH:mm:ss")', 'CS$0$0003.ToString("yyyy-MM-dd HH:mm:ss")', 'active', '_id', '_id', 'base.ToString()', 'CS$0$0003.ToString("yyyy-MM-dd HH:mm:ss")', 'CS$0$0003.ToString("yyyy-MM-dd HH:mm:ss")', 'active', 'this.txtTituloES.Text', 'this.txtTituloCA.Text', 'this.txtTituloEN.Text', 'this.txtTituloES.Text'. Si alguna de estas variables puede proceder de datos proporcionados por el usuario, considere el uso de un procedimiento almacenado o una consulta SQL parametrizada en lugar de compilar la consulta con concatenaciones de cadenas.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#FillFeatured()" Kind="Method" Static="False" Accessibility="Family" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="Revisar consultas SQL para comprobar si tienen vulnerabilidades de seguridad" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2018-04-22 00:20:53Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="c:\Users\David\Desktop\Repositorios\mastermanager\UI\WebPages" File="ImageUploadExample.aspx.cs" Line="156">La cadena de consulta pasada a 'MySqlCommand.MySqlCommand(string, MySqlConnection)' en 'ImageUploadExample.FillFeatured()' podría contener las siguientes variables: 'this.Id'. Si alguna de estas variables puede proceder de datos proporcionados por el usuario, considere el uso de un procedimiento almacenado o una consulta SQL parametrizada en lugar de compilar la consulta con concatenaciones de cadenas.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#UpdateFeaturedImagePath(System.String)" Kind="Method" Static="False" Accessibility="Family" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="Revisar consultas SQL para comprobar si tienen vulnerabilidades de seguridad" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2018-04-22 00:20:53Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="c:\Users\David\Desktop\Repositorios\mastermanager\UI\WebPages" File="ImageUploadExample.aspx.cs" Line="570">La cadena de consulta pasada a 'MySqlCommand.MySqlCommand(string, MySqlConnection)' en 'ImageUploadExample.UpdateFeaturedImagePath(string)' podría contener las siguientes variables: 'imagePath', 'this.Id'. Si alguna de estas variables puede proceder de datos proporcionados por el usuario, considere el uso de un procedimiento almacenado o una consulta SQL parametrizada en lugar de compilar la consulta con concatenaciones de cadenas.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="LoginAlumno" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#GetIdUSerByMail()" Kind="Method" Static="False" Accessibility="Family" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="Revisar consultas SQL para comprobar si tienen vulnerabilidades de seguridad" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2018-04-22 00:20:53Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="c:\Users\David\Desktop\Repositorios\mastermanager\UI\WebPages" File="LoginAlumno.aspx.cs" Line="24">La cadena de consulta pasada a 'MySqlCommand.MySqlCommand(string, MySqlConnection)' en 'LoginAlumno.GetIdUSerByMail()' podría contener las siguientes variables: 'this.UserName.Text'. Si alguna de estas variables puede proceder de datos proporcionados por el usuario, considere el uso de un procedimiento almacenado o una consulta SQL parametrizada en lugar de compilar la consulta con concatenaciones de cadenas.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#GetIdUSerByMailAndPassword()" Kind="Method" Static="False" Accessibility="Family" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="Revisar consultas SQL para comprobar si tienen vulnerabilidades de seguridad" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2018-04-22 00:20:53Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="c:\Users\David\Desktop\Repositorios\mastermanager\UI\WebPages" File="LoginAlumno.aspx.cs" Line="54">La cadena de consulta pasada a 'MySqlCommand.MySqlCommand(string, MySqlConnection)' en 'LoginAlumno.GetIdUSerByMailAndPassword()' podría contener las siguientes variables: 'this.UserName.Text', 'this.Password.Text'. Si alguna de estas variables puede proceder de datos proporcionados por el usuario, considere el uso de un procedimiento almacenado o una consulta SQL parametrizada en lugar de compilar la consulta con concatenaciones de cadenas.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="TestOnline" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#btnValidarRespuestas_Click(System.Object,System.EventArgs)" Kind="Method" Static="False" Accessibility="Family" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2018-04-22 00:20:53Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="Error" Path="c:\Users\David\Desktop\Repositorios\mastermanager\UI\WebPages" File="TestOnline.aspx.cs" Line="528">'TestOnline.btnValidarRespuestas_Click(object, EventArgs)' vuelve a producir una excepción detectada y la especifica explícitamente como un argumento. Utilice 'throw' sin un argumento, para mantener la ubicación de la pila donde se provocó inicialmente la excepción.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#FillTest()" Kind="Method" Static="False" Accessibility="Family" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="Revisar consultas SQL para comprobar si tienen vulnerabilidades de seguridad" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2018-04-22 00:20:53Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="c:\Users\David\Desktop\Repositorios\mastermanager\UI\WebPages" File="TestOnline.aspx.cs" Line="105">La cadena de consulta pasada a 'MySqlCommand.MySqlCommand(string, MySqlConnection)' en 'TestOnline.FillTest()' podría contener las siguientes variables: 'this.Id'. Si alguna de estas variables puede proceder de datos proporcionados por el usuario, considere el uso de un procedimiento almacenado o una consulta SQL parametrizada en lugar de compilar la consulta con concatenaciones de cadenas.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#GetPreguntas()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2018-04-22 00:20:53Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="Error" Path="c:\Users\David\Desktop\Repositorios\mastermanager\UI\WebPages" File="TestOnline.aspx.cs" Line="274">'TestOnline.GetPreguntas()' vuelve a producir una excepción detectada y la especifica explícitamente como un argumento. Utilice 'throw' sin un argumento, para mantener la ubicación de la pila donde se provocó inicialmente la excepción.</Issue>
+            </Message>
+            <Message TypeName="Revisar consultas SQL para comprobar si tienen vulnerabilidades de seguridad" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2018-04-22 00:20:53Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="c:\Users\David\Desktop\Repositorios\mastermanager\UI\WebPages" File="TestOnline.aspx.cs" Line="223">La cadena de consulta pasada a 'MySqlCommand.MySqlCommand(string, MySqlConnection)' en 'TestOnline.GetPreguntas()' podría contener las siguientes variables: 'this.Id'. Si alguna de estas variables puede proceder de datos proporcionados por el usuario, considere el uso de un procedimiento almacenado o una consulta SQL parametrizada en lugar de compilar la consulta con concatenaciones de cadenas.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#GetRespuesta(System.Int32)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2018-04-22 00:20:53Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="Error" Path="c:\Users\David\Desktop\Repositorios\mastermanager\UI\WebPages" File="TestOnline.aspx.cs" Line="472">'TestOnline.GetRespuesta(int)' vuelve a producir una excepción detectada y la especifica explícitamente como un argumento. Utilice 'throw' sin un argumento, para mantener la ubicación de la pila donde se provocó inicialmente la excepción.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="UserAlumnoList" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#CargarGridView(System.String)" Kind="Method" Static="False" Accessibility="Family" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="Revisar consultas SQL para comprobar si tienen vulnerabilidades de seguridad" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2018-04-22 00:20:53Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="c:\Users\David\Desktop\Repositorios\mastermanager\UI\WebPages" File="UserAlumnoList.aspx.cs" Line="405">La cadena de consulta pasada a 'MySqlCommand.MySqlCommand(string, MySqlConnection)' en 'UserAlumnoList.CargarGridView(string)' podría contener las siguientes variables: 'filter'. Si alguna de estas variables puede proceder de datos proporcionados por el usuario, considere el uso de un procedimiento almacenado o una consulta SQL parametrizada en lugar de compilar la consulta con concatenaciones de cadenas.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+       </Types>
+      </Namespace>
+     </Namespaces>
+    </Module>
+   </Modules>
+  </Target>
+ </Targets>
+ <Rules>
+  <Rule TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200">
+   <Name>Reiniciar para mantener los detalles de la pila</Name>
+   <Description>Utilice la instrucción de reinicio IL para mantener los detalles de la pila original cuando vaya a volver a provocar la excepción detectada.</Description>
+   <Resolution Name="Default">{0} vuelve a producir una excepción detectada y la especifica explícitamente como un argumento. Utilice 'throw' sin un argumento, para mantener la ubicación de la pila donde se provocó inicialmente la excepción.</Resolution>
+   <Owner />
+   <Url>http://msdn.microsoft.com/library/ms182363.aspx</Url>
+   <Email>[none]</Email>
+   <MessageLevel Certainty="95">Error</MessageLevel>
+   <File Name="usagerules.dll" Version="15.0.0.0" />
+  </Rule>
+  <Rule TypeName="Revisar consultas SQL para comprobar si tienen vulnerabilidades de seguridad" Category="Microsoft.Security" CheckId="CA2100">
+   <Name>Revisar consultas SQL para comprobar si tienen vulnerabilidades de seguridad</Name>
+   <Description>Una cadena de comando SQL compilada a partir de datos proporcionados por el usuario es vulnerable a ataques pon inyección de código SQL. Microsoft SQL Server y otros servidores de bases de datos admiten procedimientos almacenados y consultas SQL parametrizadas, que reducen el riesgo de ataques por inyección.</Description>
+   <Resolution Name="WithNonLiterals">La cadena de consulta pasada a {0} en {1} podría contener las siguientes variables: {2}. Si alguna de estas variables puede proceder de datos proporcionados por el usuario, considere el uso de un procedimiento almacenado o una consulta SQL parametrizada en lugar de compilar la consulta con concatenaciones de cadenas.</Resolution>
+   <Owner>RuleOwner</Owner>
+   <Url>http://msdn.microsoft.com/library/ms182310.aspx</Url>
+   <Email />
+   <MessageLevel Certainty="75">Warning</MessageLevel>
+   <File Name="dataflowrules.dll" Version="15.0.0.0" />
+  </Rule>
+ </Rules>
+ <Localized>
+  <String Key="Category">Categoría</String>
+  <String Key="Certainty">Certeza</String>
+  <String Key="CollapseAll">Contraer todo</String>
+  <String Key="CheckId">Comprobar id.</String>
+  <String Key="Error">Error</String>
+  <String Key="Errors">errores</String>
+  <String Key="ExpandAll">Expandir todo</String>
+  <String Key="Help">Ayuda</String>
+  <String Key="Line">Línea</String>
+  <String Key="Messages">mensajes</String>
+  <String Key="LocationNotStoredInPdb">[Ubicación no almacenada en Pdb]</String>
+  <String Key="Project">Proyecto</String>
+  <String Key="Resolution">Resolución</String>
+  <String Key="Rule">Regla</String>
+  <String Key="RuleFile">Archivo de regla</String>
+  <String Key="RuleDescription">Descripción de la regla</String>
+  <String Key="Source">Origen</String>
+  <String Key="Status">Estado</String>
+  <String Key="Target">Círculos concéntricos</String>
+  <String Key="Warning">Advertencia</String>
+  <String Key="Warnings">advertencias</String>
+  <String Key="ReportTitle">Informe de análisis del código</String>
+ </Localized>
+</FxCopReport>

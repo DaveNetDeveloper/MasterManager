@@ -53,15 +53,17 @@ public partial class Contact : BasePage
         try
         {
             string cadenaConexion = "Database=qsg265;Data Source=localhost;User Id=dbUser;Password=123;sslMode=none;";
-
-            //CAMBIAR ESTO, METERLO COMO PROPIEDAD EN LA PAGINA BASE(O MASTER PAGE) "GetLanguageCode()
+             
             string language_code = CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToString();
 
-            string Consulta = " SELECT convocation.id, convocation.product_id, literalProductName.DESCRIPTION AS product_name, convocation.center_id, literalcenterName.DESCRIPTION AS center_name, convocation.start, convocation.days, convocation.schedule, convocation.exam, convocation.created, convocation.updated, convocation.enabled, convocation.type  FROM convocation INNER JOIN CENTER ON CENTER.id = convocation.center_id LEFT JOIN LITERALES AS literalcenterName ON literalcenterName.TEXT_CODE = CENTER.name_code INNER JOIN PRODUCT ON PRODUCT.id = convocation.product_id LEFT JOIN LITERALES AS literalProductName ON literalProductName.TEXT_CODE = PRODUCT.name_code WHERE literalProductName.LANGUAGE_CODE= '" + language_code + "' AND literalcenterName.LANGUAGE_CODE = '" + language_code + "' and convocation.id =" + Id;
-
+            string Consulta = " SELECT convocation.id, convocation.product_id, literalProductName.DESCRIPTION AS product_name, convocation.center_id, literalcenterName.DESCRIPTION AS center_name, convocation.start, convocation.days, convocation.schedule, convocation.exam, convocation.created, convocation.updated, convocation.enabled, convocation.type  FROM convocation INNER JOIN CENTER ON CENTER.id = convocation.center_id LEFT JOIN LITERALES AS literalcenterName ON literalcenterName.TEXT_CODE = CENTER.name_code INNER JOIN PRODUCT ON PRODUCT.id = convocation.product_id LEFT JOIN LITERALES AS literalProductName ON literalProductName.TEXT_CODE = PRODUCT.name_code WHERE literalProductName.LANGUAGE_CODE= @language_code AND literalcenterName.LANGUAGE_CODE = @language_code and convocation.id = @Id ";
+             
             DataTable dtConvocations;
             MySqlConnection cnn = new MySqlConnection(cadenaConexion);
             MySqlCommand mc = new MySqlCommand(Consulta, cnn);
+
+            mc.Parameters.Add(new MySqlParameter("@Id", MySqlDbType.Int32)).Value = Id;
+            mc.Parameters.Add(new MySqlParameter("@language_code", MySqlDbType.VarChar)).Value = Id;
 
             cnn.Open();
             MySqlDataReader dr = mc.ExecuteReader();
@@ -82,7 +84,7 @@ public partial class Contact : BasePage
         catch (Exception ex)
         {
             Session["error"] = ex;
-            throw ex;
+            throw;
         } 
     }
      
@@ -135,7 +137,7 @@ public partial class Contact : BasePage
                  
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
           
         }
@@ -201,9 +203,9 @@ public partial class Contact : BasePage
 
             return true;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            throw ex;
+            throw;
         }
     }
 
@@ -224,7 +226,7 @@ public partial class Contact : BasePage
         }
     }
 
-    private void LimpiarFormnulario()
+    private void LimpiarFormnulario()   
     {
         contact_name.Value = contact_email.Value = contact_phone.Value = contact_body.Value = string.Empty;
     } 
@@ -321,7 +323,7 @@ public partial class Contact : BasePage
             return ExamName;
 
          }
-        catch (Exception ex)
+        catch (Exception)
         {
             //Session["error"] = ex;
             return string.Empty;
