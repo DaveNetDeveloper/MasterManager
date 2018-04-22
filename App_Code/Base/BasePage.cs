@@ -33,7 +33,7 @@ public class BasePage : Page
         {
             Thread.CurrentThread.CurrentUICulture = culture;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             //Log ex as ERROR
         }

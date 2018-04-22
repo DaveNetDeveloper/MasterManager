@@ -23,7 +23,7 @@ public class EntityTest : IEntity
     {
         return _daoTests.RemoveById(id);
     }
- 
+
     public bool Insert(string nombre)
     {
         return _daoTests.Insert(nombre);

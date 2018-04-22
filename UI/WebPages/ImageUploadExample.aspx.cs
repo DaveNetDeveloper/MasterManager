@@ -597,8 +597,8 @@ public partial class ImageUploadExample : BasePage
                 decimal price = decimal.Parse(featured_price.Text);
                 string link = featured_link.Text;
 
-                DateTime? fechaIni = Utils.GetDateTimeFromText(txtbox.Text, Constants.inputDateTimeFormat_ddmmaaaa, CultureInfo.CurrentCulture);
-                DateTime? fechaFin = Utils.GetDateTimeFromText(txtbox_fechaFin.Text, Constants.inputDateTimeFormat_ddmmaaaa, CultureInfo.CurrentCulture);
+                DateTime? fechaIni = HelperDataTypesConversion.GetDateTimeFromText(txtbox.Text, Constants.inputDateTimeFormat_ddmmaaaa, CultureInfo.CurrentCulture);
+                DateTime? fechaFin = HelperDataTypesConversion.GetDateTimeFromText(txtbox_fechaFin.Text, Constants.inputDateTimeFormat_ddmmaaaa, CultureInfo.CurrentCulture);
         
 
                 int active = 0;

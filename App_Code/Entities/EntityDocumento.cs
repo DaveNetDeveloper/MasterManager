@@ -23,7 +23,7 @@ public class EntityDocumento : IEntity
     {
         return _daoDocumentos.RemoveById(id);
     }
- 
+
     public bool Insert(string nombre)
     {
         return _daoDocumentos.Insert(nombre);

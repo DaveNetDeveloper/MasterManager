@@ -19,7 +19,7 @@ public class wsAreas : WebService
         }
         catch(Exception ex)
         {
-            throw new Exception(ex.Message);
+            throw ex;
         } 
     }
 
@@ -32,7 +32,7 @@ public class wsAreas : WebService
         }
         catch (Exception ex)
         {
-            throw new Exception(ex.Message);
+            throw ex;
         }
     }
 
@@ -45,8 +45,8 @@ public class wsAreas : WebService
         }
         catch (Exception ex)
         {
-            throw new Exception(ex.Message);
-        } 
+            throw ex;
+        }
     }   
 
     [WebMethod(EnableSession = true)]
@@ -58,7 +58,7 @@ public class wsAreas : WebService
         }
         catch (Exception ex)
         {
-            throw new Exception(ex.Message);
+            throw ex;
         }
     }
 
@@ -71,7 +71,7 @@ public class wsAreas : WebService
         }
         catch (Exception ex)
         {
-            throw new Exception(ex.Message);
+            throw ex;
         }
     }
 }

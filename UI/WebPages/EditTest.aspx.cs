@@ -1469,14 +1469,16 @@ public partial class EditTest : BasePage
         try
         {
             RadioButton rdb = ((RadioButton)sender);
-            
-            List<RadioButton> lstRbtn = new List<RadioButton>();
-            lstRbtn.Add(rdbRespuestaTest1);
-            lstRbtn.Add(rdbRespuestaTest2);
-            lstRbtn.Add(rdbRespuestaTest3);
-            lstRbtn.Add(rdbRespuestaTest4);
 
-            foreach(RadioButton radioButtonElement in lstRbtn)
+            List<RadioButton> lstRbtn = new List<RadioButton>
+            {
+                rdbRespuestaTest1,
+                rdbRespuestaTest2,
+                rdbRespuestaTest3,
+                rdbRespuestaTest4
+            };
+
+            foreach (RadioButton radioButtonElement in lstRbtn)
             {
                 if (radioButtonElement.ID != rdb.ID)
                 {

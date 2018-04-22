@@ -1,5 +1,4 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="NewsByEntity.ascx.cs" Inherits="NewsByEntity" %>
-   
 <div class="row">
 	<div class="column width-12">
 		<div class="row content-grid-3"> 
@@ -53,7 +52,6 @@
 		</div>
     </div>
 </div> 
-
 <script type="text/javascript"> 
       
     function FillAreasFromDataBase() {
@@ -65,9 +63,7 @@
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (data) {
-
                 data.d.forEach(function (area) {
-
                     //Informo de los detalles de cada Area
                     FillSectionByArea(area);
                 });
@@ -77,7 +73,6 @@
 
                 //Busca y reemplaza la clase antigua por la nueva 
                 SearchAndReplaceClassIntoParent('.social-list', 'icon-facebook small', 'icon-twitter small');
-
             },
             error: function (error) {
                 alert(error.responseText);
@@ -127,5 +122,4 @@
             element.addClass(newClass);
         }
     } 
-
 </script> 
