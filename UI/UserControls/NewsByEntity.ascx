@@ -58,7 +58,7 @@
 
         $.ajax({
             type: "POST",
-            url: "../WebServices/wsAreas.asmx/GetAllAreas",
+            url: "../WebServices/WsAreas.asmx/GetAll",
             async: true,
             contentType: "application/json; charset=utf-8",
             dataType: "json",

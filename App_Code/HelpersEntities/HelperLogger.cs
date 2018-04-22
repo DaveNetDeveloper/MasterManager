@@ -8,7 +8,14 @@ using System.IO;
 /// </summary>
 public static class HelperLogger
 {
-    public static void LogFile(Enums.LogType logType, object entity)
+    public enum LogType
+    {
+        Visitor,
+        Contact,
+        Error
+    }
+
+    public static void LogFile(LogType logType, object entity)
     {
         try
         {
@@ -16,13 +23,13 @@ public static class HelperLogger
 
             switch (logType)
             {
-                case Enums.LogType.Visitor:
+                case LogType.Visitor:
 
                     ModelArea visitante = (ModelArea)entity;
                     WriteVisitorXmlDocument(logFilePath + HelperEncoder.Base64Decode(Settings.LogXmlVisitorFileName), visitante);
                     break;
 
-                case Enums.LogType.Contact:
+                case LogType.Contact:
 
                     ModelContacto contacto = (ModelContacto)entity;
                     WriteContactXmlDocument(logFilePath + HelperEncoder.Base64Decode(Settings.LogXmlContactFileName), contacto);

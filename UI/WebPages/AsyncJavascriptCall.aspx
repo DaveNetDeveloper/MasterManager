@@ -125,37 +125,39 @@
         <input id="inputUpdateAreaNombre" type="text" value="" /> 
         <input id="btnUpdateArea" type="button" value="Modificar area existentes" onclick="UpdateAreaById($('#inputUpdateAreaId').val(), $('#inputUpdateAreaNombre').val());" />
     </div>
-
     <br /><br />
-
     <ucDocuments:LisOftDocuments runat="server" ID="LisOftDocuments" Visible="true"/>
-
 </form>
-</body>   
+</body>
+
+<%--Registrar creación de objeto de tipo interface mediante componente TypeScript--%>
+<%--<script src="../TypeScripts/TsAreas.ts" type="text/javascript"></script>--%>
 
 <script type="text/javascript">
 
     function GetAreaById(idArea) { 
-        var areaInPut = {};
-        areaInPut.Id = idArea;  
+
+        //Para trabajar con la interface IModel en vez del type concreto ModelArea
+        //var pIModel = GetInitializedIModel(idArea);
+
+        var pModel = {};
+        pModel.Id = idArea;  
 
         $.ajax({
             type: "POST",
-            url: "../WebServices/wsAreas.asmx/GetById",
+            url: "../WebServices/WsAreas.asmx/GetById",
             async: true,
-            data: "{pArea:" + JSON.stringify(areaInPut) + "}",
+            data: "{pModel:" + JSON.stringify(pModel) + "}",
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (data) {
-
                 var areaOutPut = data.d;
                 $("#ContainerAreaById").html("Id = " + areaOutPut.Id + " = " + areaOutPut.IP);
-
                 //alert("El DIV con id 'Container' contiene:  " + $("#ContainerAreaById").html());
                 //debugger;
             },
             error: function (error) {
-            alert(error.responseText);
+                alert(error.responseText);
                 //debugger;
             }
         }); 
@@ -163,7 +165,7 @@
     function GetAllAreas() { 
         $.ajax({
             type: "POST",
-            url: "../WebServices/wsAreas.asmx/GetAllAreas",
+            url: "../WebServices/WsAreas.asmx/GetAll",
             async: true,
             contentType: "application/json; charset=utf-8",
             dataType: "json",
@@ -193,9 +195,9 @@
     function DeleteAreaById(idArea) {
         $.ajax({
             type: "POST",
-            url: "../WebServices/wsAreas.asmx/EliminarAreaById",
+            url: "../WebServices/WsAreas.asmx/EliminarById",
             async: true,
-            data: "{idArea:" + JSON.stringify(idArea) + "}",
+            data: "{id:" + JSON.stringify(idArea) + "}",
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (data) {
@@ -213,9 +215,9 @@
 
         $.ajax({
             type: "POST",
-            url: "../WebServices/wsAreas.asmx/InsertarArea",
+            url: "../WebServices/WsAreas.asmx/Insertar",
             async: true,
-            data: "{nombreArea:" + JSON.stringify(nombreArea) + "}",
+            data: "{nombre:" + JSON.stringify(nombreArea) + "}",
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (data) {
@@ -232,9 +234,9 @@
     function UpdateAreaById(idArea, nombreArea) { 
         $.ajax({
             type: "POST",
-            url: "../WebServices/wsAreas.asmx/UpdateAreaById",
+            url: "../WebServices/WsAreas.asmx/UpdateById",
             async: true,
-            data: "{idArea:" + JSON.stringify(idArea) + ", nombreArea:" + JSON.stringify(nombreArea) + "}",
+            data: "{id:" + JSON.stringify(idArea) + ", nombre:" + JSON.stringify(nombreArea) + "}",
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (data) {

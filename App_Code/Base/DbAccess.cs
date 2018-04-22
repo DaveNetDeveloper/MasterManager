@@ -20,26 +20,13 @@ public class DbAccess : IDbAccess
 
     public MySqlConnection ExecuteDataReader()
     {
-        DbConnection = new MySqlConnection(Connection_biointranet);
-        Command = new MySqlCommand(QuerySql, DbConnection);
-
-        if (null != MySqlParametersList && MySqlParametersList.Count > 0)
-            foreach (var parameterItem in MySqlParametersList)
-            {
-                Command.Parameters.Add(parameterItem);
-            }
-
-        DbConnection.Open();
+        InitializeConnection(); 
         DrData = Command.ExecuteReader();
         return (DrData != null) ? DbConnection : null;
     }
     public bool ExecuteNonQuery()
     {
-        DbConnection = new MySqlConnection(Connection_biointranet);
-        Command = new MySqlCommand(QuerySql, DbConnection);
-        AddParametersToCommand();
-
-        DbConnection.Open();
+        InitializeConnection(); 
         int affectedRecords = Command.ExecuteNonQuery();
         DbConnection.Close();
         MySqlParametersList.Clear();
@@ -86,6 +73,15 @@ public class DbAccess : IDbAccess
                 Command.Parameters.Add(parameterItem);
             }
     }
-    
+
+    private void InitializeConnection()
+    {
+        DbConnection = new MySqlConnection(Connection_biointranet);
+        Command = new MySqlCommand { Connection = DbConnection };
+        AddParametersToCommand();
+        Command.CommandText = QuerySql;
+        DbConnection.Open();
+    }
+
     #endregion
 }

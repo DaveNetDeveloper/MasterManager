@@ -5,8 +5,8 @@ public class DAOAreas : DbAccess
 { 
     public IModel GetById(int Id)
     {
-        QuerySql = String.Format("SELECT * FROM AREA WHERE ID = @Id ");
-        AddNewParameter("@Id", Id);
+        QuerySql = String.Format("SELECT * FROM AREA WHERE ID = @Id");
+        AddNewParameter("Id", Id);
         DbConnection = ExecuteDataReader();
         if (!DrData.IsClosed)
         {
@@ -39,22 +39,22 @@ public class DAOAreas : DbAccess
     public bool RemoveById(int Id)
     {
         QuerySql = String.Format("DELETE FROM AREA WHERE ID = @Id");
-        AddNewParameter("@Id", Id);
+        AddNewParameter("Id", Id);
         return ExecuteNonQuery();
     }
     public bool Insert(string nombreArea, string descripcion, string responsable)
     {
         QuerySql = String.Format("INSERT INTO AREA (Nombre, Descripción, Responsable) VALUES( @NombreArea, @Descripción, @Responsable)");
-        AddNewParameter("@NombreArea", nombreArea);
-        AddNewParameter("@Descripción", descripcion);
-        AddNewParameter("@Responsable", responsable);
+        AddNewParameter("NombreArea", nombreArea);
+        AddNewParameter("Descripción", descripcion);
+        AddNewParameter("Responsable", responsable);
         return ExecuteNonQuery();
     }
     public bool UpdateById(int Id, string nombreArea)
     {
         QuerySql = String.Format("UPDATE AREA SET Nombre = @NombreArea WHERE ID = @Id");
-        AddNewParameter("@Id", Id);
-        AddNewParameter("@NombreArea", nombreArea);
+        AddNewParameter("Id", Id);
+        AddNewParameter("NombreArea", nombreArea);
         return ExecuteNonQuery();
     }
 }

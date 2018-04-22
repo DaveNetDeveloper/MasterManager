@@ -1,1 +1,1 @@
-﻿<%@ WebService Language="C#" CodeBehind="~/App_Code/WebServices/wsDocumentos.cs" Class="wsDocumentos" %>
+﻿<%@ WebService Language="C#" CodeBehind="~/App_Code/WebServices/WsDocumentos.cs" Class="WsDocumentos" %>

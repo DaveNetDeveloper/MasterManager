@@ -189,8 +189,10 @@ public partial class Contact : BasePage
             SmtpClient smtpCliente = new SmtpClient(WebConfigurationManager.AppSettings["Email_SMTP_Address"], int.Parse(WebConfigurationManager.AppSettings["Email_Port"]));
 
             //ELCorreo = new MailMessage();
-            MailMessage mail = new System.Net.Mail.MailMessage(WebConfigurationManager.AppSettings["Email_From"], WebConfigurationManager.AppSettings["Email_To"], "Nuevo contacto recibido a través de escuelanauticasantalo.com", s);
-            mail.IsBodyHtml = true;
+            MailMessage mail = new System.Net.Mail.MailMessage(WebConfigurationManager.AppSettings["Email_From"], WebConfigurationManager.AppSettings["Email_To"], "Nuevo contacto recibido a través de escuelanauticasantalo.com", s)
+            {
+                IsBodyHtml = true
+            };
 
             NetworkCredential basicCredential = new NetworkCredential(WebConfigurationManager.AppSettings["Email_Account_User"], WebConfigurationManager.AppSettings["Email_Account_Password"]);
             smtpCliente.UseDefaultCredentials = false;

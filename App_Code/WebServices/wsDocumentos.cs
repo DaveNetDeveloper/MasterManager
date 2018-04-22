@@ -6,16 +6,16 @@ using System.Web.Services;
 [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
 [System.ComponentModel.ToolboxItem(true)]
 [System.Web.Script.Services.ScriptService] 
-public class wsDocumentos : WebService 
+public class WsDocumentos : WebService , IWsEntity
 {
     IEntity entityDocumentos = new EntityDocumento();
      
     [WebMethod(EnableSession = true)]
-    public IModel GetById(ModelDocumento pDocumento)
+    public IModel GetById(IModel pModel)
     {
         try
         {
-            return entityDocumentos.GetById(pDocumento.Id);
+            return entityDocumentos.GetById(pModel.Id);
         }
         catch(Exception ex)
         {
@@ -24,7 +24,7 @@ public class wsDocumentos : WebService
     }
 
     [WebMethod(EnableSession = true)]
-    public IEnumerable<IModel> GetAllDocumentos()
+    public IEnumerable<IModel> GetAll()
     { 
         try
         {
@@ -37,11 +37,11 @@ public class wsDocumentos : WebService
     }
 
     [WebMethod(EnableSession = true)]
-    public bool EliminarDocumentoById(int idDocumento)
+    public bool EliminarById(int id)
     {
         try
         {
-            return entityDocumentos.RemoveById(idDocumento);
+            return entityDocumentos.RemoveById(id);
         }
         catch (Exception ex)
         {
@@ -50,11 +50,11 @@ public class wsDocumentos : WebService
     }   
 
     [WebMethod(EnableSession = true)]
-    public bool InsertarDocumento(string nombreDocumento)
+    public bool Insertar(string nombre)
     {
         try
         {
-            return entityDocumentos.Insert(nombreDocumento);
+            return entityDocumentos.Insert(nombre);
         }
         catch (Exception ex)
         {
@@ -63,11 +63,11 @@ public class wsDocumentos : WebService
     }
 
     [WebMethod(EnableSession = true)]
-    public bool UpdateDocumentoById(int idDocumento, string nombreDocumento)
+    public bool UpdateById(int id, string nombre)
     {
         try
         {
-            return entityDocumentos.UpdateById(idDocumento, nombreDocumento);
+            return entityDocumentos.UpdateById(id, nombre);
         }
         catch (Exception ex)
         {

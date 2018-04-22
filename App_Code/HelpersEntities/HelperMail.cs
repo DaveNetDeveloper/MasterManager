@@ -6,17 +6,28 @@ using System.Net;
 /// Descripción breve de HelperMail
 /// </summary>
 public static class HelperMail
-{ 
+{
+    public enum SubjectContact
+    {
+        NONE = 0,
+        SUBJECT1 = 1,
+        SUBJECT2 = 2,
+        SUBJECT3 = 3,
+        SUBJECT4 = 4,
+        SUBJECT5 = 5,
+        SUBJECT6 = 6
+    }
 
     public static bool SendMail(ModelContacto datosContacto)
     {
         try
         {
-            MailMessage mailMessage = new MailMessage(HelperEncoder.Base64Decode(Settings.MailFrom), HelperEncoder.Base64Decode(Settings.MailTo));
-            mailMessage.IsBodyHtml = true;
-
-            //mailMessage.Subject = Resources.resource.Mail_Subject; 
-            mailMessage.Body = GetUpdatedMailContent(datosContacto);
+            MailMessage mailMessage = new MailMessage(HelperEncoder.Base64Decode(Settings.MailFrom), HelperEncoder.Base64Decode(Settings.MailTo))
+            {
+                IsBodyHtml = true,
+                //mailMessage.Subject = Resources.resource.Mail_Subject; 
+                Body = GetUpdatedMailContent(datosContacto)
+            };
 
             SmtpClient smtpClient = new SmtpClient(HelperEncoder.Base64Decode(Settings.MailHost), int.Parse(HelperEncoder.Base64Decode(Settings.MailPort)));
             //smtpClient.EnableSsl = bool.Parse(Settings.MailEnableSsl);
@@ -51,9 +62,9 @@ public static class HelperMail
             mailBody += "<table style = 'float: right; width: 100%' id = 'tLogo'> <tr><td style ='float:right;'><a target='_blank' href='http://www.luxsuy.com'><img src='http://www.luxsuy.com/Luxsuy/images/LogoMail.png' width='135px' height='85px' /></a></td></tr></table>";
             return mailBody;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            throw ex;
+            throw;
         }
     }
 }

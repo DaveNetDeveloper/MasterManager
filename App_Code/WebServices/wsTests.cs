@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Web.Services;
   
@@ -6,16 +7,16 @@ using System.Web.Services;
 [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
 [System.ComponentModel.ToolboxItem(true)]
 [System.Web.Script.Services.ScriptService] 
-public class wsTests : WebService
+public class WsTests : WebService, IWsEntity
 {
     IEntity entityTests = new EntityTest();
      
     [WebMethod(EnableSession = true)]
-    public IModel GetById(ModelTest pTest)
+    public IModel GetById(IModel pModel)
     {
         try
         {
-            return entityTests.GetById(pTest.Id);
+            return entityTests.GetById(pModel.Id);
         }
         catch(Exception ex)
         {
@@ -24,7 +25,7 @@ public class wsTests : WebService
     }
 
     [WebMethod(EnableSession = true)]
-    public IEnumerable<IModel> GetAllTests()
+    public IEnumerable<IModel> GetAll()
     { 
         try
         {
@@ -37,11 +38,11 @@ public class wsTests : WebService
     }
 
     [WebMethod(EnableSession = true)]
-    public bool EliminarTestById(int idTest)
+    public bool EliminarById(int id)
     {
         try
         {
-            return entityTests.RemoveById(idTest);
+            return entityTests.RemoveById(id);
         }
         catch (Exception ex)
         {
@@ -50,11 +51,11 @@ public class wsTests : WebService
     }   
 
     [WebMethod(EnableSession = true)]
-    public bool InsertarTest(string nombreTest)
+    public bool Insertar(string nombre)
     {
         try
         {
-            return entityTests.Insert(nombreTest);
+            return entityTests.Insert(nombre);
         }
         catch (Exception ex)
         {
@@ -63,11 +64,11 @@ public class wsTests : WebService
     }
 
     [WebMethod(EnableSession = true)]
-    public bool UpdateTestById(int idTest, string nombreTest)
+    public bool UpdateById(int id, string nombre)
     {
         try
         {
-            return entityTests.UpdateById(idTest, nombreTest);
+            return entityTests.UpdateById(id, nombre);
         }
         catch (Exception ex)
         {

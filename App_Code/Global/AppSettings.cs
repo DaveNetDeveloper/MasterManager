@@ -5,6 +5,19 @@
 /// </summary>
 internal static class Settings
 {
+    public enum AppSettings
+    {
+        settings_DefaultLanguag,
+        mail_Host,
+        mail_Port,
+        mail_To,
+        mail_From,
+        mail_Subject,
+        mail_Body,
+        mail_user,
+        mail_password
+    }
+
     //Language Settings
     private static string _defaultLanguage = WebConfigurationManager.AppSettings["settings_DefaultLanguage"];
     public static string DefaultLanguage

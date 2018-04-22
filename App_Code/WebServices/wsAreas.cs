@@ -6,72 +6,73 @@ using System.Web.Services;
 [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
 [System.ComponentModel.ToolboxItem(true)]
 [System.Web.Script.Services.ScriptService] 
-public class wsAreas : WebService 
+public class WsAreas : WebService, IWsEntity
 {
     IEntity entityAreas = new EntityArea();
      
     [WebMethod(EnableSession = true)]
-    public IModel GetById(ModelArea pArea)
+    //public IModel GetById(IModel pModel)
+    public IModel GetById(ModelArea pModel)
     {
         try
         {
-            return entityAreas.GetById(pArea.Id);
+            return entityAreas.GetById(pModel.Id);
         }
-        catch(Exception ex)
+        catch(Exception)
         {
-            throw ex;
+            throw;
         } 
     }
 
     [WebMethod(EnableSession = true)]
-    public IEnumerable<IModel> GetAllAreas()
+    public IEnumerable<IModel> GetAll()
     { 
         try
         {
             return entityAreas.GetList();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            throw ex;
+            throw;
         }
     }
 
     [WebMethod(EnableSession = true)]
-    public bool EliminarAreaById(int idArea)
+    public bool EliminarById(int id)
     {
         try
         {
-            return entityAreas.RemoveById(idArea);
+            return entityAreas.RemoveById(id);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            throw ex;
+            throw;
         }
     }   
 
     [WebMethod(EnableSession = true)]
-    public bool InsertarArea(string nombreArea)
+    public bool Insertar(string nombre)
     {
         try
         {
-            return entityAreas.Insert(nombreArea);
+            return entityAreas.Insert(nombre);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            throw ex;
+            throw;
         }
     }
 
     [WebMethod(EnableSession = true)]
-    public bool UpdateAreaById(int idArea, string nombreArea)
+    public bool UpdateById(int id, string nombre)
     {
         try
         {
-            return entityAreas.UpdateById(idArea, nombreArea);
+            return entityAreas.UpdateById(id, nombre);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            throw ex;
+            throw;
         }
     }
 }
