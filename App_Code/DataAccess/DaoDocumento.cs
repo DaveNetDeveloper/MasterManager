@@ -2,7 +2,10 @@
 using System.Collections.Generic; 
 
 public class DaoDocumento : DbAccess, IDaoEntity
-{ 
+{
+    public DaoDocumento()
+    {
+    }
     public IModel GetById(int id)
     {
         IModel documento = null;

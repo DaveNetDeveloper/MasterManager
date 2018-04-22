@@ -31,7 +31,7 @@ public static class HelperLogger
 
                 case LogType.Contact:
 
-                    ModelContacto contacto = (ModelContacto)entity;
+                    ModelUserContact contacto = (ModelUserContact)entity;
                     WriteContactXmlDocument(logFilePath + HelperEncoder.Base64Decode(Settings.LogXmlContactFileName), contacto);
                     break;
             }
@@ -122,7 +122,7 @@ public static class HelperLogger
         }
     }
 
-    private static void WriteContactXmlDocument(string filename, ModelContacto contacto)
+    private static void WriteContactXmlDocument(string filename, ModelUserContact contacto)
     {
         try
         {

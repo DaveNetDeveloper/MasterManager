@@ -1,13 +1,13 @@
 ﻿using System; 
  
-public class ModelContacto : IModel
+public class ModelUserContact : IModel
 {
-    public ModelContacto()
+    public ModelUserContact()
     {
         
     }
 
-    public ModelContacto(string pNombreCompleto, string pTelefono, string pEmail, string pAsunto, string pMensaje)
+    public ModelUserContact(string pNombreCompleto, string pTelefono, string pEmail, string pAsunto, string pMensaje)
     {
         NombreCompleto = pNombreCompleto;
         Telefono = pTelefono;

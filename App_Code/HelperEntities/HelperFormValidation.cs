@@ -5,7 +5,7 @@
 /// </summary>
 public static class HelperFormValidation
 {
-    public static bool IsValidFormData(ModelContacto datosContacto)
+    public static bool IsValidFormData(ModelUserContact datosContacto)
     {
         try
         {

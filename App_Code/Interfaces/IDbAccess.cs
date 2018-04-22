@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public interface IDbAccess
 {
+    string TableName { get; set; }
+
     IModel Model { get; set; }
     List<IModel> ModelList { get; set; }
     String QuerySql { get; set; }

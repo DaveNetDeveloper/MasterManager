@@ -7,6 +7,7 @@ public class DbAccess : IDbAccess
 {
     #region [public properties]
 
+    public string TableName { get; set; }
     public IModel Model { get; set; }
     public List<IModel> ModelList { get; set; }
     public String QuerySql { get; set; }

@@ -2,7 +2,10 @@
 using System.Collections.Generic; 
 
 public class DaoTest : DbAccess, IDaoEntity
-{ 
+{
+    public DaoTest()
+    {
+    }
     public IModel GetById(int id)
     {
         IModel test = null;

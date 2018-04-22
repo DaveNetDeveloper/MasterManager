@@ -1,16 +1,18 @@
-﻿using System;
-using System.Collections.Generic; 
+﻿using System.Collections.Generic; 
 
-public class DaoArea : DbAccess, IDaoEntity
-{ 
-    public DaoArea()
+public class DaoUsuarioGestor : DbAccess, IDaoEntity
+{
+    public DaoUsuarioGestor()
     {
+        TableName = "usuario_gestor";
     }
-
+     
     public IModel GetById(int id)
     {
-        QuerySql = String.Format("SELECT * FROM AREA WHERE ID = @Id");
+        QuerySql = "SELECT * FROM @TableName WHERE ID = @Id";
         AddNewParameter("Id", id);
+        AddNewParameter("TableName", TableName);
+
         DbConnection = ExecuteDataReader();
         if (!DrData.IsClosed)
         {
@@ -25,9 +27,10 @@ public class DaoArea : DbAccess, IDaoEntity
     }
     public IEnumerable<IModel> GetList()
     { 
-        QuerySql = " SELECT * FROM AREA ORDER BY ID ";
+        QuerySql = "SELECT * FROM @TableName ORDER BY ID";
+        AddNewParameter("TableName", TableName);
+
         DbConnection = ExecuteDataReader();
-         
         if (!DrData.IsClosed)
         {
             ModelList = new List<IModel>();
@@ -42,23 +45,29 @@ public class DaoArea : DbAccess, IDaoEntity
     }
     public bool RemoveById(int id)
     {
-        QuerySql = String.Format("DELETE FROM AREA WHERE ID = @Id");
+        QuerySql = "DELETE FROM @TableName WHERE ID = @Id";
         AddNewParameter("Id", id);
+        AddNewParameter("TableName", TableName);
+
         return ExecuteNonQuery();
     }
-    public bool Insert(string nombre, string descripcion, string responsable)
+    public bool Insert(string nombre, string texto2, string texto3)
     {
-        QuerySql = String.Format("INSERT INTO AREA (Nombre, Descripción, Responsable) VALUES( @NombreArea, @Descripción, @Responsable)");
+        QuerySql = "INSERT INTO @TableName (Nombre, Descripción, Responsable) VALUES( @NombreArea, @Descripción, @Responsable)";
         AddNewParameter("NombreArea", nombre);
-        AddNewParameter("Descripción", descripcion);
-        AddNewParameter("Responsable", responsable);
+        AddNewParameter("Descripción", texto2);
+        AddNewParameter("Responsable", texto3);
+        AddNewParameter("TableName", TableName);
+
         return ExecuteNonQuery();
     }
     public bool UpdateById(int id, string nombre)
     {
-        QuerySql = String.Format("UPDATE AREA SET Nombre = @NombreArea WHERE ID = @Id");
+        QuerySql = "UPDATE @TableName SET Nombre = @NombreArea WHERE ID = @Id";
         AddNewParameter("Id", id);
         AddNewParameter("NombreArea", nombre);
+        AddNewParameter("TableName", TableName);
+
         return ExecuteNonQuery();
     }
 }

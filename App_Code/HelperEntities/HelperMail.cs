@@ -18,7 +18,7 @@ public static class HelperMail
         SUBJECT6 = 6
     }
 
-    public static bool SendMail(ModelContacto datosContacto)
+    public static bool SendMail(ModelUserContact datosContacto)
     {
         try
         {
@@ -45,7 +45,7 @@ public static class HelperMail
         }
     }
 
-    private static string GetUpdatedMailContent(ModelContacto datosContacto)
+    private static string GetUpdatedMailContent(ModelUserContact datosContacto)
     {
         try
         {
