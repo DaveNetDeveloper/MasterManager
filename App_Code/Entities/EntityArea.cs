@@ -2,11 +2,11 @@
 
 public class EntityArea : IEntity
 {
-    private DAOAreas _daoAreas;
+    private DaoArea _daoAreas;
 
     public EntityArea()
     {
-        _daoAreas = new DAOAreas();
+        _daoAreas = new DaoArea();
     }
     public IModel GetById(int id)
     {   

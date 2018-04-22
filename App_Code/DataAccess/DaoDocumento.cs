@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic; 
 
-public class DAODocumentos : DbAccess, IDAOEntity
+public class DaoDocumento : DbAccess, IDaoEntity
 { 
     public IModel GetById(int id)
     {

@@ -2,11 +2,11 @@
 
 public class EntityTest : IEntity
 {
-    private DAOTests _daoTests;
+    private DaoTest _daoTests;
 
     public EntityTest()
     {
-        _daoTests = new DAOTests();
+        _daoTests = new DaoTest();
     }
     public IModel GetById(int id)
     {   

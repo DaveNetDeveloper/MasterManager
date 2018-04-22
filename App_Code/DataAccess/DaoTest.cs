@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic; 
 
-public class DAOTests : DbAccess, IDAOEntity
+public class DaoTest : DbAccess, IDaoEntity
 { 
     public IModel GetById(int id)
     {

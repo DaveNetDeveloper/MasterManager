@@ -2,11 +2,11 @@
 
 public class EntityDocumento : IEntity
 {
-    private DAODocumentos _daoDocumentos;
+    private DaoDocumento _daoDocumentos;
 
     public EntityDocumento()
     {
-        _daoDocumentos = new DAODocumentos();
+        _daoDocumentos = new DaoDocumento();
     }
     public IModel GetById(int id)
     {   

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-public interface IDAOEntity
+public interface IDaoEntity
 {
     IModel GetById(int id);
     IEnumerable<IModel> GetList();
