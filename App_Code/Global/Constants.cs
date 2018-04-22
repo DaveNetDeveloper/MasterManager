@@ -3,7 +3,7 @@
 /// </summary>
 public static class Constants
 {
-   public const string languageCode_ESPAÑOL = "es";
+    public const string languageCode_ESPAÑOL = "es";
     public const string languageCode_CATALAN = "ca";
     public const string languageCode_INGLES = "en";
 
@@ -17,11 +17,8 @@ public static class Constants
     // Reminder for text message on popUp - SMS Send confirmation
     public const string SendSMS_ReminderTextMessage = "Recuerda que puedes usar en tu mensaje las etiquetas <i> [NOMBRE] </i> <i>[APELLIDOS]</i> <i>[TELÉFONO]</i> <i>[EMAIL]</i> <i>[USUARIO]</i> y <i>[CONTRASEÑA]</i> para que el contenido sea personalizable para cada usuario. Puedes usar estas etiquetas en el campo 'MENSAJE' como si fueran palabras normales.";
 
-    //
     public const string inputDateTimeFormat_ddmmaaaa = "dd/mm/aaaa";
     public const string inputDateTimeFormat_mmddaaaa = "mm/dd/aaaa";
-
-
 
     //CENTERS
     public const string LITERALCODE_CENTER_NAME = "CENTER_NAME_";
@@ -33,7 +30,6 @@ public static class Constants
     public const string LITERALCODE_PRODUCT_DESCRIPTION = "PRODUCT_DESCRIPTION_";
     public const string LITERALCODE_PRODUCT_TEXT = "PRODUCT_TEXT_";
     public const string LITERALCODE_PRODUCT_DISTANCE = "PRODUCT_DISTANCE_";
-    //
 
     //ACCIONES SOBRE LISTADOS
     public const string ACTIONS_LIST_PAGE_CREATE = "Crear";
@@ -44,7 +40,6 @@ public static class Constants
     public const string ACTIONS_LIST_SEND_SMS = "EnviarSMS";
     public const string ACTIONS_LIST_EXPORT_EXCEL = "ExportarExcel";
     public const string ACTIONS_LIST_FILTRAR_LISTADO = "FiltrarListado";
-
 
     //TIPOS DE PREGUNTA
     public const string QUESTION_TYPE_TEST = "Test";
@@ -65,5 +60,4 @@ public static class Constants
     //2DO: POR DEFINIR DÍAS DE LA SEMANA, EN ESPAÑOL E INGLÉS:
 
     public const string ASP_PAGE_EXTENSION = ".aspx"; 
-
 }

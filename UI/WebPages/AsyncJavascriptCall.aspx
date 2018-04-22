@@ -94,8 +94,7 @@
     </style>  
 </head> 
 <body>
-<form id="form" runat="server">
-
+<form id="form" runat="server"> 
     <div>
         <br />
         <input id="inputIdArea" type="text" value="" /> 

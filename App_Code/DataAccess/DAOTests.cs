@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic; 
 
-public class DAOTests : DbAccess
+public class DAOTests : DbAccess, IDAOEntity
 { 
-    public IModel GetById(int Id)
+    public IModel GetById(int id)
     {
         IModel test = null;
-        QuerySql = String.Format("SELECT * FROM TEST WHERE ID = {0} ", Id);
+        QuerySql = String.Format("SELECT * FROM TEST WHERE ID = {0} ", id);
         DbConnection = ExecuteDataReader();
         if (!DrData.IsClosed)
         {
@@ -19,7 +19,6 @@ public class DAOTests : DbAccess
         DbConnection.Close();
         return test;
     }
-
     public IEnumerable<IModel> GetList()
     { 
         List<IModel> testsList = null;
@@ -39,22 +38,19 @@ public class DAOTests : DbAccess
         DbConnection.Close();
         return testsList; 
     }
-
-    public bool RemoveById(int Id)
+    public bool RemoveById(int id)
     {
-        QuerySql = String.Format("DELETE FROM TEST WHERE ID = {0}", Id);
+        QuerySql = String.Format("DELETE FROM TEST WHERE ID = {0}", id);
         return ExecuteNonQuery();
     }
-
-    public bool Insert(string nombreTest)
+    public bool Insert(string nombre, string texto2, string texto3)
     {
-        QuerySql = String.Format("INSERT INTO TEST (Nombre, Descripción, Responsable) VALUES('{0}', '{1}', '{2}')", nombreTest, "Descripción del test", "xxxx@biosystems.es");
+        QuerySql = String.Format("INSERT INTO TEST (Nombre, Descripción, Responsable) VALUES('{0}', '{1}', '{2}')", nombre, texto2, texto3);
         return ExecuteNonQuery();
     }
-
-    public bool UpdateById(int Id, string nombreTest)
+    public bool UpdateById(int id, string nombre)
     {
-        QuerySql = String.Format("UPDATE TEST SET Nombre = '{0}' WHERE ID = {1}", nombreTest, Id);
+        QuerySql = String.Format("UPDATE TEST SET Nombre = '{0}' WHERE ID = {1}", nombre, id);
         return ExecuteNonQuery();
     }
 }
