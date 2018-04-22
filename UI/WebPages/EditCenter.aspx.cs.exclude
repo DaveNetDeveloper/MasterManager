@@ -1,0 +1,547 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Data;
+using System.Net.Mail;
+using System.Text;
+using MySql.Data;
+using System.Net;
+using System.Configuration;
+using MySql.Data.MySqlClient;
+using System.Globalization;
+using System.Threading;
+using System.Resources;
+using System.Collections;
+using System.Web.Configuration;
+
+public partial class EditCenter : PageBase
+{
+    #region ****************** PROPERTIES ***************************************************************
+
+    public string mode
+    {
+        get
+        {
+            return Session["mode"] as string;
+        }
+        set
+        {
+            Session["mode"] = (string)value;
+        }
+
+    }
+
+    public string Id
+    {
+        get
+        {
+            return Session["Id"] as string;
+        }
+        set
+        {
+            Session["Id"] = (string)value;
+        }
+
+    }
+
+    #endregion
+
+    protected void Page_Init(object sender, EventArgs e)
+    {
+        try
+        {
+            if (!this.IsPostBack)
+            {
+                if (Request.QueryString["M"] != null)
+                {
+                    mode = Request.QueryString["M"].ToString();
+                }
+                else { mode = string.Empty; }
+
+                if (Request.QueryString["Id"] != null)
+                {
+                    Id = Request.QueryString["Id"].ToString();
+                }
+                else { Id = string.Empty; }
+
+                ApplyLayout();
+            }
+            else
+            {
+                
+            }
+        }
+        catch (Exception ex)
+        {
+            Session["error"] = ex;
+
+            //((MasterPage)(this.Master)).SetLOG("ERROR", "Loading Page", "EditCenter.aspx", "Center", "Page_Init()", ex.Message, DateTime.Now, 1);
+
+            this.SetLOG("ERROR", "Loading Page", "EditCenter.aspx", "Center", "Page_Init()", ex.Message, DateTime.Now, 1);
+
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+        }
+    }
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        try
+        { 
+            if (!this.IsPostBack)
+            {
+            
+            }
+            else
+            {
+
+            }
+            this.Title = "Edición Centro";
+        }
+        catch (Exception ex)
+        {
+            Session["error"] = ex;
+            this.SetLOG("ERROR", "Loading Page", "EditCenter.aspx", "Center", "Page_Load()", ex.Message, DateTime.Now, 1);
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+        }
+    }
+
+    protected Int32 GetLastCenterId()
+    {
+        try
+        {
+            string cadenaConexion = "Database=qsg265;Data Source=localhost;User Id=dbUser;Password=123";
+            string Consulta = "SELECT max(Id)FROM CENTER";
+            MySqlConnection cnn = new MySqlConnection(cadenaConexion);
+            MySqlCommand mc = new MySqlCommand(Consulta, cnn);
+
+            cnn.Open();
+            MySqlDataReader dr = mc.ExecuteReader();
+
+            Int32 maxId = 0;
+            if (!dr.IsClosed)
+            {
+                while (dr.Read())
+                {
+                    if (!dr.IsDBNull(0))
+                    {
+                        maxId = dr.GetInt32(0);
+                    }
+                }
+            }
+            cnn.Close();
+
+            return maxId;
+        }
+        catch (Exception ex)
+        {
+            Session["error"] = ex;
+            this.SetLOG("ERROR", "READING DB", "EditCenter.aspx", "Center", "GetLastCenterId()", ex.Message, DateTime.Now, 1);
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+            return 0;
+        }
+     }
+
+    protected void FillCenter()
+    {
+        try
+        {
+           string cadenaConexion = ConfigurationManager.ConnectionStrings["Connection_qsg265"].ConnectionString;
+           string Consulta = "SELECT CENTER.Id, CENTER.NAME_CODE, CENTER.DESCRIPTION_CODE, CENTER.INFOWINDOW_CODE, CENTER.address, CENTER.cp, CENTER.city, literalName.DESCRIPTION AS Name, literalName.LANGUAGE_CODE AS NAME_LANGUAGE_CODE, literalDescription.DESCRIPTION AS Description, literalDescription.LANGUAGE_CODE AS DESCRIPTION_LANGUAGE_CODE, literalInfo.DESCRIPTION AS infoWindow, literalInfo.LANGUAGE_CODE AS INFOWINDOW_LANGUAGE_CODE, CENTER.created, CENTER.updated FROM CENTER LEFT JOIN LITERALES AS literalName ON literalName.TEXT_CODE = CENTER.name_code AND CENTER.Id =" + Id + " LEFT JOIN LITERALES AS literalDescription ON literalDescription.TEXT_CODE = CENTER.Description_code AND CENTER.Id =" + Id + " AND literalDescription.LANGUAGE_CODE = literalName.LANGUAGE_CODE LEFT JOIN LITERALES AS literalInfo ON literalInfo.TEXT_CODE = CENTER.infowindow_code AND CENTER.Id =" + Id + " AND literalInfo.LANGUAGE_CODE = literalName.LANGUAGE_CODE WHERE CENTER.Id =" + Id;
+           
+           MySqlConnection cnn = new MySqlConnection(cadenaConexion);
+           MySqlCommand mc = new MySqlCommand(Consulta, cnn);
+
+           cnn.Open();
+           MySqlDataReader dr = mc.ExecuteReader();
+
+           if (!dr.IsClosed)
+            {
+                while (dr.Read())
+                {
+                    //Name & Descrption fields
+                    if (!dr.IsDBNull(8) && dr.GetString(8).ToString() == Constantes.languageCode_ESPAÑOL)
+                    {
+                        //Name
+                        if (!dr.IsDBNull(7))
+                        {
+                            txtNameES.Text = dr.GetString(7).ToString();
+                        }
+                        //Description
+                        if (!dr.IsDBNull(9))
+                        {
+                            txtDescriptionES.Text = dr.GetString(9).ToString();
+                        }
+                        //InfoWindow
+                        if (!dr.IsDBNull(11))
+                        {
+                            centerInfoWindowES.Text = dr.GetString(11);
+                        }
+                    }
+                    else if (!dr.IsDBNull(8) && dr.GetString(8).ToString() == Constantes.languageCode_CATALAN)
+                    {
+                        //Name
+                        if (!dr.IsDBNull(7))
+                        {
+                            txtNameCA.Text = dr.GetString(7).ToString();
+                        }
+                        //Description
+                        if (!dr.IsDBNull(9))
+                        {
+                            txtDescriptionCA.Text = dr.GetString(9).ToString();
+                        }
+                        //InfoWindow
+                        if (!dr.IsDBNull(11))
+                        {
+                            centerInfoWindowCA.Text = dr.GetString(11);
+                        }
+                    }
+                    else if (!dr.IsDBNull(8) && dr.GetString(8).ToString() == Constantes.languageCode_INGLES)
+                    {
+                        //Name
+                        if (!dr.IsDBNull(7))
+                        {
+                            txtNameEN.Text = dr.GetString(7).ToString();
+                        }
+                        //Description
+                        if (!dr.IsDBNull(9))
+                        {
+                            txtDescriptionEN.Text = dr.GetString(9).ToString();
+                        }
+                        //InfoWindow
+                        if (!dr.IsDBNull(11))
+                        {
+                            centerInfoWindowEN.Text = dr.GetString(11);
+                        }
+                    }
+
+                    //Address field
+                    if (!dr.IsDBNull(4))
+                    {
+                        centerAddress.Text = dr.GetString(4);
+                    }
+
+                    //CP field
+                    if (!dr.IsDBNull(5))
+                    {
+                        centerCP.Text = dr.GetString(5);
+                    }
+
+                    //City field
+                    if (!dr.IsDBNull(6))
+                    {
+                        centerCity.Text = dr.GetString(6);
+                    }
+
+                    //Created field
+                    if (!dr.IsDBNull(13))
+                    {
+                        centerCreated.Text = dr.GetDateTime(13).ToString();
+                    }
+
+                    //Updated field
+                    if (!dr.IsDBNull(14))
+                    {
+                        centerUpdated.Text = dr.GetDateTime(14).ToString();
+                    }
+
+                }
+            }
+            cnn.Close();
+         }
+        catch (Exception ex)
+        {
+            Session["error"] = ex;
+            this.SetLOG("ERROR", "Loading Page", "EditCenter.aspx", "Center", "FillCenter()", ex.Message, DateTime.Now, 1);
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+        }
+    }
+     
+    protected void EmptyFields()
+    {
+        txtNameES.Text = String.Empty;
+        txtNameCA.Text = String.Empty;
+        txtNameEN.Text = String.Empty;
+
+        txtDescriptionES.Text = String.Empty;
+        txtDescriptionCA.Text = String.Empty;
+        txtDescriptionEN.Text = String.Empty;
+
+        centerAddress.Text = String.Empty;
+
+        centerCity.Text = String.Empty;
+        centerCP.Text = String.Empty;
+
+        centerInfoWindowES.Text = String.Empty;
+        centerInfoWindowCA.Text = String.Empty;
+        centerInfoWindowEN.Text = String.Empty;
+    }
+    
+    protected void ApplyLayout()
+    {
+        try
+        {
+            switch (mode)
+            {
+                case "N":
+                    btnGuardar.Visible = true;
+                  
+                    txtNameES.Enabled = true;
+                    txtNameCA.Enabled = true;
+                    txtNameEN.Enabled = true;
+
+                    txtDescriptionES.Enabled = true;
+                    txtDescriptionCA.Enabled = true;
+                    txtDescriptionEN.Enabled = true;
+
+                    centerAddress.Enabled = true;
+
+                    centerCity.Enabled = true;
+                    centerCP.Enabled = true;
+
+                    centerInfoWindowES.Enabled = true;
+                    centerInfoWindowCA.Enabled = true;
+                    centerInfoWindowEN.Enabled = true;
+
+                    EmptyFields();
+                
+                break;
+
+                case "E":
+                    btnGuardar.Visible = true;
+
+                    txtNameES.Enabled = true;
+                    txtNameCA.Enabled = true;
+                    txtNameEN.Enabled = true;
+
+                    txtDescriptionES.Enabled = true;
+                    txtDescriptionCA.Enabled = true;
+                    txtDescriptionEN.Enabled = true;
+
+                    centerAddress.Enabled = true;
+
+                    centerCity.Enabled = true;
+                    centerCP.Enabled = true;
+
+                    centerInfoWindowES.Enabled = true;
+                    centerInfoWindowCA.Enabled = true;
+                    centerInfoWindowEN.Enabled = true;
+
+                    if(Id != string.Empty)
+                    {
+                        FillCenter();
+                    }
+
+                break;
+
+                case "V":
+                    btnGuardar.Visible = false;
+
+                    txtNameES.Enabled = false;
+                    txtNameCA.Enabled = false;
+                    txtNameEN.Enabled = false;
+
+                    txtDescriptionES.Enabled = false;
+                    txtDescriptionCA.Enabled = false;
+                    txtDescriptionEN.Enabled = false;
+
+                    centerAddress.Enabled = false;
+
+                    centerCity.Enabled = false;
+                    centerCP.Enabled = false;
+
+                    centerInfoWindowES.Enabled = false;
+                    centerInfoWindowCA.Enabled = false;
+                    centerInfoWindowEN.Enabled = false;
+
+                    if (Id != null && Id != string.Empty)
+                    {
+                        FillCenter();
+                    }
+                
+                break;
+
+                default:
+                break;
+            }
+        }
+        catch(Exception ex)
+        {
+            Session["error"] = ex;
+            this.SetLOG("ERROR", "Loading Page", "EditCenter.aspx", "Center", "ApplyLayout()", ex.Message, DateTime.Now, 1);
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+
+        }
+    }
+      
+    protected void btnVolver_Click(object sender, EventArgs e)
+    {
+        Response.Redirect(Constantes.PAGE_TITLE_CenterList + Constantes.ASP_PAGE_EXTENSION);
+    }
+
+    protected bool ValidateUserData()
+    {
+        bool validationResult = true;
+
+        txtNameES.BorderColor = System.Drawing.ColorTranslator.FromHtml("#e2e2e2");
+        centerAddress.BorderColor = System.Drawing.ColorTranslator.FromHtml("#e2e2e2");
+        centerCity.BorderColor = System.Drawing.ColorTranslator.FromHtml("#e2e2e2");
+        centerCP.BorderColor = System.Drawing.ColorTranslator.FromHtml("#e2e2e2");
+
+        if (txtNameES.Text.Trim() == String.Empty)
+        {
+            validationResult = false;
+            txtNameES.BorderColor = System.Drawing.Color.Red;
+        }
+
+        if (centerAddress.Text.Trim() == String.Empty)
+        {
+            validationResult = false;
+            centerAddress.BorderColor = System.Drawing.Color.Red;
+        }
+
+        if (centerCity.Text.Trim() == String.Empty)
+        {
+            validationResult = false;
+            centerCity.BorderColor = System.Drawing.Color.Red;
+        }
+
+        if (centerCP.Text.Trim() == String.Empty)
+        {
+            validationResult = false;
+            centerCP.BorderColor = System.Drawing.Color.Red;
+        }
+
+        return validationResult;
+    }
+
+    protected void btnGuardar_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            if(ValidateUserData())
+            {
+                //Obtenemos datos del formulario
+                string cadenaConexion = ConfigurationManager.ConnectionStrings["Connection_qsg265"].ConnectionString;
+                
+                string consulta = string.Empty;
+                int _id = 0;
+                
+                string name_code = "CENTER_NAME_";
+                string description_code = "CENTER_DESCRIPCION_";
+                string infoWindow_code = "CENTER_INFOWINDOW_";
+                
+                string address = centerAddress.Text;
+
+                string literalNameES = txtNameES.Text;
+                string literalNameCA = txtNameCA.Text;
+                string literalNameEN = txtNameEN.Text;
+
+                string literalDescriptionES = txtDescriptionES.Text;
+                string literalDescriptionCA = txtDescriptionCA.Text;
+                string literalDescriptionEN = txtDescriptionEN.Text;
+
+                string literalInfoWindowES = centerInfoWindowES.Text;
+                string literalInfoWindowCA = centerInfoWindowCA.Text;
+                string literalInfoWindowEN = centerInfoWindowEN.Text;
+
+                //Ejecutamos acción de BD para la entidad ppal.
+                //CENTER
+                switch (mode)
+                {
+                    //Nuevo
+                    case "N":
+                        _id = GetLastCenterId() + 1;
+
+                        name_code = name_code + _id;
+                        description_code = description_code + _id;
+                        infoWindow_code = infoWindow_code + _id;
+
+                        consulta = "INSERT INTO CENTER(id, name_code, slug, description_code, created, updated, weight, address, cp, city, infowindow_code) VALUES (" + _id + ",'" + name_code + "','" + "" + "','" + description_code + "','" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "','" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "'," + 0 + ",'" + centerAddress.Text + "','" + centerCP.Text + "','" + centerCity.Text + "','" + infoWindow_code + "')";
+                        break;
+
+                    //Editar
+                    case "E":
+                        _id = int.Parse(Id);
+
+                        name_code = name_code + _id;
+                        description_code = description_code + _id;
+                        infoWindow_code = infoWindow_code + _id;
+
+                        consulta = "UPDATE CENTER SET updated='" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "', address='" + centerAddress.Text + "', cp='" + centerCP.Text + "', city='" + centerCity.Text + "' WHERE ID=" + _id;
+                        break;
+                }
+
+                MySqlConnection cnn = new MySqlConnection(cadenaConexion);
+                MySqlCommand mc = new MySqlCommand(consulta, cnn);
+                cnn.Open();
+                mc.ExecuteNonQuery();
+                cnn.Close();
+
+                //Guardamos los literales (en los tres idiomas) en la tabla [LITERALS]
+
+                //NAMES
+                LiteralInsertOrUpdate(cadenaConexion, name_code, literalNameES, Constantes.languageCode_ESPAÑOL);
+                LiteralInsertOrUpdate(cadenaConexion, name_code, literalNameCA, Constantes.languageCode_CATALAN);
+                LiteralInsertOrUpdate(cadenaConexion, name_code, literalNameEN, Constantes.languageCode_INGLES);
+
+                //DESCRIPTIONS
+                LiteralInsertOrUpdate(cadenaConexion, description_code, literalNameES, Constantes.languageCode_ESPAÑOL);
+                LiteralInsertOrUpdate(cadenaConexion, description_code, literalNameCA, Constantes.languageCode_CATALAN);
+                LiteralInsertOrUpdate(cadenaConexion, description_code, literalNameEN, Constantes.languageCode_INGLES);
+
+                //INFOWINDOW
+                LiteralInsertOrUpdate(cadenaConexion, infoWindow_code, literalInfoWindowES, Constantes.languageCode_ESPAÑOL);
+                LiteralInsertOrUpdate(cadenaConexion, infoWindow_code, literalInfoWindowCA, Constantes.languageCode_CATALAN);
+                LiteralInsertOrUpdate(cadenaConexion, infoWindow_code, literalInfoWindowEN, Constantes.languageCode_INGLES);
+
+                //Si se ha guardado correctamente mostrar un confirm/popUp 
+                //y al aceptar, volver al listado (en este caso al de featured[por implementar]
+            }
+            else
+            {
+                //Marcar en rojo(border del textbox) los campos invalidos
+                //Mostrar mensaje debajo de cabecera con la info para el usuario
+            }
+        }
+        catch(Exception ex)
+        {
+            Session["error"] = ex;
+            this.SetLOG("ERROR", "Saving_Page", "EditCenter.aspx", "Center", "btnGuardar_Click()", ex.Message, DateTime.Now, 1);
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION, true);
+        }
+
+        Response.Redirect(Constantes.PAGE_TITLE_CenterList + Constantes.ASP_PAGE_EXTENSION, true);
+
+    }
+
+    protected bool LiteralInsertOrUpdate(string cadenaConexion, string code, string text, string languageCode)
+    {
+        string consulta = string.Empty;
+        switch (mode)
+        {
+            //Nuevo Literal
+            case "N":
+
+                consulta = "INSERT INTO LITERALES(TEXT_CODE, DESCRIPTION, LANGUAGE_CODE) VALUES ('" + code + "','" + text + "','" + languageCode + "')";
+                break;
+
+            //Modificar Literal
+            case "E":
+
+                consulta = "UPDATE LITERALES SET DESCRIPTION='" + text + "' WHERE TEXT_CODE='" + code + "' AND LANGUAGE_CODE='" + languageCode + "'";
+                break;
+        }
+
+        MySqlConnection cnn = new MySqlConnection(cadenaConexion);
+        MySqlCommand mc = new MySqlCommand(consulta, cnn);
+        cnn.Open();
+        mc.ExecuteNonQuery();
+        cnn.Close();
+
+        return true;
+    }
+
+}

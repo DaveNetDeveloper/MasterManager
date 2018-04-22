@@ -1,0 +1,1225 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Data;
+using System.Net.Mail;
+using System.Text;
+using MySql.Data;
+using System.Net;
+using System.Configuration;
+using MySql.Data.MySqlClient;
+using System.Globalization;
+using System.Threading;
+using System.Resources;
+using System.Collections;
+using System.Web.Configuration;
+ 
+public partial class EditExam : PageBase
+{
+    #region [ PROPERTIES ]
+
+    public string mode
+    {
+        get
+        {
+            return Session["mode"] as string;
+        }
+        set
+        {
+            Session["mode"] = (string)value;
+        }
+
+    }
+
+    public string Id
+    {
+        get
+        {
+            return Session["Id"] as string;
+        }
+        set
+        {
+            Session["Id"] = (string)value;
+        }
+
+    }
+
+    public DataTable dtConvocations
+    {
+        get
+        {
+            return Session["dtConvocations"] as DataTable;
+        }
+        set
+        {
+            Session["dtConvocations"] = (DataTable)value;
+        }
+    }
+
+    #endregion
+
+    #region [ PAGE EVENTS ]
+
+    protected void Page_Init(object sender, EventArgs e)
+    {
+        try
+        {
+            if (!this.IsPostBack)
+            {
+                if (Request.QueryString["M"] != null)
+                {
+                    mode = Request.QueryString["M"].ToString();
+                }
+                else { mode = string.Empty; }
+
+                if (Request.QueryString["Id"] != null)
+                {
+                    Id = Request.QueryString["Id"].ToString();
+                }
+                else { Id = string.Empty; }
+
+                ApplyLayout();
+            }
+            else
+            {
+                
+            }
+        }
+        catch (Exception ex)
+        {
+            Session["error"] = ex;
+
+            //((MasterPage)(this.Master)).SetLOG("ERROR", "Loading Page", "EditExam.aspx", "Exam", "Page_Init()", ex.Message, DateTime.Now, 1);
+
+           // this.SetLOG("ERROR", "Loading Page", "EditExam.aspx", "Exam", "Page_Init()", ex.Message, DateTime.Now, 1);
+
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+        }
+    }
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        try
+        { 
+            if (!this.IsPostBack)
+            {
+            
+            }
+            else
+            {
+
+            }
+
+            this.Title = "Edición Examen";
+        }
+        catch (Exception ex)
+        {
+            Session["error"] = ex;
+            //this.SetLOG("ERROR", "Loading Page", "EditExam.aspx", "Exam", "Page_Load()", ex.Message, DateTime.Now, 1);
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+        }
+    }
+
+    #endregion
+
+    #region [ EVENTS ]
+     
+
+    protected void btnVolver_Click(object sender, EventArgs e)
+    {
+        Response.Redirect(Constantes.PAGE_TITLE_ExamList + Constantes.ASP_PAGE_EXTENSION);
+    }
+
+    protected void btnGuardar_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            if (ValidateUserData())
+            {
+                //Obtenemos datos del formulario
+                string cadenaConexion = ConfigurationManager.ConnectionStrings["Connection_qsg265"].ConnectionString;
+
+                string consulta = string.Empty;
+                int _id = 0;
+
+                string name_code = Constantes.LITERALCODE_PRODUCT_NAME;
+                string description_code = Constantes.LITERALCODE_PRODUCT_DESCRIPTION;
+                string text_code = Constantes.LITERALCODE_PRODUCT_TEXT;
+                string distance_code = Constantes.LITERALCODE_PRODUCT_DISTANCE;
+
+                decimal price = decimal.Parse(ExamPrice.Text);
+                decimal price2 = decimal.Parse(ExamPrice2.Text);
+                decimal price3 = decimal.Parse(ExamPrice3.Text);
+
+                string exmaCode = examCode.Text;
+
+                string literalNameES = ExamNameES.Text;
+                string literalNameCA = ExamNameCA.Text;
+                string literalNameEN = ExamNameEN.Text;
+
+                string literalDescriptionES = ExamDescriptionES.Text;
+                string literalDescriptionCA = ExamDescriptionES.Text;
+                string literalDescriptionEN = ExamDescriptionES.Text;
+
+                string literalTextES = ExamTextES.Text;
+                string literalTextCA = ExamTextCA.Text;
+                string literalTextEN = ExamTextEN.Text;
+
+                string literalDistanceES = ExamDistanceES.Text;
+                string literalDistanceCA = ExamDistanceCA.Text;
+                string literalDistanceEN = ExamDistanceEN.Text;
+
+                int show_price = 0;
+                if (ExamShowPrice.Checked)
+                {
+                    show_price = 1;
+                }
+
+                //Ejecutamos acción de BD para la entidad ppal.
+                
+                switch (mode)
+                {
+                    //Nuevo
+                    case "N":
+                        _id = GetLastExamId() + 1;
+
+                        name_code = name_code + _id;
+                        description_code = description_code + _id;
+                        text_code = text_code + _id;
+                        distance_code = distance_code + _id;
+
+                        consulta = "INSERT INTO PRODUCT(id, category_id, name_code, slug, description_code, created, updated, weight, price1, path, code, distance_code, price2, price3, textdescrip_code, show_price) VALUES (" + _id + ", '1', '" + name_code + "',' ','" + description_code + "','" + DateTime.Now.ToString("yyyyMMdd HH:mm:ss") + "','" + DateTime.Now.ToString("yyyyMMdd HH:mm:ss") + "'," + 0 + "," + price.ToString().Replace(",", ".") + ", '', '" + exmaCode + "','" + distance_code + "'," + price2.ToString().Replace(",", ".") + "," + price2.ToString().Replace(",", ".") + "," + price3.ToString().Replace(",", ".") + ",'" + text_code + "'," + show_price + ")";
+                        break;
+
+                    //Editar
+                    case "E":
+                        _id = int.Parse(Id);
+
+                        name_code = name_code + _id;
+                        description_code = description_code + _id;
+                        text_code = text_code + _id;
+                        distance_code = distance_code + _id;
+
+                        consulta = "UPDATE PRODUCT SET updated='" + DateTime.Now.ToString("yyyyMMdd HH:mm:ss") + "', price1=" + price.ToString().Replace(",", ".") + ", code='" + exmaCode + "', price2=" + price2.ToString().Replace(",", ".") + ", price3=" + price3.ToString().Replace(",", ".") + ", show_price=" + show_price + " WHERE ID=" + _id;
+                        break;
+                }
+
+                MySqlConnection cnn = new MySqlConnection(cadenaConexion);
+                MySqlCommand mc = new MySqlCommand(consulta, cnn);
+                cnn.Open();
+                mc.ExecuteNonQuery();
+                cnn.Close();
+
+                //Guardamos los literales (en los tres idiomas) en la tabla [LITERALS]
+
+                //NAMES
+                LiteralInsertOrUpdate(cadenaConexion, name_code, literalNameES, Constantes.languageCode_ESPAÑOL);
+                LiteralInsertOrUpdate(cadenaConexion, name_code, literalNameCA, Constantes.languageCode_CATALAN);
+                LiteralInsertOrUpdate(cadenaConexion, name_code, literalNameEN, Constantes.languageCode_INGLES);
+
+                //DESCRIPTIONS
+                LiteralInsertOrUpdate(cadenaConexion, description_code, literalNameES, Constantes.languageCode_ESPAÑOL);
+                LiteralInsertOrUpdate(cadenaConexion, description_code, literalNameCA, Constantes.languageCode_CATALAN);
+                LiteralInsertOrUpdate(cadenaConexion, description_code, literalNameEN, Constantes.languageCode_INGLES);
+
+                //TEXT
+                LiteralInsertOrUpdate(cadenaConexion, text_code, literalTextES, Constantes.languageCode_ESPAÑOL);
+                LiteralInsertOrUpdate(cadenaConexion, text_code, literalTextCA, Constantes.languageCode_CATALAN);
+                LiteralInsertOrUpdate(cadenaConexion, text_code, literalTextEN, Constantes.languageCode_INGLES);
+
+                //DISTANCE
+                LiteralInsertOrUpdate(cadenaConexion, distance_code, literalDistanceES, Constantes.languageCode_ESPAÑOL);
+                LiteralInsertOrUpdate(cadenaConexion, distance_code, literalDistanceCA, Constantes.languageCode_CATALAN);
+                LiteralInsertOrUpdate(cadenaConexion, distance_code, literalDistanceEN, Constantes.languageCode_INGLES);
+
+
+                bool result = GuardarConvocatorias();
+
+                //Si se ha guardado correctamente mostrar un confirm/popUp 
+                //y al aceptar, volver al listado (en este caso al de featured[por implementar]
+            }
+            else
+            {
+                //Marcar en rojo(border del textbox) los campos invalidos
+                //Mostrar mensaje debajo de cabecera con la info para el usuario
+            }
+        }
+        catch (Exception ex)
+        {
+            Session["error"] = ex;
+            //this.SetLOG("ERROR", "Saving_Page", "EditExam.aspx", "Exam", "btnGuardar_Click()", ex.Message, DateTime.Now, 1);
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION, true);
+        }
+    }
+
+    #endregion
+
+    #region [ METHODS ]
+
+    protected Int32 GetLastExamId()
+    {
+        try
+        {
+            string cadenaConexion = "Database=qsg265;Data Source=localhost;User Id=dbUser;Password=123";
+            string Consulta = "SELECT max(Id)FROM EXAM";
+            MySqlConnection cnn = new MySqlConnection(cadenaConexion);
+            MySqlCommand mc = new MySqlCommand(Consulta, cnn);
+
+            cnn.Open();
+            MySqlDataReader dr = mc.ExecuteReader();
+
+            Int32 maxId = 0;
+            if (!dr.IsClosed)
+            {
+                while (dr.Read())
+                {
+                    if (!dr.IsDBNull(0))
+                    {
+                        maxId = dr.GetInt32(0);
+                    }
+                }
+            }
+            cnn.Close();
+
+            return maxId;
+        }
+        catch (Exception ex)
+        {
+            Session["error"] = ex;
+//            this.SetLOG("ERROR", "READING DB", "EditExam.aspx", "Exam", "GetLastCenterId()", ex.Message, DateTime.Now, 1);
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+            return 0;
+        }
+     }
+
+    protected Int32 GetLastConvocationd()
+    {
+        try
+        {
+            string cadenaConexion = "Database=qsg265;Data Source=localhost;User Id=dbUser;Password=123";
+            string Consulta = "SELECT max(id)FROM convocation";
+            MySqlConnection cnn = new MySqlConnection(cadenaConexion);
+            MySqlCommand mc = new MySqlCommand(Consulta, cnn);
+
+            cnn.Open();
+            MySqlDataReader dr = mc.ExecuteReader();
+
+            Int32 maxId = 0;
+            if (!dr.IsClosed)
+            {
+                while (dr.Read())
+                {
+                    if (!dr.IsDBNull(0))
+                    {
+                        maxId = dr.GetInt32(0);
+                    }
+                }
+            }
+            cnn.Close();
+
+            return maxId;
+        }
+        catch (Exception ex)
+        {
+            Session["error"] = ex;
+            //this.SetLOG("ERROR", "READING DB", "EditExam.aspx", "Exam", "GetLastConvocationd()", ex.Message, DateTime.Now, 1);
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+            return 0;
+        }
+
+     }
+
+    protected void FillExam()
+    {
+        try
+        {
+           string cadenaConexion = ConfigurationManager.ConnectionStrings["Connection_qsg265"].ConnectionString;
+
+           string Consulta = "SELECT  PRODUCT.id, PRODUCT.name_code, PRODUCT.description_code, PRODUCT.price1,PRODUCT.price2, PRODUCT.price3, PRODUCT.path, PRODUCT.code, PRODUCT.created, PRODUCT.updated, PRODUCT.distance_code,  PRODUCT.textdescrip_code, PRODUCT.show_price, literalName.LANGUAGE_CODE AS LANGUAGE_CODE_FOR_NAME, IFNULL(literalName.DESCRIPTION, '') AS NAME, literalName.TEXT_CODE AS TEXT_CODE_FOR_NAME, literalDescription.LANGUAGE_CODE AS LANGUAGE_CODE_FOR_DESCRIPTION, IFNULL(literalDescription.DESCRIPTION, '') AS DESCRIPTION, literalDescription.TEXT_CODE AS TEXT_CODE_FOR_DESCRIPTION, literalDistance.LANGUAGE_CODE AS LANGUAGE_CODE_FOR_DISTANCE, IFNULL(literalDistance.DESCRIPTION, '') AS DISTANCE, 	literalDistance.TEXT_CODE AS TEXT_CODE_FOR_DISTANCE, literalText.LANGUAGE_CODE AS LANGUAGE_CODE_FOR_TEXT, IFNULL(literalText.DESCRIPTION, '') AS TEXT, 	literalText.TEXT_CODE AS TEXT_CODE_FOR_TEXT  FROM PRODUCT  LEFT JOIN LITERALES AS literalName ON literalName.TEXT_CODE = PRODUCT.name_code AND PRODUCT.Id=" + Id + " LEFT JOIN LITERALES AS literalDescription ON literalDescription.TEXT_CODE = PRODUCT.description_code AND PRODUCT.Id =" + Id + " AND literalDescription.LANGUAGE_CODE = literalName.LANGUAGE_CODE  LEFT JOIN LITERALES AS literalDistance ON literalDistance.TEXT_CODE = PRODUCT.distance_code AND PRODUCT.Id =" + Id + " AND literalDistance.LANGUAGE_CODE = literalDescription.LANGUAGE_CODE  LEFT JOIN LITERALES AS literalText ON literalText.TEXT_CODE = PRODUCT.textdescrip_code AND PRODUCT.Id =" + Id + " AND literalText.LANGUAGE_CODE = literalDistance.LANGUAGE_CODE  WHERE PRODUCT.Id =" + Id;
+
+           MySqlConnection cnn = new MySqlConnection(cadenaConexion);
+           MySqlCommand mc = new MySqlCommand(Consulta, cnn);
+
+           cnn.Open();
+           MySqlDataReader dr = mc.ExecuteReader();
+
+           if (!dr.IsClosed)
+            {
+                while (dr.Read())
+                {
+                    //ES
+                    if (!dr.IsDBNull(13) && dr.GetString(13).ToString() == Constantes.languageCode_ESPAÑOL)
+                    {
+                        //Name
+                        if (!dr.IsDBNull(14))
+                        {
+                            ExamNameES.Text = dr.GetString(14).ToString();
+                        }
+                        //Description
+                        if (!dr.IsDBNull(17))
+                        {
+                            ExamDescriptionES.Text = dr.GetString(17).ToString();
+                        }
+                        //Distance
+                        if (!dr.IsDBNull(20))
+                        {
+                            ExamDistanceES.Text = dr.GetString(20);
+                        }
+                        //Text
+                        if (!dr.IsDBNull(23))
+                        {
+                            ExamTextES.Text = dr.GetString(23);
+                        }
+                    }//CA
+                    else if (!dr.IsDBNull(13) && dr.GetString(13).ToString() == Constantes.languageCode_CATALAN)
+                    {
+                        //Name
+                        if (!dr.IsDBNull(14))
+                        {
+                            ExamNameCA.Text = dr.GetString(14).ToString();
+                        }
+                        //Description
+                        if (!dr.IsDBNull(17))
+                        {
+                            ExamDescriptionCA.Text = dr.GetString(17).ToString();
+                        }
+                        //Distance
+                        if (!dr.IsDBNull(20))
+                        {
+                            ExamDistanceCA.Text = dr.GetString(20);
+                        }
+                        //Text
+                        if (!dr.IsDBNull(23))
+                        {
+                            ExamTextCA.Text = dr.GetString(23);
+                        }
+                    }//EN
+                    else if (!dr.IsDBNull(13) && dr.GetString(13).ToString() == Constantes.languageCode_INGLES)
+                    {
+                        //Name
+                        if (!dr.IsDBNull(14))
+                        {
+                            ExamNameEN.Text = dr.GetString(14).ToString();
+                        }
+                        //Description
+                        if (!dr.IsDBNull(17))
+                        {
+                            ExamDescriptionEN.Text = dr.GetString(17).ToString();
+                        }
+                        //Distance
+                        if (!dr.IsDBNull(20))
+                        {
+                            ExamDistanceEN.Text = dr.GetString(20);
+                        }
+                        //Text
+                        if (!dr.IsDBNull(23))
+                        {
+                            ExamTextEN.Text = dr.GetString(23);
+                        }
+                    }
+
+                    //code field
+                    if (!dr.IsDBNull(7))
+                    {
+                        examCode.Text = dr.GetString(7);
+                    }
+
+                    //price 1 field
+                    if (!dr.IsDBNull(3))
+                    {
+                        ExamPrice.Text = dr.GetString(3);
+                    }
+
+                    //price 2 field
+                    if (!dr.IsDBNull(4))
+                    {
+                        ExamPrice2.Text = dr.GetString(4);
+                    }
+
+                    //price 3 field
+                    if (!dr.IsDBNull(5))
+                    {
+                        ExamPrice3.Text = dr.GetString(5).ToString();
+                    }
+
+                    //Updated field
+                    if (!dr.IsDBNull(12))
+                    {
+                        ExamShowPrice.Checked = dr.GetBoolean(12);
+                    }
+
+                }
+
+                FillConvocation();
+
+                FillTypeForConvocation();
+
+                FillCentersForConvocation();
+
+            }
+            cnn.Close();
+         }
+        catch (Exception ex)
+        {
+            Session["error"] = ex;
+            //this.SetLOG("ERROR", "Loading Page", "EditExam.aspx", "Exam", "FillExam()", ex.Message, DateTime.Now, 1);
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+        }
+    }
+     
+    protected void EmptyFields()
+    {
+        examCode.Text = String.Empty;
+        
+        ExamNameES.Text = String.Empty;
+        ExamNameCA.Text = String.Empty;
+        ExamNameEN.Text = String.Empty;
+
+        ExamDescriptionES.Text = String.Empty;
+        ExamDescriptionCA.Text = String.Empty;
+        ExamDescriptionEN.Text = String.Empty;
+
+        ExamPrice.Text = String.Empty;
+        ExamPrice2.Text = String.Empty;
+        ExamPrice3.Text = String.Empty;
+
+        ExamShowPrice.Checked = false;
+
+        ExamTextES.Text = String.Empty;
+        ExamTextCA.Text = String.Empty;
+        ExamTextEN.Text = String.Empty;
+
+        ExamDistanceES.Text = String.Empty;
+        ExamDistanceCA.Text = String.Empty;
+        ExamDistanceEN.Text = String.Empty;
+
+    }
+    
+    protected void ApplyLayout()
+    {
+        try
+        {
+            switch (mode)
+            {
+                case "N":
+                    btnGuardar.Visible = true;
+
+                    btnVolver.Visible = true;
+
+                    examCode.Enabled = true;
+
+                    ExamNameES.Enabled = true;
+                    ExamNameCA.Enabled = true;
+                    ExamNameEN.Enabled = true;
+
+                    ExamDescriptionES.Enabled = true;
+                    ExamDescriptionCA.Enabled = true;
+                    ExamDescriptionEN.Enabled = true;
+
+                    ExamPrice.Enabled = true;
+                    ExamPrice2.Enabled = true;
+                    ExamPrice3.Enabled = true;
+
+                    ExamShowPrice.Enabled = true;
+
+                    ExamTextES.Enabled = true;
+                    ExamTextCA.Enabled = true;
+                    ExamTextEN.Enabled = true;
+
+                    ExamDistanceES.Enabled = true;
+                    ExamDistanceCA.Enabled = true;
+                    ExamDistanceEN.Enabled = true;
+
+                    EmptyFields();
+                
+                break;
+
+                case "E":
+                    btnGuardar.Visible = true;
+                    btnVolver.Visible = true;
+
+                    
+                    examCode.Enabled = true;
+
+                    ExamNameES.Enabled = true;
+                    ExamNameCA.Enabled = true;
+                    ExamNameEN.Enabled = true;
+
+                    ExamDescriptionES.Enabled = true;
+                    ExamDescriptionCA.Enabled = true;
+                    ExamDescriptionEN.Enabled = true;
+
+                    ExamPrice.Enabled = true;
+                    ExamPrice2.Enabled = true;
+                    ExamPrice3.Enabled = true;
+
+                    ExamShowPrice.Enabled = true;
+
+                    ExamTextES.Enabled = true;
+                    ExamTextCA.Enabled = true;
+                    ExamTextEN.Enabled = true;
+
+                    ExamDistanceES.Enabled = true;
+                    ExamDistanceCA.Enabled = true;
+                    ExamDistanceEN.Enabled = true;
+                    
+                    if(Id != string.Empty)
+                    {
+                        FillExam();
+                    }
+
+                break;
+
+                case "V":
+                    btnGuardar.Visible = false;
+                    
+                    btnVolver.Visible = true;
+
+                    examCode.Enabled = false;
+
+                    ExamNameES.Enabled = false;
+                    ExamNameCA.Enabled = false;
+                    ExamNameEN.Enabled = false;
+
+                    ExamDescriptionES.Enabled = false;
+                    ExamDescriptionCA.Enabled = false;
+                    ExamDescriptionEN.Enabled = false;
+
+                    ExamPrice.Enabled = false;
+                    ExamPrice2.Enabled = false;
+                    ExamPrice3.Enabled = false;
+
+                    ExamShowPrice.Enabled = false;
+
+                    ExamTextES.Enabled = false;
+                    ExamTextCA.Enabled = false;
+                    ExamTextEN.Enabled = false;
+
+                    ExamDistanceES.Enabled = false;
+                    ExamDistanceCA.Enabled = false;
+                    ExamDistanceEN.Enabled = false;
+                    
+
+
+                    if (Id != null && Id != string.Empty)
+                    {
+                        FillExam();
+                    }
+                
+                break;
+
+                default:
+                break;
+            }
+        }
+        catch(Exception ex)
+        {
+            Session["error"] = ex;
+            this.SetLOG("ERROR", "Loading Page", "EditExam.aspx", "Exam", "ApplyLayout()", ex.Message, DateTime.Now, 1);
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+
+        }
+    }
+    
+    protected bool ValidateUserData()
+    {
+        bool validationResult = true;
+
+        ExamNameES.BorderColor = System.Drawing.ColorTranslator.FromHtml("#e2e2e2");
+        examCode.BorderColor = System.Drawing.ColorTranslator.FromHtml("#e2e2e2");
+        ExamDescriptionES.BorderColor = System.Drawing.ColorTranslator.FromHtml("#e2e2e2");
+        ExamDistanceES.BorderColor = System.Drawing.ColorTranslator.FromHtml("#e2e2e2");
+        ExamPrice.BorderColor = System.Drawing.ColorTranslator.FromHtml("#e2e2e2");
+        ExamPrice2.BorderColor = System.Drawing.ColorTranslator.FromHtml("#e2e2e2");
+        ExamPrice3.BorderColor = System.Drawing.ColorTranslator.FromHtml("#e2e2e2");
+
+        if (ExamNameES.Text.Trim() == String.Empty)
+        {
+            validationResult = false;
+            ExamNameES.BorderColor = System.Drawing.Color.Red;
+        }
+
+        if (examCode.Text.Trim() == String.Empty)
+        {
+            validationResult = false;
+            examCode.BorderColor = System.Drawing.Color.Red;
+        }
+
+        if (ExamDescriptionES.Text.Trim() == String.Empty)
+        {
+            validationResult = false;
+            ExamDescriptionES.BorderColor = System.Drawing.Color.Red;
+        }
+
+        if (ExamDistanceES.Text.Trim() == String.Empty)
+        {
+            validationResult = false;
+            ExamDistanceES.BorderColor = System.Drawing.Color.Red;
+        }
+
+        if (ExamPrice.Text.Trim() == String.Empty)
+        {
+            validationResult = false;
+            ExamPrice.BorderColor = System.Drawing.Color.Red;
+        }
+
+        if (ExamPrice2.Text.Trim() == String.Empty)
+        {
+            validationResult = false;
+            ExamPrice2.BorderColor = System.Drawing.Color.Red;
+        }
+
+        if (ExamPrice3.Text.Trim() == String.Empty)
+        {
+            validationResult = false;
+            ExamPrice3.BorderColor = System.Drawing.Color.Red;
+        }
+
+        return validationResult;
+    }
+
+    protected bool LiteralInsertOrUpdate(string cadenaConexion, string code, string text, string languageCode)
+    {
+        try
+        {
+            string consulta = string.Empty;
+            switch (mode)
+            {
+                //Nuevo Literal
+                case "N":
+
+                    consulta = "INSERT INTO LITERALES(TEXT_CODE, DESCRIPTION, LANGUAGE_CODE) VALUES ('" + code + "','" + text + "','" + languageCode + "')";
+                    break;
+
+                //Modificar Literal
+                case "E":
+
+                    consulta = "UPDATE LITERALES SET DESCRIPTION='" + text + "' WHERE TEXT_CODE='" + code + "' AND LANGUAGE_CODE='" + languageCode + "'";
+                    break;
+            }
+
+            MySqlConnection cnn = new MySqlConnection(cadenaConexion);
+            MySqlCommand mc = new MySqlCommand(consulta, cnn);
+            cnn.Open();
+            mc.ExecuteNonQuery();
+            cnn.Close();
+
+            return true;
+
+        }
+        catch(Exception ex)
+        {
+            Session["error"] = ex;
+            throw ex;
+        }
+    }
+
+    #endregion
+
+    #region [ REPEATER FOR CONVOCATION ]
+
+    protected void FillTypeForConvocation()
+    {
+        try
+        {
+            DataTable dtTypes= new DataTable();
+
+            dtTypes = new DataTable();
+            dtTypes.Columns.AddRange(new DataColumn[2] { new DataColumn("ID"), new DataColumn("TEXT") });
+
+            dtTypes.Rows.Add(0, string.Empty);
+            dtTypes.Rows.Add(1, Constantes.TIPOCONVOCATORIAEXAMEN_TEORICA);
+            dtTypes.Rows.Add(2, Constantes.TIPOCONVOCATORIAEXAMEN_PRACTICA);
+
+            ddlType.DataSource = dtTypes;
+            ddlType.DataBind();
+        }
+        catch (Exception ex)
+        {
+            Session["error"] = ex;
+            throw ex;
+        }
+    }
+
+    protected void FillCentersForConvocation()
+    {
+        try
+        {
+            string cadenaConexion = ConfigurationManager.ConnectionStrings["Connection_qsg265"].ConnectionString;
+            string language_code = CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToString();
+
+            string Consulta = " SELECT CENTER.id, literalName.DESCRIPTION FROM CENTER LEFT JOIN LITERALES AS literalName ON literalName.TEXT_CODE = CENTER.name_code AND literalName.LANGUAGE_CODE ='" + language_code + "' ORDER BY CENTER.id DESC";
+            
+            MySqlConnection cnn = new MySqlConnection(cadenaConexion);
+            MySqlCommand mc = new MySqlCommand(Consulta, cnn);
+
+            cnn.Open();
+            MySqlDataReader dr = mc.ExecuteReader();
+
+            DataTable dtCentros = new DataTable();
+            
+            dtCentros.Columns.AddRange(new DataColumn[2] { new DataColumn("ID"), new DataColumn("NOMBRE") });
+
+            dtCentros.Rows.Add(0, string.Empty);
+            if (!dr.IsClosed)
+            {
+                while (dr.Read())
+                {
+                    dtCentros.Rows.Add(dr.GetInt32(0), dr.GetString(1));
+                }
+            }
+            cnn.Close();
+            
+            ddlCentros.DataSource = dtCentros;
+            ddlCentros.DataBind();
+
+        }
+        catch (Exception ex)
+        {
+            Session["error"] = ex;
+            throw ex;
+        }
+
+    }
+
+    protected void FillConvocation()
+    {
+        try
+        {
+            DataTable dtConvocation = new DataTable();
+            dtConvocation = GetConvocations();
+
+            if (dtConvocation != null)
+            {
+                // dtConvocation = (DataTable)ViewState["ConvocationTable"];
+
+                rptConvocations.DataSource = dtConvocation;
+                rptConvocations.DataBind();
+                rptConvocations.Visible = true;
+            }
+            else
+            {
+                rptConvocations.DataSource = null;
+                rptConvocations.DataBind();
+                rptConvocations.Visible = false;
+            }
+
+            //txtEmpName.Text = string.Empty;
+            // txtEmail.Text = string.Empty;
+            //txtCity.Text = string.Empty;
+            //txtAddress.Text = string.Empty;
+
+        }
+        catch (Exception ex)
+        {
+            Session["error"] = ex;
+            throw ex;
+        }
+
+    }
+
+    protected void btnAddConvocation_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            if(ValidateUserDataForConvocation())
+            { 
+                int id = GetLastConvocationd() + 1;
+
+                string center = ddlCentros.SelectedItem.Text;
+
+                string fechaInicio = txtFechaInicio.Text;
+
+                string fechaExamen = txtFechaExamen.Text;
+
+                string horario = timepicker_noPeriodLabels.Value;
+
+                string days = GetSelectedDays();
+
+                string type = ddlType.SelectedItem.Text;
+
+                dtConvocations.Rows.Add(GetLastConvocationd() + 1, Id, center, fechaInicio, days, horario, fechaExamen, 1, type, false);
+
+                rptConvocations.DataSource = dtConvocations;
+                rptConvocations.DataBind();
+            }
+            else
+            {
+
+            }
+        }
+        catch (Exception ex)
+        {
+            Session["error"] = ex;
+           // this.SetLOG("ERROR", "Adding_Convocation", "EditExam.aspx", "Exam", "btnAddConvocation_Click()", ex.Message, DateTime.Now, 1);
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION, true);
+        }
+    }
+
+    protected bool ValidateUserDataForConvocation()
+    {
+        bool validationResult = true;
+
+        ddlCentros.BorderColor = System.Drawing.ColorTranslator.FromHtml("#e2e2e2");
+        txtFechaInicio.BorderColor = System.Drawing.ColorTranslator.FromHtml("#e2e2e2");
+        timepicker_noPeriodLabels.Style.Add("border-color", "#e2e2e2");
+        txtFechaExamen.BorderColor = System.Drawing.ColorTranslator.FromHtml("#e2e2e2");
+        ddlType.BorderColor = System.Drawing.ColorTranslator.FromHtml("#e2e2e2");
+
+        chkLunes.Style.Add("border", "solid 1px #e2e2e2");
+        chkMartes.Style.Add("border", "solid 1px #e2e2e2");
+        chkMiercoles.Style.Add("border", "solid 1px #e2e2e2");
+        chkJueves.Style.Add("border", "solid 1px #e2e2e2");
+        chkViernes.Style.Add("border", "solid 1px #e2e2e2");
+        chkSabado.Style.Add("border", "solid 1px #e2e2e2");
+        chkDomingo.Style.Add("border", "solid 1px #e2e2e2");
+           
+
+        if (ddlCentros.SelectedItem.Text == String.Empty)
+        {
+            validationResult = false;
+            ddlCentros.BorderColor = System.Drawing.Color.Red;
+        }
+
+        if (txtFechaInicio.Text.Trim() == String.Empty)
+        {
+            validationResult = false;
+            txtFechaInicio.BorderColor = System.Drawing.Color.Red;
+        }
+
+        if (timepicker_noPeriodLabels.Value.Trim() == String.Empty)
+        {
+            validationResult = false;
+            timepicker_noPeriodLabels.Style.Add("border-color", "red");
+        }
+
+        if (txtFechaExamen.Text.Trim() == String.Empty)
+        {
+            validationResult = false;
+            txtFechaExamen.BorderColor = System.Drawing.Color.Red;
+        }
+
+        if (ddlType.SelectedItem.Text == String.Empty)
+        {
+            validationResult = false;
+            ddlType.BorderColor = System.Drawing.Color.Red;
+        }
+        
+        if(!SomeDayIsSelected())
+        {
+            validationResult = false;
+
+            chkLunes.Style.Add("border", "solid 1px red");
+            chkMartes.Style.Add("border", "solid 1px red");
+            chkMiercoles.Style.Add("border", "solid 1px red");
+            chkJueves.Style.Add("border", "solid 1px red");
+            chkViernes.Style.Add("border", "solid 1px red");
+            chkSabado.Style.Add("border", "solid 1px red");
+            chkDomingo.Style.Add("border", "solid 1px red");
+        }
+
+        return validationResult;
+    }
+
+    private bool SomeDayIsSelected()
+    {
+        try
+        {
+            if (chkLunes.Checked)
+            {
+                return true;
+            }
+            if (chkMartes.Checked)
+            {
+                return true;
+            }
+            if (chkMiercoles.Checked)
+            {
+                return true;
+            }
+            if (chkJueves.Checked)
+            {
+                return true;
+            }
+            if (chkViernes.Checked)
+            {
+                return true;
+            }
+            if (chkSabado.Checked)
+            {
+                return true;
+            }
+            if (chkDomingo.Checked)
+            {
+                return true;
+            }
+
+            return false;
+        }
+        catch (Exception ex)
+        {
+            Session["error"] = ex;
+            throw ex;
+        }
+    }
+
+    private string GetSelectedDays()
+    {
+        try
+        {
+            string days = string.Empty;
+
+            if(chkLunes.Checked)
+            {
+                days += chkLunes.Text.ToLower() + ", ";
+            }
+            if (chkMartes.Checked)
+            {
+                days += chkMartes.Text.ToLower() + ", ";
+            }
+            if (chkMiercoles.Checked)
+            {
+                days += chkMiercoles.Text.ToLower() + ", ";
+            }
+            if (chkJueves.Checked)
+            {
+                days += chkJueves.Text.ToLower() + ", ";
+            }
+            if (chkViernes.Checked)
+            {
+                days += chkViernes.Text.ToLower() + ", ";
+            }
+            if (chkSabado.Checked)
+            {
+                days += chkSabado.Text.ToLower() + ", ";
+            }
+            if (chkDomingo.Checked)
+            {
+                days += chkDomingo.Text.ToLower() + ", ";
+            }
+
+            if (days != string.Empty)
+            {
+                days = days.Substring(0, days.Length - 2);
+            }
+
+            return days;
+        }
+        catch (Exception ex)
+        {
+            Session["error"] = ex;
+            throw ex;
+        }
+    }
+
+    private DataTable GetConvocations()
+    {
+        try
+        {
+            string cadenaConexion = ConfigurationManager.ConnectionStrings["Connection_qsg265"].ConnectionString;
+
+            //CAMBIAR ESTO, METERLO COMO PROPIEDAD EN LA PAGINA BASE(O MASTER PAGE) "GetLanguageCode()
+            string language_code = CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToString();
+
+            string Consulta = "SELECT convocation.id, convocation.product_id, literalProductName.DESCRIPTION AS product_name, convocation.center_id, literalcenterName.DESCRIPTION AS center_name, convocation.start, convocation.days, convocation.schedule, convocation.exam, convocation.created, convocation.updated, convocation.enabled, convocation.type  FROM convocation INNER JOIN CENTER ON CENTER.id = convocation.center_id LEFT JOIN LITERALES AS literalcenterName ON literalcenterName.TEXT_CODE = CENTER.name_code INNER JOIN PRODUCT ON PRODUCT.id = convocation.product_id LEFT JOIN LITERALES AS literalProductName ON literalProductName.TEXT_CODE = PRODUCT.name_code WHERE convocation.product_id = " + Id + " AND literalProductName.LANGUAGE_CODE= '" + language_code + "' AND literalcenterName.LANGUAGE_CODE = '" + language_code + "'";
+            
+            MySqlConnection cnn = new MySqlConnection(cadenaConexion);
+            MySqlCommand mc = new MySqlCommand(Consulta, cnn);
+
+            cnn.Open();
+            MySqlDataReader dr = mc.ExecuteReader();
+
+            dtConvocations = new DataTable();
+            dtConvocations.Columns.AddRange(new DataColumn[10] { new DataColumn("ID"), new DataColumn("PRODUCT_NAME"), new DataColumn("CENTER_NAME"), new DataColumn("START_DATE"), new DataColumn("DAYS"), new DataColumn("HORARIO"), new DataColumn("FECHA_EXAMEN"), new DataColumn("ACTIVE"), new DataColumn("TYPE"), new DataColumn("chkSelect") });
+
+            if (!dr.IsClosed)
+            {
+                while (dr.Read())
+                {
+                    dtConvocations.Rows.Add(dr.GetInt32(0), dr.GetString(2), dr.GetString(4), dr.GetDateTime(5).ToShortDateString(), dr.GetString(6), dr.GetString(7), dr.GetDateTime(8).ToShortDateString(), dr.GetString(11), dr.GetString(12), false);
+                }
+            }
+            cnn.Close();
+
+        }
+        catch (Exception ex)
+        {
+            Session["error"] = ex;
+            throw ex;
+        }
+
+        return dtConvocations;       
+    }
+
+    protected bool GuardarConvocatorias()
+    {
+        try
+        {
+            if (EliminarConvocatorias(ConfigurationManager.ConnectionStrings["Connection_qsg265"].ConnectionString))
+            {
+                if(dtConvocations.Rows.Count > 0)
+                { 
+                    string drID = string.Empty;
+                    string drProductName = string.Empty;
+                    string drCenterName = string.Empty;
+                    string drStartDate = string.Empty;
+                    string drDays = string.Empty;
+                    string drHorario = string.Empty;
+                    string drFechaExamen = string.Empty;
+                    string drType = string.Empty;
+                    string drActive = string.Empty;
+
+                    foreach(DataRow dr in dtConvocations.Rows)
+                    {
+                    
+                        drID= dr["ID"].ToString();
+                        drProductName = dr["PRODUCT_NAME"].ToString();
+                        drCenterName = dr["CENTER_NAME"].ToString();
+                        drStartDate = dr["START_DATE"].ToString();
+                        drDays = dr["DAYS"].ToString();
+                        drHorario= dr["HORARIO"].ToString();
+                        drFechaExamen= dr["FECHA_EXAMEN"].ToString();
+                        drActive= dr["ACTIVE"].ToString();
+                        drType= dr["TYPE"].ToString();
+
+                        string consulta = "INSERT INTO convocation(id, product_id, center_id, start, days, schedule, exam, created,updated, enabled, type) ";
+                        consulta = consulta + "VALUES(" + drID + ", " + Id + ", " + 2 + ", '" + drStartDate + "', '" + drDays + "','" + drHorario + "', '" + drFechaExamen + "', '" + DateTime.Now.ToShortDateString() + "', '" + DateTime.Now.ToShortDateString() + "', '" + int.Parse(drActive) + "', '" + drType + "')";
+         
+                        MySqlConnection cnn = new MySqlConnection(ConfigurationManager.ConnectionStrings["Connection_qsg265"].ConnectionString);
+                        MySqlCommand mc = new MySqlCommand(consulta, cnn);
+                        cnn.Open();
+                        mc.ExecuteNonQuery();
+                        cnn.Close();
+
+                    }
+
+
+                }
+
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        catch (Exception ex)
+        {
+            Session["error"] = ex;
+            throw ex;
+        }
+    }
+
+    protected bool EliminarConvocatorias(string cadenaConexion)
+    {
+        try
+        {
+            string consulta = "DELETE FROM convocation WHERE product_id =" + Id;
+        
+            MySqlConnection cnn = new MySqlConnection(cadenaConexion);
+            MySqlCommand mc = new MySqlCommand(consulta, cnn);
+            cnn.Open();
+            mc.ExecuteNonQuery();
+            cnn.Close();
+            
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Session["error"] = ex;
+            throw ex;
+        }
+    }
+
+    #endregion
+
+    protected void rptConvocations_ItemDataBound(object sender, RepeaterItemEventArgs e)
+    {
+        try
+        {
+            if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
+            {
+                DataRowView dv = (DataRowView)e.Item.DataItem;
+                DataRow dr = dv.Row;
+
+                if (dr["DAYS"].ToString().Contains("monday") || dr["DAYS"].ToString().Contains("lunes"))
+                {
+                    CheckBox chk = (CheckBox)e.Item.FindControl("chkDBLunes");
+                    chk.Checked = true;
+                }
+                if (dr["DAYS"].ToString().Contains("tuesday") || dr["DAYS"].ToString().Contains("martes"))
+                {
+                    CheckBox chk = (CheckBox)e.Item.FindControl("chkDBMartes");
+                    chk.Checked = true;
+                }
+                if (dr["DAYS"].ToString().Contains("wednesday") || dr["DAYS"].ToString().Contains("miercoles"))
+                {
+                    CheckBox chk = (CheckBox)e.Item.FindControl("chkDBMiercoles");
+                    chk.Checked = true;
+                }
+                if (dr["DAYS"].ToString().Contains("thursday") || dr["DAYS"].ToString().Contains("jueves"))
+                {
+                    CheckBox chk = (CheckBox)e.Item.FindControl("chkDBJueves");
+                    chk.Checked = true;
+                }
+                if (dr["DAYS"].ToString().Contains("friday") || dr["DAYS"].ToString().Contains("viernes"))
+                {
+                    CheckBox chk = (CheckBox)e.Item.FindControl("chkDBViernes");
+                    chk.Checked = true;
+                }
+                if (dr["DAYS"].ToString().Contains("saturday") || dr["DAYS"].ToString().Contains("sabado"))
+                {
+                    CheckBox chk = (CheckBox)e.Item.FindControl("chkDBSabado");
+                    chk.Checked = true;
+                }
+                if (dr["DAYS"].ToString().Contains("sunday") || dr["DAYS"].ToString().Contains("domingo"))
+                {
+                    CheckBox chk = (CheckBox)e.Item.FindControl("chkDBDomingo");
+                    chk.Checked = true;
+                }
+
+                if (dr["ACTIVE"].ToString().ToLower() == "true" || dr["ACTIVE"].ToString() == "1")
+                {
+                    CheckBox chk = (CheckBox)e.Item.FindControl("chkDBActive");
+                    chk.Checked = true;
+                }
+                 
+            }
+         }
+        catch (Exception ex)
+        {
+            Session["error"] = ex;
+            //this.SetLOG("ERROR", "Printing_Convocation", "EditExam.aspx", "Exam", "rptConvocations_ItemDataBound()", ex.Message, DateTime.Now, 1);
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION, true);
+        }
+
+    }
+    
+    protected void btnEliminar_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            int rowIndex = ((RepeaterItem)((Button)sender).NamingContainer).ItemIndex;
+
+            HiddenField hdnId = ((HiddenField)rptConvocations.Items[rowIndex].FindControl("hdnID"));
+
+            int convocationID = int.Parse(hdnId.Value);
+
+            dtConvocations.Rows.RemoveAt(rowIndex);
+            rptConvocations.DataSource = dtConvocations;
+            rptConvocations.DataBind();
+
+        }
+        catch (Exception ex)
+        {
+            Session["error"] = ex;
+            this.SetLOG("ERROR", "Deleting_Convocation", "EditExam.aspx", "Exam", "btnEliminar_Click()", ex.Message, DateTime.Now, 1);
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION, true);
+        }
+    }
+
+}

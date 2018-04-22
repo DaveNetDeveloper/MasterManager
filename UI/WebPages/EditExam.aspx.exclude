@@ -1,0 +1,540 @@
+﻿<%@ Page  Title="EditExam" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true" CodeFile="EditExam.aspx.cs" Inherits="EditExam" %>
+
+<%@ Import Namespace="System.Resources" %>
+
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajax" %>
+
+<asp:Content runat="server" ID="HeaderContent" ContentPlaceHolderID="HeadContent">
+     
+    <script type="text/javascript" src="js/jquery-1.9.0.min.js"></script>
+    <script type="text/javascript" src="js/jquery-ui-1.10.0.custom.min.js"></script>
+    <link rel="stylesheet" href="css/jquery-ui-1.10.0.custom.min.css" type="text/css"/>
+    <!-- 
+       
+        <script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-24327002-1']);
+        _gaq.push(['_trackPageview']);
+
+        (function () {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+        function plusone_clicked() {
+            $('#thankyou').fadeIn(300);
+        }
+         
+    </script> -->
+
+</asp:Content>
+
+<asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
+     
+   <br />
+     
+    <div>
+         <asp:Button Visible="false" OnClick="btnGuardar_Click" runat="server" style="display:none;float: right;width: 105px;height:26px;font-family:Verdana;border: 1px solid #D8D8D8 !important;background: #F2F2F2;background: -webkit-linear-gradient(top, #F5F5F5, #F1F1F1);background: -moz-linear-gradient(top, #F5F5F5, #F1F1F1);background: -ms-linear-gradient(top, #F5F5F5, #F1F1F1);background: -o-linear-gradient(top, #F5F5F5, #F1F1F1);-webkit-transition: border .20s;-moz-transition: border .20s;-o-transition: border .20s;transition: border .20s;" id="btnGuardar" class="action" Text="Guardar" />
+        <div id="emptyDiv" runat="server" style="width:25px;float: right;">&nbsp</div>
+        <asp:Button id="btnVolver" OnClick="btnVolver_Click" Text="Volver" runat="server" style="float: right; width: 105px;height:26px;font-family:Verdana;border: 1px solid #D8D8D8 !important;background: #F2F2F2;background: -webkit-linear-gradient(top, #F5F5F5, #F1F1F1);background: -moz-linear-gradient(top, #F5F5F5, #F1F1F1);background: -ms-linear-gradient(top, #F5F5F5, #F1F1F1);background: -o-linear-gradient(top, #F5F5F5, #F1F1F1);-webkit-transition: border .20s;-moz-transition: border .20s;-o-transition: border .20s;transition: border .20s;" />
+    </div>
+     
+
+    <h1 class="main"> </h1>
+    <div style="float: left;"></div>
+
+    <%--FIELD [CODE]--%>
+    <div style="text-align:left;" class="form_row clearfix link">
+         <table>
+            <tr>
+                <td style="width: 200px;"><label  class="control-label required" for="examCode">Código:</label> </td>
+                <td>
+        <asp:TextBox  BorderWidth="1px" runat="server" type="text" id="examCode" name="examCode"></asp:TextBox> </td>
+            </tr>
+        </table>
+    </div>
+
+    <br /> <br />
+
+     <%--FIELD [CODE]--%>
+    <div id="NameTabs">
+		
+        <ul>
+			<li><a href="#tabsName-1">Español</a></li>
+			<li><a href="#tabsName-2">Catalán</a></li>
+			<li><a href="#tabsName-3">Inglés</a></li>
+        </ul>
+         
+        <div id="tabsName-1">
+                    <%--<p>Texto de prueba</p>--%>
+                    <div class="form_row clearfix title">
+                 <table>
+            <tr>
+                <td style="width: 200px;"><label class="control-label required" for="ExamNameES">Nombre:</label> </td>
+                <td>
+                <asp:TextBox BorderWidth="1px" runat="server" type="text" ID="ExamNameES"></asp:TextBox> </td>
+            </tr>
+        </table>
+            </div>
+                </div>
+        <div id="tabsName-2">
+                    <%--<p>Texto de prueba</p>--%>
+                    <div class="form_row clearfix title">
+                 <table>
+            <tr>
+                <td style="width: 200px;"><label class="control-label required" for="ExamNameCA">Nom:</label> </td>
+                <td>
+                <asp:TextBox BorderWidth="1px" runat="server" type="text" ID="ExamNameCA"></asp:TextBox> </td>
+            </tr>
+        </table>
+            </div>
+                </div>
+        <div id="tabsName-3">
+                    <%--<p>Texto de prueba</p>--%>
+                <div class="form_row clearfix title">
+                     <table>
+            <tr>
+                <td style="width: 200px;"><label class="control-label required" for="ExamNameEN">Name:</label> </td>
+                <td>
+                    <asp:TextBox BorderWidth="1px" runat="server" type="text" ID="ExamNameEN"></asp:TextBox> </td>
+            </tr>
+        </table>
+                </div>
+		</div>
+
+		<script type="text/javascript">
+		    $(function () {
+		        $('#NameTabs').tabs();
+		    });
+		</script>
+
+    </div>
+    <br /><br />
+
+    <%--Tabs FIELD DESCRIPCIÓN--%>
+    <div id="DescriptionTabs">
+		
+    <ul>
+			<li><a href="#tabsDescription-1">Español</a></li>
+			<li><a href="#tabsDescription-2">Catalán</a></li>
+			<li><a href="#tabsDescription-3">Inglés</a></li>
+				
+		</ul>
+    
+  
+    <div id="tabsDescription-1">
+                    <%--<p>Texto de prueba</p>--%>
+                    <div class="form_row clearfix title">
+                 <table>
+            <tr>
+                <td style="width: 200px;"><label class="control-label required" for="ExamDescriptionES">Descripción:</label> </td>
+                <td>
+                <asp:TextBox runat="server" BorderWidth="1px" type="text" ID="ExamDescriptionES"></asp:TextBox> </td>
+            </tr>
+        </table>
+            </div>
+    </div>
+    <div id="tabsDescription-2">
+                    <%--<p>Texto de prueba</p>--%>
+                        <div class="form_row clearfix title">
+                     <table>
+            <tr>
+                <td style="width: 200px;"><label class="control-label required" for="ExamDescriptionCA">Descripció:</label> </td>
+                <td>
+                    <asp:TextBox runat="server" BorderWidth="1px" type="text" ID="ExamDescriptionCA"></asp:TextBox> </td>
+            </tr>
+        </table>
+                </div>
+    </div>
+    <div id="tabsDescription-3">
+                    <%--<p>Texto de prueba</p>--%>
+                <div class="form_row clearfix title">
+                     <table>
+            <tr>
+                <td style="width: 200px;"><label class="control-label required" for="ExamDescriptionEN">Description:</label> </td>
+                <td>
+                    <asp:TextBox BorderWidth="1px" runat="server" type="text" ID="ExamDescriptionEN"></asp:TextBox> </td>
+            </tr>
+        </table>
+    </div>
+    </div>
+
+	<script type="text/javascript">
+		$(function () {
+		    $('#DescriptionTabs').tabs();
+		});
+	</script>
+    
+    </div>   
+    
+    <br /><br />
+    <%--Tabs FIELD TEXTO --%>
+    <div id="TextTabs">
+    <ul>
+			<li><a href="#tabText-1">Español</a></li>
+			<li><a href="#tabText-2">Catalán</a></li>
+			<li><a href="#tabText-3">Inglés</a></li>
+				
+		</ul>
+         
+    <div id="tabText-1">
+                    <%--<p>Texto de prueba</p>--%>
+                    <div class="form_row clearfix title">
+                 <table>
+            <tr>
+                <td style="width: 200px;"><label class="control-label required" for="ExamTextES">Texto:</label> </td>
+                <td>
+                <asp:TextBox runat="server" BorderWidth="1px" type="text" ID="ExamTextES"></asp:TextBox> </td>
+            </tr>
+        </table>
+            </div>
+    </div>
+    <div id="tabText-2">
+                    <%--<p>Texto de prueba</p>--%>
+                        <div class="form_row clearfix title">
+                    <table>
+            <tr>
+                <td style="width: 200px;"> <label class="control-label required" for="ExamTextCA">Text:</label> </td>
+                <td>
+                    <asp:TextBox runat="server" BorderWidth="1px" type="text" ID="ExamTextCA"></asp:TextBox> </td>
+            </tr>
+        </table>
+                </div>
+    </div>
+    <div id="tabText-3">
+                    <%--<p>Texto de prueba</p>--%>
+                <div class="form_row clearfix title">
+                     <table>
+            <tr>
+                <td style="width: 200px;"><label class="control-label required" for="ExamTextEN">Text:</label> </td>
+                <td>
+                    <asp:TextBox BorderWidth="1px" runat="server" type="text" ID="ExamTextEN"></asp:TextBox> </td>
+            </tr>
+        </table>
+    </div>
+    </div>
+
+	<script type="text/javascript">
+	    $(function () {
+	        $('#TextTabs').tabs();
+	    });
+	</script>
+    
+    </div>   
+    
+    <br /><br />
+    <%--Tabs FIELD DISTANCIA --%>
+    <div id="DistanceTabs">
+    <ul>
+			<li><a href="#tabDistance-1">Español</a></li>
+			<li><a href="#tabDistance-2">Catalán</a></li>
+			<li><a href="#tabDistance-3">Inglés</a></li>
+				
+		</ul>
+         
+    <div id="tabDistance-1">
+                    <%--<p>Texto de prueba</p>--%>
+                    <div class="form_row clearfix title">
+                <table>
+            <tr>
+                <td style="width: 200px;"> <label class="control-label required" for="ExamDistanceES">Distancia:</label> </td>
+                <td>
+                <asp:TextBox runat="server" BorderWidth="1px" type="text" ID="ExamDistanceES"></asp:TextBox> </td>
+            </tr>
+        </table>
+            </div>
+    </div>
+    <div id="tabDistance-2">
+                    <%--<p>Texto de prueba</p>--%>
+                        <div class="form_row clearfix title">
+                    <table>
+            <tr>
+                <td style="width: 200px;"> <label class="control-label required" for="ExamDistanceCA">Distancia:</label> </td>
+                <td>
+                    <asp:TextBox runat="server" BorderWidth="1px" type="text" ID="ExamDistanceCA"></asp:TextBox> </td>
+            </tr>
+        </table>
+                </div>
+    </div>
+    <div id="tabDistance-3">
+                    <%--<p>Texto de prueba</p>--%>
+                <div class="form_row clearfix title">
+                     <table>
+            <tr>
+                <td style="width: 200px;"><label class="control-label required" for="ExamDistanceEN">Distance:</label> </td>
+                <td>
+                    <asp:TextBox BorderWidth="1px" runat="server" type="text" ID="ExamDistanceEN"></asp:TextBox> </td>
+            </tr>
+        </table>
+    </div>
+    </div>
+
+	<script type="text/javascript">
+	    $(function () {
+	        $('#DistanceTabs').tabs();
+	    });
+	</script>
+    
+    </div>   
+    
+    <br /><br />
+    <%--Tabs FIELD MOSTRAR PRECIO--%>
+    <div style="text-align:left;" class="form_row clearfix link">
+         <table>
+            <tr>
+                <td style="width: 200px;"><label  class="control-label required" for="ExamShowPrice">Mostrar Precio:</label> </td>
+                <td>
+        <asp:CheckBox runat="server" type="text" id="ExamShowPrice"></asp:CheckBox></td>
+            </tr>
+        </table>
+    </div>
+
+    <br /><br />
+
+    <%--Tabs FIELD PRECIO--%>
+    <div style="text-align:left;" class="form_row clearfix link">
+        <table>
+            <tr>
+                <td style="width: 200px;"> <label  class="control-label required" for="ExamPrice">Precio Generico:</label> </td>
+                <td>
+        <asp:TextBox  BorderWidth="1px" runat="server" type="text" id="ExamPrice" name="ExamPrice"></asp:TextBox> </td>
+            </tr>
+        </table>
+    </div>
+
+    <br /><br />
+    <%--Tabs FIELD PRECIO 2--%>
+    <div style="text-align:left;" class="form_row clearfix link">
+         <table>
+            <tr>
+                <td style="width: 200px;"><label  class="control-label required" for="ExamPrice2">Precio Prácticas Motor:</label> </td>
+                <td>
+        <asp:TextBox  BorderWidth="1px" runat="server" type="text" id="ExamPrice2" name="ExamPrice2"></asp:TextBox> </td>
+            </tr>
+        </table>
+    </div>
+     
+    <br /> <br />
+    <%--Tabs FIELD PRECIO 3--%>
+    <div style="text-align:left;" class="form_row clearfix link">
+            <table>
+            <tr>
+                <td style="width: 200px;"> <label class="control-label required" for="ExamPrice3">Precio Prácticas Vela:</label> </td>
+                <td>
+            <asp:TextBox BorderWidth="1px" runat="server" Enabled="false" ID="ExamPrice3"></asp:TextBox> </td>
+            </tr>
+        </table>
+    </div>
+
+    <br /><br />
+    
+    <!-- CONVOCATIONS -->
+    <h3>CLASES TEÓRICAS Y CONVOCATORIAS DE EXÁMEN</h3>
+    
+    <br /><br />
+
+    <asp:UpdatePanel ID="upPanael" runat="server">
+    <ContentTemplate>
+        <div><div>
+            <table style="width: 100%;">
+
+                <tr style="text-align:center; background-color: white; height: 25px">
+                    
+                    <th style="font-size: 12px; text-align: center;">
+                        LOCALIZACiÓN
+                    </th>
+                    <th style="font-size: 12px; text-align: center;">
+                        FECHA DE INICIO
+                    </th>
+                    <th style="font-size: 12px; text-align: center;">
+                        DÍAS
+                    </th>
+                    <th style="font-size: 12px; text-align: center;">
+                        HORÄRIO
+                    </th>
+                    <th style="font-size: 12px; text-align: center;">
+                        FECHA DE EXÁMEN
+                    </th>
+                    <th style="font-size: 12px; text-align: center;">
+                        TIPO
+                    </th>
+                     <th style="font-size: 12px; text-align: center;">
+                        ACTIVO
+                    </th>
+                    <th>
+                        &nbsp;
+                    </th>
+                </tr>
+
+                <asp:Repeater OnItemDataBound="rptConvocations_ItemDataBound" ID="rptConvocations" runat="server">
+                        <ItemTemplate>
+                        <tr style="font-size: xx-small; margin: 0; padding: 0; border: 1px solid gray; background-color: lightgray;">
+                            
+                            <td style="text-align: center;">
+                                <asp:TextBox Enabled="false" ID="txtCenterName" runat="server" Width="150px" MaxLength="50" Text='<%#Eval("CENTER_NAME") %>'></asp:TextBox>
+                                <asp:HiddenField Value='<%#Eval("ID") %>'  ID="hdnID" runat="server" Visible="false"></asp:HiddenField>
+                            </td>
+                            <td style="text-align: center;">
+                                 <asp:TextBox  Width="100px" Enabled="false" ID="txtFechaInicio" runat="server"  MaxLength="50" Text='<%#Eval("START_DATE") %>'></asp:TextBox>
+                            </td>
+                            <td>
+                                <!-- <asp:TextBox ID="txtDias" runat="server" Width="150px" MaxLength="50" Text='<%#Eval("DAYS") %>'></asp:TextBox> -->
+                                  <table>
+                                     <tr><td>
+                                     <asp:CheckBox Width="100" Enabled="false" runat="server" ID="chkDBLunes" Text="Lunes" />
+                                    </td></tr>
+                                 
+                                     <tr><td>
+                                     <asp:CheckBox Enabled="false" runat="server" ID="chkDBMartes" Text="Martes" />
+                                         </td>
+                                     </tr>
+                                     <tr><td>
+                                         <asp:CheckBox Enabled="false"  runat="server" ID="chkDBMiercoles" Text="Miercoles"/>
+                                         </td>
+                                    </tr>
+                                         <tr><td>
+                                         <asp:CheckBox Enabled="false" runat="server" ID="chkDBJueves" Text="Jueves"/>
+                                         </td>
+                                     </tr>
+                                     <tr><td>
+                                         <asp:CheckBox Enabled="false" runat="server" ID="chkDBViernes" Text="Viernes"/>
+                                         </td>
+                                     </ tr>
+                                     <tr><td>
+                                         <asp:CheckBox Enabled="false" runat="server" ID="chkDBSabado" Text="Sábado"/>
+                                         </td>
+                                     </tr>
+                                         <tr><td>
+                                         <asp:CheckBox Enabled="false" runat="server" ID="chkDBDomingo" Text="Domingo"/>
+                                         </td>
+                                     </tr>
+                                </table>
+                            </td>
+                            <td style="text-align: center;">
+                                 <asp:TextBox Enabled="false" ID="txtHorario" runat="server" Width="120px" MaxLength="50" Text='<%#Eval("HORARIO") %>'></asp:TextBox>
+
+                            </td>
+
+                            <td style="text-align: center;">
+                                <asp:TextBox Enabled="false"  Width="100px" ID="TextBox1" runat="server" MaxLength="50" Text='<%#Eval("FECHA_EXAMEN") %>'></asp:TextBox>
+                            </td>
+
+                            <td style="text-align: center;">
+                                <asp:TextBox Enabled="false"  ID="TextBox2" runat="server" Width="100px" MaxLength="50" Text='<%#Eval("TYPE") %>'></asp:TextBox>
+                            </td>
+
+                            <td style="text-align:center;">
+                                <asp:CheckBox Enabled="false" runat="server" ID="chkDBActive" />
+                            </td>
+
+                             <td style="padding-left: 15px;text-align:center;">
+                                 <button title="Eliminar" runat="server" style="width: 75px;height: 22px" id="btneliminar" class="action"><img src="Images/png/delete.png"  onmouseover="hoverGuardar(this);" onmouseout="unhoverGuardar(this);" style="background-repeat: no-repeat;background-size: contain;margin-left: 1px;height: 15px;width: 16px;padding-top: 1px;" class="label" /></button>
+                            </td>
+
+                        </tr>
+                        </ItemTemplate>
+                </asp:Repeater>
+
+                <tr style="background-color: ghostwhite; border-color: lightgray; border: 1px solid lightgray;">
+                   
+                    <td style="text-align:center;">
+                        <asp:DropDownList ID="ddlCentros" DataTextField="NOMBRE" DataValueField="ID" runat="server"></asp:DropDownList>
+                    </td>
+                    <td style="text-align:center;">
+                        <asp:TextBox Width="100px" BorderWidth="1px" runat="server" ID="txtFechaInicio"></asp:TextBox>
+                        <asp:ImageButton ImageAlign="TextTop" ImageUrl="Images/Calendar_scheduleHS.png" runat="server" ID="btnCalendarFechaInicio" />
+                        <ajax:CalendarExtender runat="server" TargetControlID="txtFechaInicio" Format="dd/MM/yyyy" PopupButtonID="btnCalendarFechaInicio"></ajax:CalendarExtender>
+                    </td>
+                    <td  style="padding: 10px;text-align:left;">
+                         <table style="font-size: xx-small; margin: 0; padding: 0;">
+                                 <tr><td>
+
+                                 <asp:CheckBox runat="server" ID="chkLunes" Text="Lunes" />
+                                </td></tr>
+                                 
+                                 <tr><td>
+                                 <asp:CheckBox runat="server" ID="chkMartes" Text="Martes" />
+                                     </td>
+                                 </tr>
+                                 <tr><td>
+                                     <asp:CheckBox runat="server" ID="chkMiercoles" Text="Miercoles"/>
+                                     </td>
+                                </tr>
+                                     <tr><td>
+                                     <asp:CheckBox runat="server" ID="chkJueves" Text="Jueves"/>
+                                     </td>
+                                 </tr>
+                                 <tr><td>
+                                     <asp:CheckBox runat="server" ID="chkViernes" Text="Viernes"/>
+                                     </td>
+                                 </ tr>
+                                 <tr><td>
+                                     <asp:CheckBox runat="server" ID="chkSabado" Text="Sábado"/>
+                                     </td>
+                                 </tr>
+                                     <tr><td>
+                                     <asp:CheckBox runat="server" ID="chkDomingo" Text="Domingo"/>
+                                     </td>
+                                 </tr>
+                         </table>
+                    </td>
+                    <td style="text-align:center;">
+                        
+                          <div style="text-align:center;">
+                            <p>
+                                <input type="text" style="width: 70px;" runat="server" id="timepicker_noPeriodLabels" value="10:30" />
+                            </p>
+                            <script type="text/javascript">
+                                $(document).ready(function () {
+                                    $('#timepicker_noPeriodLabels').timepicker({
+                                        showPeriodLabels: true
+                                    });
+                                });
+                            </script>
+        
+		                    <pre id="script_noPeriodLabels" style="display: none" class="code">$('#timepicker').timepicker({ showPeriodLabels: false, });
+		                    </pre>
+                        </div>
+
+                    </td>
+
+                    <td style="text-align:center;">
+                        <asp:TextBox Width="100px"  BorderWidth="1px" runat="server" ID="txtFechaExamen"></asp:TextBox>
+                        <asp:ImageButton ImageAlign="TextTop" ImageUrl="Images/Calendar_scheduleHS.png" runat="server" ID="btnCalendarFechaExamen" />
+                        <ajax:CalendarExtender runat="server" TargetControlID="txtFechaExamen" Format="dd/MM/yyyy" PopupButtonID="btnCalendarFechaExamen"></ajax:CalendarExtender>
+                    </td>
+
+         
+                    <td style="text-align:center;">
+                        <asp:DropDownList ID="ddlType" Width="100px" DataTextField="TEXT" DataValueField="ID"  runat="server"></asp:DropDownList>
+                    </td>
+                     
+                    <td style="text-align:center;">
+                        <asp:CheckBox runat="server" type="text" id="chkActive"></asp:CheckBox> 
+                    </td>
+
+                     <td style="padding-left: 15px;text-align:center;">
+                         <button title="Añadir" runat="server" style="width: 75px;height: 22px" id="btnAdd" class="action"><img src="Images/png/add.png"  onmouseover="hoverGuardar(this);" onmouseout="unhoverGuardar(this);" style="background-repeat: no-repeat;background-size: contain;margin-left: 1px;height: 15px;width: 16px;padding-top: 1px;" class="label" /></button>
+                        
+                    </td>
+
+                </tr>
+
+            </table>
+        </div>
+        </div>
+
+        <br /><br />
+
+    </ContentTemplate>
+</asp:UpdatePanel>
+       
+     <%-- MODAL PANEL--%>
+    <div id="myModal" style="visibility:hidden;" class="reveal-modal">
+        <asp:Image Width="260" Height="275" runat="server" ID="FeatureImage" />
+        <a class="close-reveal-modal">×</a>
+    </div>
+
+</asp:Content>

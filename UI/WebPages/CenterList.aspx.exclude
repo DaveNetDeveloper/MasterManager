@@ -1,0 +1,326 @@
+﻿<%@ Page Title="CenterList" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeFile="CenterList.aspx.cs" Inherits="CenterList" %>
+
+<%@ Import Namespace="System.Resources" %>
+
+<asp:Content runat="server" ID="HeaderContent" ContentPlaceHolderID="HeadContent">
+
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+ 
+    <script type = "text/javascript">
+
+        //AJAX for web method
+        function Ver() {
+            $.ajax({
+                type: "POST",
+                url: "Center.aspx/8",
+                data: '{name: "param"}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: OnSuccess,
+                failure: function (response) {
+                    alert('FAIL: ' + response.d);
+
+                }
+            });
+        }
+        function OnSuccess(response) {
+            //alert(response.d);
+
+            window.location.href = 'http://localhost:55064/EditCenter.aspx?param=FromWebMethod&selectedIds=' + response.d;
+
+        }
+
+        function Eliminar() {
+
+            /*if (confirm("¿Está seguro de que quiere eliminar los elementos seleccionados?")) {
+                __doPostBack('Eliminar', 'Eliminar');
+
+            }*/
+
+            $.ajax({
+                type: "POST",
+                url: "CenterList.aspx/Eliminar",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: OnSuccessEliminar,
+                failure: function (response) {
+
+                    //alert('FAIL');
+                }
+            });
+        }
+
+        function OnSuccessEliminar(response) {
+            //alert('response.d --> ' + response.d);
+
+            var confirmText = '';
+            var alertText = '';
+
+            if (response.d > 0) {
+
+                confirmText = '¿Está seguro de que quiere eliminar el elemento seleccionados?';
+                alertText = '';
+            }
+            else if (response.d == -1) {
+
+                confirmText = '¿Está seguro de que quiere eliminar los elementos seleccionados?';
+                alertText = '';
+            }
+            else if (response.d == 0) {
+                //confirmText = 'Al menos un elemento de la lista ha de estar seleccionado.';
+                alertText = 'Al menos un elemento de la lista ha de estar seleccionado.';
+            }
+
+            if (alertText == '' && confirm(confirmText)) {
+                __doPostBack('Eliminar', 'Eliminar');
+            }
+            else {
+                alert(alertText.toString());
+            }
+
+        }
+
+        //Page print
+        function Imprimir() {
+            //window.print();
+            var ficha = document.getElementById('divToPrint'); var ventimp = window.open(' ', 'popimpr'); ventimp.document.write(ficha.innerHTML); ventimp.document.close(); ventimp.print(); ventimp.close();
+        }
+
+</script> 
+
+<script type="text/javascript">
+
+        $(function () {
+            $("#<%= gvCenter.ClientID %> tr").hover(
+                function () {
+
+                    if ($(this).hasClass('pgr')) {
+
+                        //nothing
+                        //  alert('tiene pgr');
+                    }
+                    else {
+                        //alert('no tiene pgr, le añadimos highlight');
+                        $(this).addClass('highlight');
+                    }
+
+                },
+                function () {
+                    $(this).removeClass('highlight');
+                }
+            )
+        })
+
+    </script>
+     
+   <%--Page content Styles --%>
+    <style type="text/css">
+
+    .marginrRight 
+    { 
+        float: right; 
+    }
+     
+     
+</style>
+           
+    <link href='http://fonts.googleapis.com/css?family=PT+Sans' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Molengo' rel='stylesheet' type='text/css'>
+  
+    <!-- Using TipTip jQuery plugin for the tooltips 
+    <link rel="stylesheet" href="tiptip.css" type="text/css"  media="screen">
+    <script src="jquery.tiptip.js"></script> 
+     -->
+
+    <!-- Style Buttons -->
+    <link rel="stylesheet" href="css/css3-buttons.css" type="text/css"  media="screen" />
+   
+    <script type="text/javascript">
+
+    function onClickVer() {
+          $.ajax({
+              //async: false,
+              url: "Center.aspx/Ver",
+              //data: '{param="param"}',
+              contentType: "application/json; charset=utf-8",
+              dataType: "json",
+              success: OnSuccess,
+              failure: function (response) {
+                  alert('error');
+                  alert(response.d);
+              }
+          });
+      }
+
+    function OnSuccess(response) {
+          window.location.href = 'http://localhost:55064/EditCenter.aspx?mode=V&selectedIds=' + response.d;
+      }
+
+    function Editar() {
+        __doPostBack('Editar', 'Editar');
+    }
+
+    function Crear() {
+        __doPostBack('Crear', 'Crear');
+    }
+
+    function Ver() {
+        __doPostBack('Ver', 'Ver');
+    }
+
+    function ExportarExcel() {
+
+        __doPostBack('ExportarExcel', 'ExportarExcel');
+    }
+
+    function FiltrarListado() {
+        __doPostBack('FiltrarListado', 'FiltrarListado');
+    }
+
+    </script>
+    
+    <!-- Kept Scroll Window--> 
+    <script>
+        window.onload = function () {
+            var pos = window.name || 0;
+            window.scrollTo(0, pos);
+        }
+        window.onunload = function () {
+            window.name = self.pageYOffset || (document.documentElement.scrollTop + document.body.scrollTop);
+        }
+    </script>
+     
+</asp:Content>
+
+<asp:Content runat="server" ID="FeaturedContent" ContentPlaceHolderID="FeaturedContent">
+    <section class="featured" style="display:none;margin-top: 86px;">
+        <div class="content-wrapper" style="display:none;max-width: 100%; padding-left: 82px; height: 40px;">
+            <!-- SELECCIÓN DE IDIOMA -->
+            <div style="text-align: right; float: right; margin-right: 57px;" id="languageBar">
+
+                <asp:Label ID="LinkButton1" style="color: #4b6c9e;font-weight: bold;font-family: Tahoma;font-size: 11px" runat="server" Text="" />
+                <br/>
+                <asp:Button ID="lbSpanish" UseSubmitBehavior="false" CssClass="btnLanguage" runat="server" OnClick="LbSpanish_Click" Text="ES" />
+                <asp:Button ID="lbCatalan" UseSubmitBehavior="false" CssClass="btnLanguage" runat="server" OnClick="LbCatalan_Click" Text="CA" />
+                <asp:Button ID="lbEnglish" UseSubmitBehavior="false" CssClass="btnLanguage" runat="server" OnClick="LbEnglish_Click" Text="EN" />
+            </div>
+
+           <div style="float:left; font-family: Arial;  color: white;   font-weight: bold; font-size: 14px;margin-top: 8px;">
+                <asp:Literal runat="server" meta:resourcekey="literalTitulo2" id="literalTitulo2"></asp:Literal> 
+            </div>
+           
+        </div>
+    </section>
+</asp:Content>
+
+<asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
+    <div>
+        <table style="width:100%">
+            <tr>
+                <td>
+                      <!-- TEST EJECUCIÓN AJAX -->
+                    <div style="display:none;" >
+                        <input id="btnGetTime" class="btnLanguage" style="width: auto;"" type="button" value="Método Ajax" onclick = "Ver()" />
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+  
+   <!-- BOTONES DE ACCIÓN SOBRE GRIDVIEW -->
+    <div style="display:none;" class="buttons">
+ 
+        <button runat="server" id="btnCrear" onclick="javascript:Crear();" style="float: left;" class="action yellow"><span id="spanCrear"  style="width: 50px;color:white;text-shadow: 0 1px 0 #FF7300 !important;">Crear</span></button>
+        
+        <div style="width:30px; float: left;">&nbsp</div>
+        
+        <button runat="server" id="btnEditar" onclick="javascript:Editar()" style="" class="action" ><span style="width: 50px;"  class="label">Editar</span></button>
+        
+        <div style="width:5px; float: left;">&nbsp</div>
+        
+        <button  runat="server" id="btnVer" onclick="javascript:Ver()" style="" class="action" ><span style="width: 50px;" class="label">Ver</span></button>
+        <%--<button class="action"><span class="label">Cancelar</span></button>--%>
+
+        <div style="width:30px; float: left;">&nbsp</div>
+
+        <button runat="server" onclick="javascript:Eliminar();" id="btnEliminar" style="float: left;" class="action"><span style="width: 50px;" class="label">Eliminar</span></button>
+
+        <div style="float:right;">
+            
+            <!-- <asp:Label runat="server" ID="lbltxtSerach" Text="... a buscar:"></asp:Label> -->
+            
+            <input name="txtSearch" id="txtSearch"  class="searchInput" type="text" size="40" placeholder="..." />
+            <asp:Button ID="btnSubmit" style="height: 29px; width:80px; padding-top: 4px; font-size: 15px;" runat="server" CssClass="blue" Text="Search" />
+
+        </div>
+    </div>
+
+    <asp:UpdatePanel ID="upPanael" runat="server" ClientIDMode="Static">
+    <ContentTemplate>
+
+    <div id="divToPrint">
+        <asp:GridView   ID="gvCenter" ClientIDMode="Static"
+                        FooterStyle-CssClass="mGrid"
+                        HeaderStyle-Font-Bold="true"
+                        HeaderStyle-BackColor="Transparent" 
+                        HeaderStyle-HorizontalAlign="Center" 
+                        HeaderStyle-Height="40px" 
+                        DataKeyNames="ID"
+                        runat="server"
+                        AutoGenerateColumns="False" 
+                        GridLines="Horizontal"
+                        AllowPaging="true"
+                        OnPageIndexChanging = "OnPaging"
+                        AllowSorting="true"
+                        OnSorting="gvCenter_Sorting"          
+                        CssClass="mGrid"  
+                        PagerStyle-CssClass="pgr" 
+                        PageSize="15"
+                        ShowFooter="false" 
+                        AutoGenerateSelectButton="False"
+                        PagerStyle-Font-Bold="true" 
+                        PagerStyle-HorizontalAlign="Center" 
+                        PagerStyle-Height="40px"       
+                        OnRowDataBound="gvCenter_RowDataBound"
+                        meta:resourcekey="gvCenter" >
+        <PagerSettings Mode="NumericFirstLast" PageButtonCount="5" Position="Bottom" />
+        <HeaderStyle Font-Bold="true" BackColor="DimGray" />
+        <Columns>
+            <asp:TemplateField>
+                <ItemStyle HorizontalAlign="Center" Width="20px" />
+                <HeaderTemplate> 
+                        <asp:CheckBox AutoPostBack="true" OnCheckedChanged="chkSelAll_Checked" Enabled="true"  ID="chkSel" CssClass="chkSel" runat="server" />
+                </HeaderTemplate>
+
+                <ItemTemplate>
+                    <asp:CheckBox AutoPostBack="true" OnCheckedChanged="chkSel_Checked" Enabled="true"  ID="chkSel" CssClass="chkSel" runat="server" />
+                </ItemTemplate>
+            </asp:TemplateField>
+
+            <asp:BoundField Visible="false" ItemStyle-HorizontalAlign="Center" SortExpression="ID" DataField="ID" HeaderText="ID" ItemStyle-Width="20px" ItemStyle-Height="35"/>
+            <asp:BoundField HeaderStyle-HorizontalAlign="Left" ItemStyle-HorizontalAlign="Left" SortExpression="NAME" DataField="NAME" HeaderText="NOMBRE" ItemStyle-Width="100px" ItemStyle-Height="35" />
+            <asp:BoundField HeaderStyle-HorizontalAlign="Left" ItemStyle-HorizontalAlign="Left" SortExpression="Description" DataField="Description" HeaderText="DESCRIPCIÓN" ItemStyle-Width="150px" ItemStyle-Height="35" />
+            <asp:BoundField HeaderStyle-HorizontalAlign="Left" ItemStyle-HorizontalAlign="Left" SortExpression="INFO_WINDOW" DataField="INFO_WINDOW" HeaderText="INFORMACIÓN" ItemStyle-Width="150px" ItemStyle-Height="35" />
+            <asp:BoundField HeaderStyle-HorizontalAlign="Left" ItemStyle-HorizontalAlign="Left" SortExpression="CP" DataField="CP" HeaderText="CÓDIGO POSTAL" ItemStyle-Width="50px" ItemStyle-Height="35" />
+            <asp:BoundField HeaderStyle-HorizontalAlign="Left" ItemStyle-HorizontalAlign="Left" SortExpression="City" DataField="City" HeaderText="CIUDAD" ItemStyle-Width="75px" ItemStyle-Height="35" />
+
+        </Columns>
+        <FooterStyle BackColor="#c1c1c1" BorderWidth="1" ForeColor="#c1c1c1" />
+        </asp:GridView>
+    </div>
+
+
+    </ContentTemplate>
+    </asp:UpdatePanel>
+    
+    <br /><br />
+
+    <asp:Label ID="lblNoRecords" Text="No records to display" runat="server" Visible="false" ForeColor="red"></asp:Label>
+    <asp:Button Visible="false" runat="server" ID="btnExportExcel" style="border-radius:0px" Text="Exportar a Excel" CssClass="blue" Width="150px" OnClick="btnExportExcel_Click" meta:resourcekey="ExportToExcel" />
+
+    <br /><br />
+   
+</asp:Content>

@@ -1,0 +1,916 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Data;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.IO;
+using System.Net.Mail;
+using System.Text;
+using MySql.Data;
+using System.Net;
+using System.Configuration;
+using MySql.Data.MySqlClient;
+using System.Globalization;
+using System.Threading;
+using System.Resources;
+using System.Collections;
+using System.Web.UI.HtmlControls;
+
+public partial class ExamList : PageBase
+{
+    protected void Page_Init(object sender, EventArgs e)
+    {
+        try
+
+        {
+        
+            if (!this.IsPostBack)
+            {
+                Session["SelectedExamID"] = null;
+                Session["Checkall_selected"] = false;
+            
+                SetUserAgentCulture();
+
+                Session["rm"] = (ResourceManager)Application["RM"];
+            }
+           else
+           {
+
+
+           }
+            }
+        catch (Exception ex)
+        {
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+            Session["error"] = ex;
+
+        }
+    }
+
+    protected void SetUserAgentCulture()
+    {
+         try
+
+        {
+
+        //Todos los lengaujes del navegador
+        /*StringBuilder sb = new StringBuilder();
+        string _lng = string.Empty;
+        foreach (string lng in Request.UserLanguages)
+        {
+            sb.Append(lng);
+            sb.Append("<br />");
+        }*/
+
+        //Label1.Text = sb.ToString();
+
+        //if (Session["CultureInfoByUser"] == null)
+        //{ 
+            Session["CultureInfoByUser"] = CultureInfo.CreateSpecificCulture(Request.UserLanguages[0]);//new CultureInfo(Constantes.CULTURE_INFO_INGLES);
+       /* }
+        else
+        {
+
+        }*/
+             }
+        catch (Exception ex)
+        {
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+            Session["error"] = ex;
+
+        }
+    }
+     
+    protected override void InitializeCulture()
+    {
+         try
+
+        {
+
+        //La cultura debería de venir de la información del usuario logeado en el sistema y seteada en la Session["CultureInfoByUser"]
+        //CultureInfo culture = new CultureInfo(Constantes.CULTURE_INFO_CATALAN);
+        if (null != Session["CultureInfoByUser"] && Session["CultureInfoByUser"].ToString().Length > 2)
+        {
+                Thread.CurrentThread.CurrentCulture = (CultureInfo)Session["CultureInfoByUser"];
+                Thread.CurrentThread.CurrentUICulture = (CultureInfo)Session["CultureInfoByUser"];
+        }
+        base.InitializeCulture();
+             }
+        catch (Exception ex)
+        {
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+            Session["error"] = ex;
+
+        }
+    }
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        try
+        {
+            if (!this.IsPostBack)
+            {
+                //Session["dtExam"] = null;
+                if (null != Request["__EVENTTARGET"] && Request["__EVENTTARGET"].Contains("ctl00$ExamContent$"))
+                {
+                    dtExam = CargarGridView();
+                    gvExam.DataSource = dtExam;
+                    //setCheckInGridView();
+                    gvExam.DataBind();
+                }
+                else
+                {
+
+                    dtExam = CargarGridView();
+                    gvExam.DataSource = dtExam;
+                    gvExam.DataBind();
+                }
+
+                Session["SelectedExam"] = 0;
+            }
+            else
+            {
+                gvExam.DataSource = (DataTable)Session["dtExam"];
+
+                if (Request["__EVENTTARGET"] != null && Request["__EVENTTARGET"] == Constantes.ACTIONS_LIST_PAGE_CREATE)
+                {
+                    Crear();
+                }
+                else if (Request["__EVENTTARGET"] != null && Request["__EVENTTARGET"] == Constantes.ACTIONS_LIST_PAGE_VIEW)
+                {
+                    VerSeleccionado();
+                }
+                else if (Request["__EVENTTARGET"] != null && Request["__EVENTTARGET"] == Constantes.ACTIONS_LIST_PAGE_EDIT)
+                {
+                    EditarSeleccionado();
+                }
+                else if (Request["__EVENTTARGET"] != null && Request["__EVENTTARGET"] == Constantes.ACTIONS_LIST_EXPORT_EXCEL)
+                {
+                    ExportExcel();
+                }
+                else if (Request["__EVENTTARGET"] != null && Request["__EVENTTARGET"] == Constantes.ACTIONS_LIST_FILTRAR_LISTADO)
+                {
+                    HtmlInputText txtSearch = (HtmlInputText)Master.FindControl("txtSearch");
+
+                    if (txtSearch.Value.Trim() != string.Empty)
+                    {
+                        gvExam.DataSource = CargarGridView(txtSearch.Value);
+                        gvExam.DataSource = dtExam;
+                        gvExam.DataBind();
+                    }
+                    else
+                    {
+                        gvExam.DataSource = CargarGridView(string.Empty);
+                        gvExam.DataSource = dtExam;
+                        gvExam.DataBind();
+                    }
+                }
+                //setCheckInGridView();
+                //gvExam.DataBind();
+            }
+
+            // "<b>" + LiteralCultura + "</b>" +
+            LinkButton1.Text = Thread.CurrentThread.CurrentCulture.DisplayName;
+          
+        }
+        catch (Exception ex)
+        {
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+            Session["error"] = ex;
+        }
+    }
+
+    protected bool getCheckByRowIndex(int rowIndex)
+    {
+        try
+        {
+
+            //Int32 idCenter = Convert.ToInt32(((DataTable)Session["dtExam"]).Rows[rowIndex]["ID"]);
+            if (((List<Int32>)Session["SelectedExamID"])!=null)
+            {
+                if (((List<Int32>)Session["SelectedExamID"]).Contains(rowIndex))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false; 
+                    }
+            }
+            else
+            {
+               return false;
+            }
+
+            ///por cada rowIndex igualar el campo check a la columna check
+            //string checkString = (((DataTable)Session["dtExam"]).Rows[rowIndex]["chkSelect"]).ToString();
+            //return bool.Parse(checkString);
+              
+        }
+        catch (Exception ex)
+        {
+            Session["error"] = ex;
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+            return false;
+        }
+    }
+
+    #region [ PROPERTIES ]
+
+    public DataTable dtExam
+    {
+        get
+        {
+            return Session["dtExam"] as DataTable;
+        }
+        set
+        {
+            Session["dtExam"] = (DataTable)value;
+        }
+    }
+
+    #endregion
+
+    #region [ DATABASE FUNCTIONS  ]
+
+    protected void Crear()
+    {
+         try
+
+        {
+
+        Response.Redirect(Constantes.PAGE_TITLE_EditExam + Constantes.ASP_PAGE_EXTENSION + "?M=N", false);
+         }
+        catch (Exception ex)
+        {
+            Session["error"] = ex;
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+
+        }
+    }
+
+    protected void VerSeleccionado()
+    {
+        try
+
+        {
+
+        int Id = ((List<Int32>)Session["SelectedExamID"])[0];
+        Response.Redirect("~/EditExam.aspx?M=V&Id=" + Id, false);
+         }
+        catch (Exception ex)
+        {
+            Session["error"] = ex;
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+
+        }
+    }
+
+    protected void EditarSeleccionado()
+    {
+        int Id = ((List<Int32>)Session["SelectedExamID"])[0];
+        Response.Redirect(Constantes.PAGE_TITLE_EditExam + Constantes.ASP_PAGE_EXTENSION + "?M=E&Id=" + Id, false);
+    }
+
+    /*protected void EliminarSeleccionados()
+    {
+        try
+        {
+        
+        string cadenaConexion = ConfigurationManager.ConnectionStrings["Connection_qsg265"].ConnectionString;
+
+        foreach (Int32 id in (List<Int32>)Session["SelectedExamID"])
+        {
+            string consulta = "DELETE FROM PRODUCT WHERE ID =" + id;
+            MySqlConnection cnn = new MySqlConnection(cadenaConexion);
+            MySqlCommand mc = new MySqlCommand(consulta, cnn);
+            cnn.Open();
+            mc.ExecuteNonQuery();
+            cnn.Close();
+        }
+         }
+        catch (Exception ex)
+        {
+            Session["error"] = ex;
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+
+        }
+
+    }*/
+
+    /*[System.Web.Services.WebMethod]
+    public static int Eliminar()
+    {
+        if (HttpContext.Current.Session["SelectedExamID"] != null && ((List<int>)HttpContext.Current.Session["SelectedExamID"]).Count > 0)
+        {
+            if (((List<int>)HttpContext.Current.Session["SelectedExamID"]).Count > 1)
+            {
+                return -1;
+            }
+            else
+            {
+                return 1;
+            }
+        }
+        else { return 0; }
+    }*/
+
+    protected DataTable CargarGridView(string filter = "")
+    {
+        try
+        {
+            string cadenaConexion = ConfigurationManager.ConnectionStrings["Connection_qsg265"].ConnectionString;
+            string language_code = CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToString();
+            string sConsulta = string.Empty;
+            if(filter == String.Empty)
+            {
+                sConsulta = " SELECT PRODUCT.id, PRODUCT.name_code, PRODUCT.description_code, PRODUCT.price1, PRODUCT.path, PRODUCT.code, PRODUCT.distance_code, PRODUCT.textdescrip_code, CASE WHEN PRODUCT.show_price = 1 THEN 'Si' ELSE 'No' END AS show_price, literalName.LANGUAGE_CODE AS LANGUAGE_CODE_FOR_NAME, IFNULL(literalName.DESCRIPTION, '') AS NAME, literalName.TEXT_CODE AS TEXT_CODE_FOR_NAME, literalDescription.LANGUAGE_CODE AS LANGUAGE_CODE_FOR_DESCRIPTION, IFNULL(literalDescription.DESCRIPTION, '') AS DESCRIPTION, literalDescription.TEXT_CODE AS TEXT_CODE_FOR_DESCRIPTION  ";
+                sConsulta += " FROM PRODUCT ";
+                sConsulta += " LEFT JOIN LITERALES AS literalName ON literalName.TEXT_CODE = PRODUCT.name_code AND literalName.LANGUAGE_CODE ='" + language_code + "'" ;
+                sConsulta += " LEFT JOIN LITERALES AS literalDescription ON literalDescription.TEXT_CODE = PRODUCT.description_code AND literalDescription.LANGUAGE_CODE ='" + language_code + "'" ;
+                sConsulta += " ORDER BY PRODUCT.ID DESC ";
+             }
+            else
+            {
+                sConsulta =  " SELECT PRODUCT.id, PRODUCT.name_code, PRODUCT.description_code, PRODUCT.price1, PRODUCT.path, PRODUCT.code, PRODUCT.distance_code, PRODUCT.textdescrip_code, CASE WHEN PRODUCT.show_price = 1 THEN 'Si' ELSE 'No' END AS show_price, literalName.LANGUAGE_CODE AS LANGUAGE_CODE_FOR_NAME, IFNULL(literalName.DESCRIPTION, '') AS NAME, literalName.TEXT_CODE AS TEXT_CODE_FOR_NAME, literalDescription.LANGUAGE_CODE AS LANGUAGE_CODE_FOR_DESCRIPTION, IFNULL(literalDescription.DESCRIPTION, '') AS DESCRIPTION, literalDescription.TEXT_CODE AS TEXT_CODE_FOR_DESCRIPTION  ";
+                sConsulta += " FROM PRODUCT ";
+                
+                sConsulta += " LEFT JOIN LITERALES AS literalName ON literalName.TEXT_CODE = PRODUCT.name_code AND literalName.LANGUAGE_CODE ='" + language_code + "'" ;
+                sConsulta += " LEFT JOIN LITERALES AS literalDescription ON literalDescription.TEXT_CODE = PRODUCT.description_code AND literalDescription.LANGUAGE_CODE ='" + language_code + "'" ;
+                
+                sConsulta += " WHERE (PRODUCT.code like '%" + filter + "%') ";
+                sConsulta += " OR (PRODUCT.price1 like '%" + filter + "%') ";
+                sConsulta += " OR (literalName.DESCRIPTION like '%" + filter + "%') ";
+                sConsulta += " OR (literalDescription.DESCRIPTION like '%" + filter + "%') ";
+
+                sConsulta += " ORDER BY PRODUCT.ID DESC ";
+            }
+
+            MySqlConnection cnn = new MySqlConnection(cadenaConexion);
+            MySqlCommand mc = new MySqlCommand(sConsulta, cnn);
+
+            cnn.Open();
+            MySqlDataReader dr = mc.ExecuteReader();
+
+            dtExam = new DataTable();
+            dtExam.Columns.AddRange(new DataColumn[8] { new DataColumn("ID"), new DataColumn("NAME"), new DataColumn("CODE"), new DataColumn("DESCRIPTION"), new DataColumn("PRICE1"), new DataColumn("SHOW_PRICE"), new DataColumn("DISTANCE"), new DataColumn("chkSelect") });
+
+            if (!dr.IsClosed)
+            {
+                while (dr.Read())
+                {
+                    string description = dr.GetString(13);
+                    if (dr.GetString(13).Length > 100)
+                    {
+                        description = dr.GetString(13).Substring(0, 100);
+                    }
+
+                    dtExam.Rows.Add(dr.GetInt32(0), dr.GetString(10), dr.GetString(5), description, dr.GetString(3), dr.GetString(8), dr.GetString(6), false);
+                }
+            }
+            cnn.Close();
+        }
+        catch (Exception ex)
+        {
+            Session["error"] = ex;
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+
+        }
+
+        return dtExam;
+    } 
+
+    #endregion
+
+    #region [ EVENTS BUTTONS ]
+
+    protected void LbCatalan_Click(object sender, EventArgs e)
+    {
+         try
+        {
+
+        Session["CultureInfoByUser"] = new CultureInfo(Constantes.CULTURE_INFO_CATALAN);
+        setCulture(Session["CultureInfoByUser"] as CultureInfo);
+        }
+        catch (Exception ex)
+        {
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+            Session["error"] = ex;
+        }
+
+    }
+
+    protected void LbSpanish_Click(object sender, EventArgs e)
+    {
+        try
+        {
+
+        Session["CultureInfoByUser"] = new CultureInfo(Constantes.CULTURE_INFO_ESPAÑOL);
+        setCulture(Session["CultureInfoByUser"] as CultureInfo);
+        }
+        catch (Exception ex)
+        {
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+            Session["error"] = ex;
+        }
+    }
+
+    protected void LbEnglish_Click(object sender, EventArgs e)
+    {
+        try
+
+        {
+        Session["CultureInfoByUser"] = new CultureInfo(Constantes.CULTURE_INFO_INGLES);
+        setCulture(Session["CultureInfoByUser"] as CultureInfo);
+        }
+        catch (Exception ex)
+        {
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+            Session["error"] = ex;
+        }
+    }
+
+    private void setCulture(CultureInfo c)
+    {
+        try
+        {
+            //System.Threading.Thread.CurrentThread.CurrentCulture = c;
+            //System.Threading.Thread.CurrentThread.CurrentUICulture = c;
+
+            Server.Transfer(this.Request.Path);
+        }
+        catch (Exception ex)
+        {
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+            Session["error"] = ex;
+        }
+    }
+
+    protected void ExportExcel()
+    {
+
+    //**************************************************************************************************
+     try
+        {
+
+            StringBuilder sb = new StringBuilder();
+            StringWriter sw = new StringWriter(sb);
+            HtmlTextWriter htw = new HtmlTextWriter(sw);
+            Page pagina = new Page();
+            System.Web.UI.HtmlControls.HtmlForm form = new System.Web.UI.HtmlControls.HtmlForm();
+
+            GridView gridToExport = new GridView();
+        
+            DataTable tableToExport = dtExam;
+            tableToExport.Columns.RemoveAt(7);
+
+            gridToExport.DataSource = tableToExport;
+            gridToExport.DataBind();
+
+            foreach (TableCell cell in gridToExport.HeaderRow.Cells)
+            {
+                cell.BackColor = System.Drawing.Color.DeepSkyBlue;
+            }
+
+            gridToExport.EnableViewState = false;
+
+            pagina.EnableEventValidation = false;
+            pagina.DesignerInitialize();
+            pagina.Controls.Add(form);
+
+            form.Controls.Add(gridToExport);
+
+            pagina.RenderControl(htw);
+            Response.Clear();
+            Response.Buffer = true;
+
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+            Response.AddHeader("Content-Disposition", "attachment;filename=ExamsList.xls");
+            Response.Charset = "UTF-8";
+            Response.ContentEncoding = System.Text.Encoding.Default;
+            Response.Write(sb.ToString());
+            Response.End();
+
+            DataView dv = dtExam.DefaultView;
+        }
+        catch (Exception ex)
+        {
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+            Session["error"] = ex;
+        }
+}
+
+    protected void btnExport_Click(object sender, System.EventArgs e)
+    {
+        ExportExcel();
+    }
+
+    protected void btnEditar_onclick(object sender, System.EventArgs e)
+    {
+        try
+
+        {
+        //  ((Int32)Session["SelectedExamID"])
+        Int32 n = ((Int32)Session["SelectedExamID"]);
+        Response.Redirect(Constantes.PAGE_TITLE_EditExam + Constantes.ASP_PAGE_EXTENSION + "?M=E");
+ }
+        catch (Exception ex)
+        {
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+            Session["error"] = ex;
+        }
+    }
+
+    protected void btnCrear_onclick(object sender, System.EventArgs e)
+    {
+        try
+        {
+
+        //  ((Int32)Session["SelectedExamID"])
+        Int32 n = ((Int32)Session["SelectedExamID"]);
+        Response.Redirect(Constantes.PAGE_TITLE_EditExam + Constantes.ASP_PAGE_EXTENSION + "?M=N");
+ }
+        catch (Exception ex)
+        {
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+            Session["error"] = ex;
+        }
+
+    }
+
+    [System.Web.Services.WebMethod]
+    public static string Ver(string name)
+    {
+        try
+        {
+
+            // string var =  "Hello " + name + Environment.NewLine + "The Current Time is: "
+            // + DateTime.Now.ToString();
+
+            return HttpContext.Current.Session["SelectedExamID"].ToString();
+        }
+        catch (Exception ex)
+        {
+            
+            HttpContext.Current.Session["error"] = ex;
+            return string.Empty;
+        }
+    }
+
+    #endregion
+
+    #region [ OTHER EVENTS ]
+
+    protected void chkSelAll_Checked(object sender, System.EventArgs e)
+    {
+        try
+        {
+
+            //Dim rowSelectedRow As Integer = TryCast(TryCast(sender, CheckBox).Parent.Parent, GridViewRow).RowIndex
+
+            System.Drawing.Color color;
+            Boolean check;
+
+            if (((CheckBox)sender).Checked)
+            {
+                check = true;
+                color = System.Drawing.ColorTranslator.FromHtml("lemonchiffon");
+                Session["SelectedExam"] = dtExam.Rows.Count;
+
+                Int32 SelectedRow = ((GridViewRow)(((CheckBox)sender).Parent.Parent)).RowIndex;
+
+                // Session["SelectedExamID"] = SelectedRow;
+
+                //btnEditar.Attributes.Add("class", "action");
+                //btnVer.Attributes.Add("class", "action");
+                //btnEliminar.Attributes.Add("class", "action red");
+            }
+            else
+            {
+                check = false;
+                color = System.Drawing.Color.White;
+           
+                //btnEditar.Attributes.Add("class", "action");
+                //btnVer.Attributes.Add("class", "action");
+                //btnEliminar.Attributes.Add("class", "action");
+
+            }
+
+            Session["Checkall_selected"] = check;
+
+            foreach (GridViewRow row in gvExam.Rows)
+            {
+                CheckBox cb = (CheckBox)(row.FindControl("chkSel"));         
+                cb.Checked = check;
+                row.BackColor = color;
+
+                Int32 idselected = Convert.ToInt32(gvExam.DataKeys[row.RowIndex].Value);
+                if (check)
+                {
+                    controlSelectedCenter(idselected);
+                }
+                else
+                {
+                    controlSelectedCenter(idselected);
+                    //lo elimino aki fuera, pk no me va bien meter dentro el remove.
+                    ((List<Int32>)Session["SelectedExamID"]).Remove(idselected);
+                }
+            
+            }
+        }
+        catch (Exception ex)
+        {
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+            Session["error"] = ex;
+        }
+    }
+
+    /// <summary>
+    /// Function to control the selected items.
+    /// </summary>
+    /// <param name="_idSC"></param>
+    protected List<Int32> controlSelectedCenter (Int32 _idSC) 
+      {
+        try
+        {
+           if (Session["SelectedExamID"] != null)
+            {
+               List<Int32> lst = (List<Int32>)Session["SelectedExamID"];
+               if (lst.Count() != 0)
+               {
+                   if (!lst.Contains(_idSC))
+                   {
+                       lst.Add(_idSC);
+                       Session["SelectedExamID"] = lst;
+                   }
+               }
+               else
+               {
+                   //Error?¿?
+               }
+            }
+            else
+           {
+		       List<Int32> lstSelectedCentersbyID = new List<Int32>();
+               lstSelectedCentersbyID.Add(_idSC);
+               Session["SelectedExamID"]= lstSelectedCentersbyID;
+           }
+
+           return (List<Int32>)Session["SelectedExamID"];
+         }
+        catch (Exception ex)
+        {
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+            Session["error"] = ex;
+            return null;
+        }
+        }
+
+    protected void chkSel_Checked(object sender, System.EventArgs e)
+    {
+        try
+        {
+
+        Int32 rowSelectedRow = ((GridViewRow)((CheckBox)sender).Parent.Parent).RowIndex;
+        Int32 idselected = Convert.ToInt32(gvExam.DataKeys[rowSelectedRow].Value);
+        List<Int32> lst = controlSelectedCenter(Convert.ToInt32(gvExam.DataKeys[rowSelectedRow].Value));
+        //Session["SelectedExamID"] = gvExam.DataKeys[rowSelectedRow].Value.ToString();
+
+        if (((CheckBox)sender).Checked)
+        {
+            gvExam.Rows[rowSelectedRow].BackColor = System.Drawing.ColorTranslator.FromHtml("lemonchiffon");
+            //btnEliminar.Attributes.Add("class", "action red");
+            Session["SelectedExam"] = (Int32)Session["SelectedExam"] + 1;
+            Int32 SelectedRow = ((GridViewRow)(((CheckBox)sender).Parent.Parent)).RowIndex;
+
+            if (lst.Contains(idselected))
+            {
+                //btnEditar.Attributes.Add("class", "action");
+                //btnVer.Attributes.Add("class", "action");
+            }
+            else
+            {
+                //btnEditar.Attributes.Add("class", "action green");
+                //btnVer.Attributes.Add("class", "action blue");
+            }
+
+            dtExam.Rows[rowSelectedRow]["chkSelect"] = true;
+        }
+        else
+        {
+            gvExam.Rows[rowSelectedRow].BackColor = System.Drawing.Color.White;
+
+            Session["SelectedExam"] = (Int32)Session["SelectedExam"] - 1;
+
+            if (lst.Contains(idselected))
+            {
+                //btnEditar.Attributes.Add("class", "action");
+                //btnVer.Attributes.Add("class", "action");
+            }
+            else
+            {
+                //btnEditar.Attributes.Add("class", "action green");
+                //btnVer.Attributes.Add("class", "action blue");
+            }
+            
+            lst.Remove(idselected);
+            Session["SelectedExamID"] = lst;
+            dtExam.Rows[rowSelectedRow]["chkSelect"] = false;
+        }
+
+        List<Int32> newlst = (List<Int32>)Session["SelectedExamID"];
+
+        if (newlst.Count() == 0)
+        {
+            //btnEditar.Attributes.Add("class", "action");
+            //btnVer.Attributes.Add("class", "action");
+            //btnEliminar.Attributes.Add("class", "action");
+        }
+        else
+        {
+            //btnEliminar.Attributes.Add("class", "action red");
+        }
+     }
+        catch (Exception ex)
+        {
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+            Session["error"] = ex;
+        }
+    }
+ 
+    #endregion
+
+    #region [ ACTIONS GRIDVIEW ]
+
+    protected void setCheckInGridView()
+    {
+        try
+        {
+            //Recorrer el gridview
+            foreach(GridViewRow row in gvExam.Rows)
+            {
+                CheckBox checkItem = (CheckBox)row.FindControl("chkSel");
+
+                dtExam.Rows[row.RowIndex]["chkSelect"] = checkItem.Checked;
+                
+                checkItem.Checked = getCheckByRowIndex(row.RowIndex);
+
+               //if (null != row.Cells[5] && row.Cells[5].Text != string.Empty)
+               // {
+
+
+               // }
+               // else
+               // {
+
+
+               // }
+                 
+
+            } 
+            /*if(e.Row.RowType == DataControlRowType.DataRow)
+            {
+               int i = e.Row.DataItemIndex;
+
+               CheckBox checkItem = (CheckBox)(e.Row.FindControl("chkSel"));
+
+               //getCheckByRowIndex(e.Row.RowIndex);
+
+               checkItem.Checked = getCheckByRowIndex(i);
+
+                //["chkSelect"] = getCheckByRowIndex(e.Row.RowIndex);
+
+            }*/
+ 
+
+        }
+        catch (Exception ex)
+        {
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+            Session["error"] = ex;
+        }
+    }
+      
+    #endregion
+
+    #region [ GRIDVIEW EVENTS ]
+
+    protected void gvExam_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        try
+        {
+            if ((bool)Session["Checkall_selected"])
+            {
+                if (e.Row.RowType == DataControlRowType.DataRow)
+                {
+                    e.Row.BackColor = System.Drawing.ColorTranslator.FromHtml("lemonchiffon");
+                    ((CheckBox)(e.Row.FindControl("chkSel"))).Checked = true;
+                }
+            }
+            else
+            { 
+                if (e.Row.RowType == DataControlRowType.DataRow)
+                {
+                    Int32 idselected = Convert.ToInt32(gvExam.DataKeys[e.Row.RowIndex].Value);
+            
+                    //((CheckBox)(e.Row.FindControl("chkSel"))).Checked = getCheckByRowIndex(idselected);
+
+                    if (getCheckByRowIndex(idselected))
+                    {
+                        e.Row.BackColor = System.Drawing.ColorTranslator.FromHtml("lemonchiffon");
+                        ((CheckBox)(e.Row.FindControl("chkSel"))).Checked = true;
+                    }
+                    else
+                    {
+                        e.Row.BackColor = System.Drawing.Color.White;
+                        ((CheckBox)(e.Row.FindControl("chkSel"))).Checked = false;
+
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+            Session["error"] = ex;
+        }
+    }
+
+    #region SORTING
+
+    public SortDirection dir
+    {
+        get
+        {
+            if (Session["dirState"] == null)
+            {
+                Session["dirState"] = SortDirection.Ascending;
+            }
+            return (SortDirection)Session["dirState"];
+        }
+        set
+        {
+            Session["dirState"] = value;
+        }
+
+    }
+
+    protected void gvExam_Sorting(object sender, GridViewSortEventArgs e)
+    {
+        try
+        {
+            string SortDir = string.Empty;
+            if (dir == SortDirection.Ascending)
+            {
+                dir = SortDirection.Descending;
+                SortDir = "Desc";
+            }
+            else
+            {
+                dir = SortDirection.Ascending;
+                SortDir = "Asc";
+            }
+
+            //DataTable dt = CargarGridView();
+            DataView sortedView = new DataView(dtExam);
+            sortedView.Sort = e.SortExpression + " " + SortDir;
+
+            gvExam.DataSource = sortedView;
+            gvExam.DataBind();
+
+            dtExam = sortedView.Table;
+        }
+        catch (Exception ex)
+        {
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+            Session["error"] = ex;
+        }
+    }
+
+    #endregion
+
+    #region PAGINING
+
+    protected void OnPaging(object sender, GridViewPageEventArgs e)
+    {
+        try
+        {
+            gvExam.PageIndex = e.NewPageIndex;
+            gvExam.DataBind();
+        }
+        catch (Exception ex)
+        {
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+            Session["error"] = ex;
+        }
+
+    }
+
+    #endregion
+
+    #endregion
+
+}

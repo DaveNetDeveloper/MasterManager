@@ -1,0 +1,778 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Data;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.IO;
+using System.Net.Mail;
+using System.Text;
+using MySql.Data;
+using System.Net;
+using System.Configuration;
+using MySql.Data.MySqlClient;
+using System.Globalization;
+using System.Threading;
+using System.Resources;
+using System.Collections;
+using System.Web.UI.HtmlControls;
+
+public partial class CenterList : PageBase
+{
+    protected void Page_Init(object sender, EventArgs e)
+    {
+       
+        if (!this.IsPostBack)
+        {
+            Session["SelectedCenterID"] = null;
+            Session["Checkall_selected"] = false;
+            SetUserAgentCulture();
+
+            Session["rm"] = (ResourceManager)Application["RM"];
+            
+        }
+       else
+       {
+
+
+       }
+    }
+     
+    protected void SetUserAgentCulture()
+    {
+        //Todos los lengaujes del navegador
+        /*StringBuilder sb = new StringBuilder();
+        string _lng = string.Empty;
+        foreach (string lng in Request.UserLanguages)
+        {
+            sb.Append(lng);
+            sb.Append("<br />");
+        }*/
+
+        //Label1.Text = sb.ToString();
+
+        //if (Session["CultureInfoByUser"] == null)
+        //{ 
+            Session["CultureInfoByUser"] = CultureInfo.CreateSpecificCulture(Request.UserLanguages[0]);//new CultureInfo(Constantes.CULTURE_INFO_INGLES);
+       /* }
+        else
+        {
+
+        }*/
+    }
+     
+    protected override void InitializeCulture()
+    {
+        //La cultura debería de venir de la información del usuario logeado en el sistema y seteada en la Session["CultureInfoByUser"]
+        //CultureInfo culture = new CultureInfo(Constantes.CULTURE_INFO_CATALAN);
+        if (null != Session["CultureInfoByUser"] && Session["CultureInfoByUser"].ToString().Length > 2)
+        {
+                Thread.CurrentThread.CurrentCulture = (CultureInfo)Session["CultureInfoByUser"];
+                Thread.CurrentThread.CurrentUICulture = (CultureInfo)Session["CultureInfoByUser"];
+        }
+        base.InitializeCulture();
+    }
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        try
+        {
+            if (!this.IsPostBack)
+            {
+                //Session["dtCenter"] = null;
+                if (null != Request["__EVENTTARGET"] && Request["__EVENTTARGET"].Contains("ctl00$FeaturedContent$"))
+                {
+                    dtCenter = CargarGridView();
+                    gvCenter.DataSource = dtCenter;
+                    //setCheckInGridView();
+                    gvCenter.DataBind();
+                }
+                else
+                {
+                    dtCenter = CargarGridView();
+                    gvCenter.DataSource = dtCenter;
+                    gvCenter.DataBind();
+                }
+
+                Session["SelectedCenter"] = 0;
+            }
+            else
+            {
+                gvCenter.DataSource = (DataTable)Session["dtCenter"];
+
+                if (Request["__EVENTTARGET"] != null && Request["__EVENTTARGET"] == Constantes.ACTIONS_LIST_PAGE_DELETE)
+                {
+                    EliminarSeleccionados();
+                    Session["SelectedCenterID"] = null;
+                    Session["Checkall_selected"] = false;
+
+                    dtCenter = CargarGridView();
+                    gvCenter.DataSource = dtCenter;
+                    gvCenter.DataBind();
+                }
+                else if (Request["__EVENTTARGET"] != null && Request["__EVENTTARGET"] == Constantes.ACTIONS_LIST_PAGE_CREATE)
+                {
+                    Crear();
+                }
+                else if (Request["__EVENTTARGET"] != null && Request["__EVENTTARGET"] == Constantes.ACTIONS_LIST_PAGE_VIEW)
+                {
+                    VerSeleccionado();
+                }
+                else if (Request["__EVENTTARGET"] != null && Request["__EVENTTARGET"] == Constantes.ACTIONS_LIST_PAGE_EDIT)
+                {
+                    EditarSeleccionado();
+                }
+                else if (Request["__EVENTTARGET"] != null && Request["__EVENTTARGET"] == Constantes.ACTIONS_LIST_EXPORT_EXCEL)
+                {
+                    ExportExcel();
+                }
+                else if (Request["__EVENTTARGET"] != null && Request["__EVENTTARGET"] == Constantes.ACTIONS_LIST_FILTRAR_LISTADO)
+                {
+                    HtmlInputText txtSearch = (HtmlInputText)Master.FindControl("txtSearch");
+
+                    if (txtSearch.Value.Trim() != string.Empty)
+                    {
+                        gvCenter.DataSource = CargarGridView(txtSearch.Value);
+                        gvCenter.DataSource = dtCenter;
+                        gvCenter.DataBind();
+                    }
+                    else
+                    {
+                        gvCenter.DataSource = CargarGridView(string.Empty);
+                        gvCenter.DataSource = dtCenter;
+                        gvCenter.DataBind();
+                    }
+                }
+                //setCheckInGridView();
+                //gvCenter.DataBind();
+            }
+ 
+            // "<b>" + LiteralCultura + "</b>" +
+            LinkButton1.Text = Thread.CurrentThread.CurrentCulture.DisplayName;
+          
+        }
+        catch (Exception ex)
+        {
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+            Session["error"] = ex;
+        }
+    }
+
+    protected bool getCheckByRowIndex(int rowIndex)
+    {
+        try
+        {
+
+            //Int32 idCenter = Convert.ToInt32(((DataTable)Session["dtCenter"]).Rows[rowIndex]["ID"]);
+            if (((List<Int32>)Session["SelectedCenterID"])!=null)
+            {
+                if (((List<Int32>)Session["SelectedCenterID"]).Contains(rowIndex))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false; 
+                    }
+            }
+            else
+            {
+               return false;
+            }
+
+            ///por cada rowIndex igualar el campo check a la columna check
+            //string checkString = (((DataTable)Session["dtCenter"]).Rows[rowIndex]["chkSelect"]).ToString();
+            //return bool.Parse(checkString);
+              
+        }
+        catch (Exception ex)
+        {
+            Session["error"] = ex;
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+            return false;
+        }
+    }
+
+    #region [ PROPERTIES ]
+
+    public DataTable dtCenter
+    {
+        get
+        {
+            return Session["dtCenter"] as DataTable;
+        }
+        set
+        {
+            Session["dtCenter"] = (DataTable)value;
+        }
+    }
+
+    #endregion
+
+    #region [ Methods ]
+     
+    protected void Crear()
+    {
+        Response.Redirect(Constantes.PAGE_TITLE_EditCenter + Constantes.ASP_PAGE_EXTENSION +"?M=N", false);
+    }
+
+    protected void VerSeleccionado()
+    {
+        int Id = ((List<Int32>)Session["SelectedCenterID"])[0];
+        Response.Redirect(Constantes.PAGE_TITLE_EditCenter + Constantes.ASP_PAGE_EXTENSION + "?M=V&Id=" + Id, false);
+
+    }
+
+    protected void EditarSeleccionado()
+    {
+        int Id = ((List<Int32>)Session["SelectedCenterID"])[0];
+        Response.Redirect(Constantes.PAGE_TITLE_EditCenter + Constantes.ASP_PAGE_EXTENSION + "?M=E&Id=" + Id, false);
+
+    }
+
+    [System.Web.Services.WebMethod]
+    public static int Eliminar()
+    {
+        if (HttpContext.Current.Session["SelectedCenterID"] != null && ((List<int>)HttpContext.Current.Session["SelectedCenterID"]).Count > 0)
+        {
+            if (((List<int>)HttpContext.Current.Session["SelectedCenterID"]).Count > 1)
+            {
+                return -1;
+            }
+            else
+            {
+                return 1;
+            }
+        }
+        else { return 0; }
+    }
+
+    protected void EliminarSeleccionados()
+    {
+        string cadenaConexion = ConfigurationManager.ConnectionStrings["Connection_qsg265"].ConnectionString;
+
+        foreach (Int32 id in (List<Int32>)Session["SelectedCenterID"])
+        {
+            string consulta = "DELETE FROM CENTER WHERE ID =" + id;
+            MySqlConnection cnn = new MySqlConnection(cadenaConexion);
+            MySqlCommand mc = new MySqlCommand(consulta, cnn);
+            cnn.Open();
+            mc.ExecuteNonQuery();
+            cnn.Close();
+        }
+    }
+
+    protected DataTable CargarGridView(string filter = "")
+    {
+        try
+        {
+            string cadenaConexion = ConfigurationManager.ConnectionStrings["Connection_qsg265"].ConnectionString;
+            string language_code = CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToString();
+            string sConsulta = string.Empty;
+
+            if(filter == String.Empty)
+            {
+                sConsulta = " SELECT CENTER.Id, IFNULL(literalName.DESCRIPTION, '') AS NAME, IFNULL(literalDescription.DESCRIPTION, '') AS DESCRIPTION, IFNULL(literalInfo.DESCRIPTION, '') AS INFO_WINDOW, CENTER.address as address, CENTER.cp as cp, CENTER.city as city ";
+                sConsulta += " FROM CENTER ";
+                sConsulta += " LEFT JOIN LITERALES AS literalName ON literalName.TEXT_CODE = CENTER.name_code AND literalName.LANGUAGE_CODE ='" + language_code + "' ";
+                sConsulta += " LEFT JOIN LITERALES AS literalDescription ON literalDescription.TEXT_CODE = CENTER.Description_code AND literalDescription.LANGUAGE_CODE ='" + language_code + "' ";
+                sConsulta += " LEFT JOIN LITERALES AS literalInfo ON literalInfo.TEXT_CODE = CENTER.infowindow_code AND literalInfo.LANGUAGE_CODE ='" + language_code + "' ";
+                sConsulta += " ORDER BY CENTER.ID DESC";
+            }
+            else
+            { 
+                sConsulta = " SELECT CENTER.Id, IFNULL(literalName.DESCRIPTION, '') AS NAME, IFNULL(literalDescription.DESCRIPTION, '') AS DESCRIPTION, IFNULL(literalInfo.DESCRIPTION, '') AS INFO_WINDOW, CENTER.address as address, CENTER.cp as cp, CENTER.city as city ";
+                sConsulta += " FROM CENTER ";
+                sConsulta += " LEFT JOIN LITERALES AS literalName ON literalName.TEXT_CODE = CENTER.name_code AND literalName.LANGUAGE_CODE ='" + language_code + "' ";
+                sConsulta += " LEFT JOIN LITERALES AS literalDescription ON literalDescription.TEXT_CODE = CENTER.Description_code AND literalDescription.LANGUAGE_CODE ='" + language_code + "' ";
+                sConsulta += " LEFT JOIN LITERALES AS literalInfo ON literalInfo.TEXT_CODE = CENTER.infowindow_code AND literalInfo.LANGUAGE_CODE ='" + language_code + "' ";
+
+                sConsulta += " WHERE (literalName.DESCRIPTION like '%" + filter + "%') ";
+                sConsulta += " OR (literalDescription.DESCRIPTION  like '%" + filter + "%') ";
+                sConsulta += " OR (CENTER.address like '%" + filter + "%') ";
+                sConsulta += " OR (CENTER.cp like '%" + filter + "%') ";
+                sConsulta += " OR (CENTER.city like '%" + filter + "%') ";
+                sConsulta += " ORDER BY CENTER.ID DESC ";
+            }
+
+            MySqlConnection cnn = new MySqlConnection(cadenaConexion);
+            MySqlCommand mc = new MySqlCommand(sConsulta, cnn);
+
+            cnn.Open();
+            MySqlDataReader dr = mc.ExecuteReader();
+
+            dtCenter = new DataTable();
+            dtCenter.Columns.AddRange(new DataColumn[8] { new DataColumn("ID"), new DataColumn("NAME"), new DataColumn("DESCRIPTION"), new DataColumn("INFO_WINDOW"), new DataColumn("ADDRESS"), new DataColumn("CP"), new DataColumn("City"), new DataColumn("chkSelect") });
+            
+            string description = "";
+            string infoWindow = "";
+            
+
+            if (!dr.IsClosed)
+            {
+                while (dr.Read())
+                {
+                    infoWindow = "";
+                    if (!dr.IsDBNull(3))
+                    {
+                        infoWindow = dr.GetString(3);
+                    }
+
+                    //description
+                    description = dr.GetString(2);
+                    if (dr.GetString(2).Length > 100)
+                    {
+                        description = dr.GetString(4).Substring(0, 100);
+                    }
+
+                    dtCenter.Rows.Add(dr.GetInt32(0), dr.GetString(1), description + "...", infoWindow, dr.GetString(4), dr.GetString(5), dr.GetString(6), false);
+                }
+            }
+            cnn.Close();
+        }
+        catch (Exception ex)
+        {
+            Session["error"] = ex;
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+
+        }
+
+        return dtCenter;
+    } 
+
+    #endregion
+
+    #region ****************** EVENTS BUTTONS **********************************************************
+
+    protected void LbCatalan_Click(object sender, EventArgs e)
+    {
+        Session["CultureInfoByUser"] = new CultureInfo(Constantes.CULTURE_INFO_CATALAN);
+        setCulture(Session["CultureInfoByUser"] as CultureInfo);
+    }
+
+    protected void LbSpanish_Click(object sender, EventArgs e)
+    {
+        Session["CultureInfoByUser"] = new CultureInfo(Constantes.CULTURE_INFO_ESPAÑOL);
+        setCulture(Session["CultureInfoByUser"] as CultureInfo);
+    }
+
+    protected void LbEnglish_Click(object sender, EventArgs e)
+    {
+        Session["CultureInfoByUser"] = new CultureInfo(Constantes.CULTURE_INFO_INGLES);
+        setCulture(Session["CultureInfoByUser"] as CultureInfo);
+    }
+
+    private void setCulture(CultureInfo c)
+    {
+        //System.Threading.Thread.CurrentThread.CurrentCulture = c;
+        //System.Threading.Thread.CurrentThread.CurrentUICulture = c;
+
+       Server.Transfer(this.Request.Path);
+    }
+
+    //**************************************************************************************************
+
+     
+    protected void btnVer_onclick(object sender, System.EventArgs e)
+    {
+        //  ((Int32)Session["SelectedCenterID"])
+
+        Int32 n = ((Int32)Session["SelectedCenterID"]);
+        Response.Redirect(Constantes.PAGE_TITLE_EditCenter + Constantes.ASP_PAGE_EXTENSION + "?M=V");
+    }
+
+    protected void btnEditar_onclick(object sender, System.EventArgs e)
+    {
+        //  ((Int32)Session["SelectedCenterID"])
+        Int32 n = ((Int32)Session["SelectedCenterID"]);
+        Response.Redirect(Constantes.PAGE_TITLE_EditCenter + Constantes.ASP_PAGE_EXTENSION + "?M=E");
+    }
+
+    protected void btnCrear_onclick(object sender, System.EventArgs e)
+    {
+        //  ((Int32)Session["SelectedCenterID"])
+        Int32 n = ((Int32)Session["SelectedCenterID"]);
+        Response.Redirect(Constantes.PAGE_TITLE_EditCenter + Constantes.ASP_PAGE_EXTENSION + "?M=N");
+
+
+    }
+
+    [System.Web.Services.WebMethod]
+    public static string Ver(string name)
+    {
+        // string var =  "Hello " + name + Environment.NewLine + "The Current Time is: "
+        // + DateTime.Now.ToString();
+
+        return HttpContext.Current.Session["SelectedCenterID"].ToString();
+
+    }
+
+    #endregion
+
+    #region ****************** OTHER EVENTS ************************************************************
+
+    protected void chkSelAll_Checked(object sender, System.EventArgs e)
+    {
+        //Dim rowSelectedRow As Integer = TryCast(TryCast(sender, CheckBox).Parent.Parent, GridViewRow).RowIndex
+
+        System.Drawing.Color color;
+        Boolean check;
+
+        if (((CheckBox)sender).Checked)
+        {
+            check = true;
+            color = System.Drawing.ColorTranslator.FromHtml("lemonchiffon");
+            Session["SelectedCenter"] = dtCenter.Rows.Count;
+
+            Int32 SelectedRow = ((GridViewRow)(((CheckBox)sender).Parent.Parent)).RowIndex;
+
+            // Session["SelectedCenterID"] = SelectedRow;
+
+            //btnEditar.Attributes.Add("class", "action");
+            //btnVer.Attributes.Add("class", "action");
+            //btnEliminar.Attributes.Add("class", "action red");
+        }
+        else
+        {
+            check = false;
+            color = System.Drawing.Color.White;
+           
+            //btnEditar.Attributes.Add("class", "action");
+            //btnVer.Attributes.Add("class", "action");
+            //btnEliminar.Attributes.Add("class", "action");
+
+        }
+
+        Session["Checkall_selected"] = check;
+
+        foreach (GridViewRow row in gvCenter.Rows)
+        {
+            CheckBox cb = (CheckBox)(row.FindControl("chkSel"));         
+            cb.Checked = check;
+            row.BackColor = color;
+
+            Int32 idselected = Convert.ToInt32(gvCenter.DataKeys[row.RowIndex].Value);
+            if (check)
+            {
+                controlSelectedCenter(idselected);
+            }
+            else
+            {
+                controlSelectedCenter(idselected);
+                //lo elimino aki fuera, pk no me va bien meter dentro el remove.
+                ((List<Int32>)Session["SelectedCenterID"]).Remove(idselected);
+            }
+            
+        }
+
+    }
+
+    /// <summary>
+    /// Function to control the selected items.
+    /// </summary>
+    /// <param name="_idSC"></param>
+    protected List<Int32> controlSelectedCenter (Int32 _idSC) 
+      {
+        
+           if (Session["SelectedCenterID"] != null)
+            {
+               List<Int32> lst = (List<Int32>)Session["SelectedCenterID"];
+               if (lst.Count() != 0)
+               {
+                   if (!lst.Contains(_idSC))
+                   {
+                       lst.Add(_idSC);
+                       Session["SelectedCenterID"] = lst;
+                   }
+               }
+               else
+               {
+                   //Error?¿?
+               }
+            }
+            else
+           {
+		       List<Int32> lstSelectedCentersbyID = new List<Int32>();
+               lstSelectedCentersbyID.Add(_idSC);
+               Session["SelectedCenterID"]= lstSelectedCentersbyID;
+           }
+
+           return (List<Int32>)Session["SelectedCenterID"];
+
+        }
+
+    protected void chkSel_Checked(object sender, System.EventArgs e)
+    {
+
+        Int32 rowSelectedRow = ((GridViewRow)((CheckBox)sender).Parent.Parent).RowIndex;
+        Int32 idselected = Convert.ToInt32(gvCenter.DataKeys[rowSelectedRow].Value);
+        List<Int32> lst = controlSelectedCenter(Convert.ToInt32(gvCenter.DataKeys[rowSelectedRow].Value));
+        //Session["SelectedCenterID"] = gvCenter.DataKeys[rowSelectedRow].Value.ToString();
+
+        if (((CheckBox)sender).Checked)
+        {
+            gvCenter.Rows[rowSelectedRow].BackColor = System.Drawing.ColorTranslator.FromHtml("lemonchiffon");
+            //btnEliminar.Attributes.Add("class", "action red");
+            Session["SelectedCenter"] = (Int32)Session["SelectedCenter"] + 1;
+            Int32 SelectedRow = ((GridViewRow)(((CheckBox)sender).Parent.Parent)).RowIndex;
+
+            if (lst.Contains(idselected))
+            {
+                //btnEditar.Attributes.Add("class", "action");
+                //btnVer.Attributes.Add("class", "action");
+            }
+            else
+            {
+                //btnEditar.Attributes.Add("class", "action green");
+                //btnVer.Attributes.Add("class", "action blue");
+            }
+
+            dtCenter.Rows[rowSelectedRow]["chkSelect"] = true;
+        }
+        else
+        {
+            gvCenter.Rows[rowSelectedRow].BackColor = System.Drawing.Color.White;
+
+            Session["SelectedCenter"] = (Int32)Session["SelectedCenter"] - 1;
+
+            if (lst.Contains(idselected))
+            {
+                //btnEditar.Attributes.Add("class", "action");
+                //btnVer.Attributes.Add("class", "action");
+            }
+            else
+            {
+                //btnEditar.Attributes.Add("class", "action green");
+                //btnVer.Attributes.Add("class", "action blue");
+            }
+            
+            lst.Remove(idselected);
+            Session["SelectedCenterID"] = lst;
+            dtCenter.Rows[rowSelectedRow]["chkSelect"] = false;
+        }
+
+        List<Int32> newlst = (List<Int32>)Session["SelectedCenterID"];
+
+        if (newlst.Count() == 0)
+        {
+            //btnEditar.Attributes.Add("class", "action");
+            //btnVer.Attributes.Add("class", "action");
+            //btnEliminar.Attributes.Add("class", "action");
+        }
+        else
+        {
+            //btnEliminar.Attributes.Add("class", "action red");
+        }
+    
+    }
+ 
+    #endregion
+
+    #region ****************** ACTIONS GRIDVIEW ********************************************************
+
+    protected void setCheckInGridView()
+    {
+        try
+        {
+            //Recorrer el gridview
+            foreach(GridViewRow row in gvCenter.Rows)
+            {
+                CheckBox checkItem = (CheckBox)row.FindControl("chkSel");
+
+                dtCenter.Rows[row.RowIndex]["chkSelect"] = checkItem.Checked;
+                
+                checkItem.Checked = getCheckByRowIndex(row.RowIndex);
+
+               //if (null != row.Cells[5] && row.Cells[5].Text != string.Empty)
+               // {
+
+
+               // }
+               // else
+               // {
+
+
+               // }
+                 
+
+            } 
+            /*if(e.Row.RowType == DataControlRowType.DataRow)
+            {
+               int i = e.Row.DataItemIndex;
+
+               CheckBox checkItem = (CheckBox)(e.Row.FindControl("chkSel"));
+
+               //getCheckByRowIndex(e.Row.RowIndex);
+
+               checkItem.Checked = getCheckByRowIndex(i);
+
+                //["chkSelect"] = getCheckByRowIndex(e.Row.RowIndex);
+
+            }*/
+ 
+
+        }
+        catch (Exception ex)
+        {
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+            Session["error"] = ex;
+        }
+    }
+      
+    #endregion
+
+    #region ****************** GRIDVIEW EVENTS *********************************************************
+
+    protected void gvCenter_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+
+        if ((bool)Session["Checkall_selected"])
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                e.Row.BackColor = System.Drawing.ColorTranslator.FromHtml("lemonchiffon");
+                ((CheckBox)(e.Row.FindControl("chkSel"))).Checked = true;
+            }
+        }
+        else
+        { 
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                Int32 idselected = Convert.ToInt32(gvCenter.DataKeys[e.Row.RowIndex].Value);
+            
+                //((CheckBox)(e.Row.FindControl("chkSel"))).Checked = getCheckByRowIndex(idselected);
+
+                if (getCheckByRowIndex(idselected))
+                {
+                    e.Row.BackColor = System.Drawing.ColorTranslator.FromHtml("lemonchiffon");
+                    ((CheckBox)(e.Row.FindControl("chkSel"))).Checked = true;
+                }
+                else
+                {
+                    e.Row.BackColor = System.Drawing.Color.White;
+                    ((CheckBox)(e.Row.FindControl("chkSel"))).Checked = false;
+
+                }
+            }
+        }
+    }
+
+    #region SORTING
+
+    public SortDirection dir
+    {
+        get
+        {
+            if (Session["dirState"] == null)
+            {
+                Session["dirState"] = SortDirection.Ascending;
+            }
+            return (SortDirection)Session["dirState"];
+        }
+        set
+        {
+            Session["dirState"] = value;
+        }
+
+    }
+
+    protected void gvCenter_Sorting(object sender, GridViewSortEventArgs e)
+    {
+        string SortDir = string.Empty;
+        if (dir == SortDirection.Ascending)
+        {
+            dir = SortDirection.Descending;
+            SortDir = "Desc";
+        }
+        else
+        {
+            dir = SortDirection.Ascending;
+            SortDir = "Asc";
+        }
+
+        //DataTable dt = CargarGridView();
+        DataView sortedView = new DataView(dtCenter);
+        sortedView.Sort = e.SortExpression + " " + SortDir;
+
+        gvCenter.DataSource = sortedView;
+        gvCenter.DataBind();
+
+        dtCenter = sortedView.Table;
+
+    }
+
+    #endregion
+
+    #region PAGINING
+
+    protected void OnPaging(object sender, GridViewPageEventArgs e)
+    {
+        gvCenter.PageIndex = e.NewPageIndex;
+        gvCenter.DataBind();
+    }
+
+    #endregion
+
+    #endregion
+     protected void ExportExcel()
+    {
+
+    //**************************************************************************************************
+     try
+        {
+
+    StringBuilder sb = new StringBuilder();
+        StringWriter sw = new StringWriter(sb);
+        HtmlTextWriter htw = new HtmlTextWriter(sw);
+        Page pagina = new Page();
+        System.Web.UI.HtmlControls.HtmlForm form = new System.Web.UI.HtmlControls.HtmlForm();
+
+        GridView gridToExport = new GridView();
+
+        DataTable tableToExport = dtCenter;
+        tableToExport.Columns.RemoveAt(7);
+
+        gridToExport.DataSource = dtCenter;
+        gridToExport.DataBind();
+
+        foreach (TableCell cell in gridToExport.HeaderRow.Cells)
+        {
+            cell.BackColor = System.Drawing.Color.DeepSkyBlue;
+        }
+
+        gridToExport.EnableViewState = false;
+
+        pagina.EnableEventValidation = false;
+        pagina.DesignerInitialize();
+        pagina.Controls.Add(form);
+
+        form.Controls.Add(gridToExport);
+
+        pagina.RenderControl(htw);
+        Response.Clear();
+        Response.Buffer = true;
+
+        Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+        Response.AddHeader("Content-Disposition", "attachment;filename=CentersList.xls");
+        Response.Charset = "UTF-8";
+        Response.ContentEncoding = System.Text.Encoding.Default;
+        Response.Write(sb.ToString());
+        Response.End();
+
+        DataView dv = dtCenter.DefaultView;
+          }
+        catch (Exception ex)
+        {
+            Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+            Session["error"] = ex;
+        }
+    }
+
+
+    protected void btnExportExcel_Click(object sender, EventArgs e)
+    {
+       ExportExcel();
+    }
+}

@@ -64,5 +64,6 @@ public static class Constants
 
     //2DO: POR DEFINIR DÍAS DE LA SEMANA, EN ESPAÑOL E INGLÉS:
 
-    public const string ASP_PAGE_EXTENSION = ".aspx";
+    public const string ASP_PAGE_EXTENSION = ".aspx"; 
+
 }

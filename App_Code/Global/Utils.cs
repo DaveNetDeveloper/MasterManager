@@ -40,7 +40,6 @@ public static class Utils
         }
     }
 
-
     public static bool SendMail(ModelContacto datosContacto)
     {
         try
@@ -102,9 +101,7 @@ public static class Utils
         }
 
     }
-
-   
-     
+    
     public static void LogFile(Enums.LogType logType, object entity)
     {
         try
@@ -139,7 +136,6 @@ public static class Utils
     {
         return Settings.DefaultLanguage;
     }
-
    
     #endregion
 
@@ -288,63 +284,6 @@ public static class Utils
             //Log Error File using ex Exception 
         } 
     }
-
-    //private static string GetIPAddress()
-    //{
-    //    //try
-    //    //{
-    //        var address = String.Empty;
-    //        WebRequest request = WebRequest.Create("http://checkip.dyndns.org/");
-    //        using (WebResponse response = request.GetResponse())
-    //        using (StreamReader stream = new StreamReader(response.GetResponseStream()))
-    //        {
-    //            address = stream.ReadToEnd();
-    //        }
-
-        //        int first = address.IndexOf("Address: ") + 9;
-        //        int last = address.LastIndexOf("</body>");
-        //        return address.Substring(first, last - first);
-
-        //        /*System.Web.HttpContext context = System.Web.HttpContext.Current;
-        //        string ipAddress = context.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
-
-        //        if (!string.IsNullOrEmpty(ipAddress))
-        //        {
-        //            string[] addresses = ipAddress.Split(',');
-        //            if (addresses.Length != 0)
-        //            {
-        //                var adrees = addresses[0];
-        //            }
-        //        } 
-
-        //        var addr = context.Request.ServerVariables["REMOTE_ADDR"]; */ 
-        //    //}
-        //    //catch (Exception ex)
-        //    //{
-        //    //    //Log Error File using ex Exception
-        //    //    return null;
-        //    //} 
-        //}
-
-        //private static XmlTextReader GetLocation(string ipaddress)
-        //{
-        //    // Register at Address = {http://api.ipinfodb.com/v3/ip-city/?key=Your Api key Here&ip=37.133.25.245&format=xml} for a free key and put it here
-        //    string myKey = "7b42d0e4d71fd72e97e100fe3938bda8278e7e1e9b892879d52e91623e571f5e";
-        //    WebRequest rssReq = WebRequest.Create("http://api.ipinfodb.com/v3/ip-city/?key=" + myKey + "&ip=" + ipaddress + "&format=xml");
-        //    WebProxy px = new WebProxy("http://api.ipinfodb.com/v3/ip-city/?key=" + myKey + "&ip=" + ipaddress + "&format=xml", true);
-        //    rssReq.Proxy = px;
-        //    rssReq.Timeout = 10000;
-        //    try
-        //    {
-        //        WebResponse rep = rssReq.GetResponse();
-        //        XmlTextReader xtr = new XmlTextReader(rep.GetResponseStream());
-        //        return xtr;
-        //    }
-        //    catch
-        //    {
-        //        return null;
-        //    }
-        //} 
 
     #endregion
 }

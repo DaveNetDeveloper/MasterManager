@@ -14,6 +14,36 @@
     <div>
         <asp:ContentPlaceHolder id="ContentPlaceHolder1" runat="server">
         
+            <div runat="server" visible="false" id="divBotoneraList" class="buttons" style="background-color: #FAFAFA;padding-left: 83px;height: 60px;padding-top: 15px;border-bottom: 1px solid lightgray;">
+        
+            <!-- CREAR -->
+            <button  runat="server" id="btnCrear" onclick="javascript:Crear()" class="action" ><span style="background-image: url(http://up2web.es/EscuelaNauticaSantalo_ContentManager/Images/png/docAdd.png);background-repeat: no-repeat;background-size: contain;margin-left: 24px;height: 16px;" class="label"></span></button>        
+        
+            <!-- VER -->
+            <div style="width:30px; float: left;">&nbsp</div>
+            <button   runat="server" id="btnVer" onclick="javascript:Ver()" class="action"><img onmouseover="hoverVer(this);" onmouseout="unhoverVer(this);" src="http://up2web.es/EscuelaNauticaSantalo_ContentManager/Images/png/darkP.png" style="background-repeat: no-repeat;background-size: contain;margin-left: 0px; height: 12px;" class="label" /></button>
+        
+            <!-- EDITAR -->
+            <div style="width:5px; float: left;">&nbsp</div>
+            <button  runat="server" id="btnEditar" onclick="javascript:Editar()" style="" class="action" ><span style="background-image: url(http://up2web.es/EscuelaNauticaSantalo_ContentManager/Images/png/Edit.png);background-repeat: no-repeat;background-size: contain;margin-left: 20px;height: 19px;" class="label"></span></button>        
+        
+            <!-- ELIMINAR -->
+            <div style="width:30px; float: left;">&nbsp</div>
+            <button runat="server" onclick="javascript:Eliminar();" id="btnEliminar" style="float: left;" class="action"><span style="background-image: url(http://up2web.es/EscuelaNauticaSantalo_ContentManager/Images/png/drash.png);background-repeat: no-repeat;background-size: contain;margin-left: 22px;height: 16px;"   class="label"></span></button>
+        
+             <!-- ENVÍO DE SMS -->
+            <div  style="width:30px; float: left;">&nbsp</div>
+            <button  runat="server" visible="false"  onclick="javascript:EnviarSMS();"  class="action"   id="btnSMS" style="float: left;" >
+                 <span style="background-image: url(http://up2web.es/EscuelaNauticaSantalo_ContentManager/Images/png/mobile4.png);background-repeat: no-repeat;background-size: contain;margin-left: 20px;height: 16px;" class="label"></span>
+            </button>
+
+            <!-- Load jQuery, SimpleModal and Basic JS files -->
+            <script type='text/javascript' src='js/jquery.js'></script>
+            <script type='text/javascript' src='js/jquery.simplemodal.js'></script>
+            <script type='text/javascript' src='js/basic.js'></script>
+
+        </div>
+
         </asp:ContentPlaceHolder>
     </div>
     </form>

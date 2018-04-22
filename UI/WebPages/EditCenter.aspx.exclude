@@ -1,0 +1,298 @@
+﻿<%@ Page Title="EditCenter" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true" CodeFile="~/EditCenter.aspx.cs" Inherits="EditCenter" %>
+   
+<%@ Import Namespace="System.Resources" %>
+
+<asp:Content runat="server" ID="HeaderContent" ContentPlaceHolderID="HeadContent">
+     
+    <script type="text/javascript" src="js/jquery-1.9.0.min.js"></script>
+    
+    <script type="text/javascript" src="js/jquery-ui-1.10.0.custom.min.js"></script>
+       
+    <link rel="stylesheet" href="css/jquery-ui-1.10.0.custom.min.css" type="text/css"/>
+ 
+	<style type="text/css">
+			body { font-family: "HelveticaNeue","Helvetica-Neue", "Helvetica", "Arial", sans-serif; }
+			.big-link { display:block; text-align: center; font-size: 70px; color: #06f; }
+	</style>
+    
+    <!--  <style type="text/css">
+        /* some styling for the page */
+        body { font-size: 10px; /* for the widget natural size */ }
+        #content { font-size: 1.2em; /* for the rest of the page to show at a normal size */
+                   font-family: "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+                   width: 950px; margin: auto;
+        }
+        .code { margin: 6px; padding: 9px; background-color: #fdf5ce; border: 1px solid #c77405; }
+        fieldset { padding: 0.5em 2em }
+        hr { margin: 0.5em 0; clear: both }
+        a { cursor: pointer; }
+        #requirements li { line-height: 1.6em; }
+    </style>
+
+ 
+       
+        <script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-24327002-1']);
+        _gaq.push(['_trackPageview']);
+
+        (function () {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+        function plusone_clicked() {
+            $('#thankyou').fadeIn(300);
+        }
+         
+    </script> -->
+     
+</asp:Content>
+
+<asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
+ 
+    <br />
+     
+    <div>
+         <asp:Button OnClick="btnGuardar_Click" runat="server" style="float: right;width: 105px;height:26px;font-family:Verdana;border: 1px solid #D8D8D8 !important;background: #F2F2F2;background: -webkit-linear-gradient(top, #F5F5F5, #F1F1F1);background: -moz-linear-gradient(top, #F5F5F5, #F1F1F1);background: -ms-linear-gradient(top, #F5F5F5, #F1F1F1);background: -o-linear-gradient(top, #F5F5F5, #F1F1F1);-webkit-transition: border .20s;-moz-transition: border .20s;-o-transition: border .20s;transition: border .20s;" id="btnGuardar" class="action" Text="Guardar" />
+        <div id="emptyDiv" runat="server" style="width:25px;float: right;">&nbsp</div>
+        <asp:Button id="btnVolver" OnClick="btnVolver_Click" Text="Volver" runat="server" style="float: right; width: 105px;height:26px;font-family:Verdana;border: 1px solid #D8D8D8 !important;background: #F2F2F2;background: -webkit-linear-gradient(top, #F5F5F5, #F1F1F1);background: -moz-linear-gradient(top, #F5F5F5, #F1F1F1);background: -ms-linear-gradient(top, #F5F5F5, #F1F1F1);background: -o-linear-gradient(top, #F5F5F5, #F1F1F1);-webkit-transition: border .20s;-moz-transition: border .20s;-o-transition: border .20s;transition: border .20s;" />
+    </div>
+    
+    <br /><br /><br />
+
+    <div id="simpaleTabs">
+		
+        <ul>
+			<li><a href="#tabsTexto-1">Español</a></li>
+			<li><a href="#tabsTexto-2">Catalán</a></li>
+			<li><a href="#tabsTexto-3">Inglés</a></li>
+        </ul>
+         
+        <div id="tabsTexto-1">
+                    <%--<p>Texto de prueba</p>--%>
+                    <div class="form_row clearfix title">
+                         <table>
+            <tr>
+                <td style="width: 200px;">
+                    <label class="control-label required" for="txtNameES">Nombre:</label>
+                </td>
+                <td>
+                    <asp:TextBox BorderWidth="1px" runat="server" type="text" ID="txtNameES"></asp:TextBox>
+                </td>
+            </tr>
+        </table>
+            </div>
+                </div>
+        <div id="tabsTexto-2">
+                    <%--<p>Texto de prueba</p>--%>
+                    <div class="form_row clearfix title">
+                <table>
+            <tr>
+                <td style="width: 200px;"><label class="control-label required" for="txtNameCA">Nom:</label>
+                </td>
+                <td> <asp:TextBox BorderWidth="1px" runat="server" type="text" ID="txtNameCA"></asp:TextBox></td>
+            </tr>
+        </table>
+            </div>
+                </div>
+        <div id="tabsTexto-3">
+                    <%--<p>Texto de prueba</p>--%>
+                <div class="form_row clearfix title">
+                    <table>
+            <tr>
+                <td style="width: 200px;"><label class="control-label required" for="txtNameEN">Name:</label>
+                    </td>
+                <td> <asp:TextBox BorderWidth="1px" runat="server" type="text" ID="txtNameEN"></asp:TextBox></td>
+            </tr>
+        </table>
+                </div>
+		</div>
+
+		<script type="text/javascript">
+		    $(function () {
+		        $('#simpaleTabs').tabs();
+		    });
+		</script>
+
+    </div>
+    <br /><br />
+
+    <%--Tabs Control TITULO--%>
+    <div id="simpaleTabsTitulo">
+		
+    <ul>
+			<li><a href="#tabs-1">Español</a></li>
+			<li><a href="#tabs-2">Catalán</a></li>
+			<li><a href="#tabs-3">Inglés</a></li>
+				
+		</ul>
+         
+    <div id="tabs-1">
+                    
+                    <div class="form_row clearfix title">
+                <table>
+            <tr>
+                <td style="width: 200px;"><label class="control-label required" for="txtDescriptionES">Descripción:</label>
+                </td>
+                <td> <asp:TextBox runat="server" BorderWidth="1px" type="text" ID="txtDescriptionES"></asp:TextBox></td>
+            </tr>
+        </table>
+            </div>
+    </div>
+    <div id="tabs-2">
+                  
+                        <div class="form_row clearfix title">
+                      <table>
+            <tr>
+                <td style="width: 200px;"><label class="control-label required" for="txtDescriptionCA">Descripció:</label> </td>
+                <td>
+                    <asp:TextBox runat="server" BorderWidth="1px" type="text" ID="txtDescriptionCA"></asp:TextBox></td>
+            </tr>
+        </table>
+                </div>
+    </div>
+    <div id="tabs-3">
+                    
+                <div class="form_row clearfix title">
+                    <table>
+            <tr>
+                <td style="width: 200px;"><label class="control-label required" for="txtDescriptionEN">Description:</label> </td>
+                <td>
+                    <asp:TextBox BorderWidth="1px" runat="server" type="text" ID="txtDescriptionEN"></asp:TextBox></td>
+            </tr>
+        </table>
+    </div>
+    </div>
+
+	<script type="text/javascript">
+		$(function () {
+		    $('#simpaleTabsTitulo').tabs();
+		});
+	</script>
+    
+    </div>   
+    
+    <br />
+    <div style="text-align:left;" class="form_row clearfix link">
+        <table>
+            <tr>
+                <td style="width: 200px;"><label  class="control-label required" for="centerAddress">Dirección:</label> </td>
+                <td>
+        <asp:TextBox  BorderWidth="1px" runat="server" type="text" id="centerAddress" name="centerAddress"></asp:TextBox></td>
+            </tr>
+        </table>
+    </div>
+
+    <br />
+    <div style="text-align:left;" class="form_row clearfix link">
+        <table>
+            <tr>
+                <td style="width: 200px;"><label  class="control-label required" for="centerCP">Código Postal:</label> </td>
+                <td>
+        <asp:TextBox  BorderWidth="1px" runat="server" type="text" id="centerCP" name="centerCP"></asp:TextBox></td>
+            </tr>
+        </table>
+    </div>
+
+    <br />
+    <div style="text-align:left;" class="form_row clearfix link">
+        <table>
+            <tr>
+                <td style="width: 200px;"><label  class="control-label required" for="centerCity">Ciudad:</label> </td>
+                <td>
+        <asp:TextBox  BorderWidth="1px" runat="server" type="text" id="centerCity" name="centerCity"></asp:TextBox></td>
+            </tr>
+        </table>
+    </div>
+
+    <br />
+    <!-- Information Windows -->
+    <div id="simpaleTabsInfo">
+    <ul>
+			<li><a href="#tabInfo-1">Español</a></li>
+			<li><a href="#tabInfo-2">Catalán</a></li>
+			<li><a href="#tabInfo-3">Inglés</a></li>
+				
+		</ul>
+         
+    <div id="tabInfo-1">
+                    <%--<p>Texto de prueba</p>--%>
+                    <div class="form_row clearfix title">
+               <table>
+            <tr>
+                <td style="width: 200px;"> <label class="control-label required" for="centerInfoWindowES">Información:</label> </td>
+                <td>
+                <asp:TextBox runat="server" BorderWidth="1px" type="text" ID="centerInfoWindowES"></asp:TextBox></td>
+            </tr>
+        </table>
+            </div>
+    </div>
+    <div id="tabInfo-2">
+                    <%--<p>Texto de prueba</p>--%>
+                        <div class="form_row clearfix title">
+                    <table>
+            <tr>
+                <td style="width: 200px;"><label class="control-label required" for="centerInfoWindowCA">Informació:</label> </td>
+                <td>
+                    <asp:TextBox runat="server" BorderWidth="1px" type="text" ID="centerInfoWindowCA"></asp:TextBox></td>
+            </tr>
+        </table>
+                </div>
+    </div>
+    <div id="tabInfo-3">
+                    <%--<p>Texto de prueba</p>--%>
+                <div class="form_row clearfix title">
+                   <table>
+            <tr>
+                <td style="width: 200px;"> <label class="control-label required" for="centerInfoWindowEN">Information:</label> </td>
+                <td>
+                    <asp:TextBox BorderWidth="1px" runat="server" type="text" ID="centerInfoWindowEN"></asp:TextBox></td>
+            </tr>
+        </table>
+    </div>
+    </div>
+
+	<script type="text/javascript">
+	    $(function () {
+	        $('#simpaleTabsInfo').tabs();
+	    });
+	</script>
+    
+    </div>   
+    
+    <br />
+
+    <!-- CREATED DATE -->
+        <div style="text-align:left;" class="form_row clearfix link">
+            <table>
+            <tr>
+                <td style="width: 200px;"><label class="control-label required" for="featured_fechaIni">Fecha creación:</label></td>
+                <td>
+            <asp:TextBox BorderWidth="1px" runat="server" Enabled="false" ID="centerCreated"></asp:TextBox></td>
+            </tr>
+        </table>
+        </div>
+
+    <!-- UPDATED DATE -->
+        <div style="text-align:left;" class="form_row clearfix link">
+           <table>
+            <tr>
+                <td style="width: 200px;"> <label class="control-label required" for="featured_fechaIni">Última modificación:</label></td>
+                <td>
+            <asp:TextBox BorderWidth="1px" Enabled="false" runat="server" ID="centerUpdated"></asp:TextBox></td>
+            </tr>
+        </table>
+        </div>
+
+
+    <div id="myModal" style="visibility:hidden;" class="reveal-modal">
+			
+        <asp:Image Width="260" Height="275" runat="server" ID="FeatureImage" />
+        <a class="close-reveal-modal">×</a>
+
+    </div>
+
+</asp:Content>
