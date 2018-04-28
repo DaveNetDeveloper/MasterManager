@@ -5,10 +5,10 @@ public interface IucEntityList
 {
     IEnumerable<IModel> DataSource { get; set; }
     SortDirection Dir { get; set; }
-
     IEntity Entity { get; }
-    void InicializarLista();
-    void CargarGridViewData();
-    void CargarDataSource();
-    void ExportExcel();
+
+    void InitializeList();
+    void LoadGridViewData();
+    void LoadDataSource();
+    void ExportToExcel();
 }

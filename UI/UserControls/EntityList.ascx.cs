@@ -75,29 +75,26 @@ public partial class EntityList : UserControl, IucEntityList
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (!IsPostBack)
-        {
-            InicializarLista(); 
-        } 
+        if (!IsPostBack) InitializeList(); 
     }
 
     #endregion
 
     #region [ PUBLIC METHODS ]
 
-    public void InicializarLista()
+    public void InitializeList()
     { 
-        CargarDataSource();
-        CargarGridViewData();
+        LoadDataSource();
+        LoadGridViewData();
     }
 
-    public void CargarGridViewData()
+    public void LoadGridViewData()
     {
         GvEntityList.DataSource = DataSource;
         GvEntityList.DataBind();
     }
 
-    public void CargarDataSource()
+    public void LoadDataSource()
     {
         try
         {
@@ -109,7 +106,7 @@ public partial class EntityList : UserControl, IucEntityList
         }
     }
 
-    public void ExportExcel()
+    public void ExportToExcel()
     {
         try
         {
@@ -289,7 +286,7 @@ public partial class EntityList : UserControl, IucEntityList
 
     protected void BtnExportExcel_Click(object sender, EventArgs e)
     {
-        ExportExcel();
+        ExportToExcel();
     }
 
     protected void GvEntityList_OnPaging(object sender, GridViewPageEventArgs e)
