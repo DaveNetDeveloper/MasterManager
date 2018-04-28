@@ -3,23 +3,41 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 using System.Web.UI;
-using System.Web.UI.WebControls;
+using System.Web.UI.WebControls; 
 
-public partial class LisOftDocuments : UserControl
+public partial class EntityList : UserControl, IucEntityList
 {
-    private EntityDocumento entityDocumento;
-    #region [ PROPERTIES ]
+    #region [ PUBLIC PROPERTIES ]
 
-    public DataTable DtDocumento
+    private IEntity _entity;
+    public IEntity Entity
     {
         get
         {
-            return Session["dtDocumento"] as DataTable;
+            if(_entity == null)
+            {
+                _entity = EntityManager.GetEntity(EntityType);
+            }
+            return _entity;
+        } 
+    }
+
+    public DataTable EntityDataTable
+    {
+        get
+        {
+            return Session["EntityDataTable"] as DataTable;
         }
         set
         {
-            Session["dtDocumento"] = (DataTable)value;
+            Session["EntityDataTable"] = (DataTable)value;
         }
+    }
+
+    public Enums.EntityType EntityType
+    {
+        get;
+        set;
     }
 
     public IEnumerable<IModel> DataSource
@@ -30,7 +48,7 @@ public partial class LisOftDocuments : UserControl
         }
         set
         {
-            Session["DataSource"] = (IEnumerable<IModel>)value;
+            Session["DataSource"] = value;
         }
     }
      
@@ -65,26 +83,25 @@ public partial class LisOftDocuments : UserControl
 
     #endregion
 
-    #region [ METHODS ]
+    #region [ PUBLIC METHODS ]
 
-    private void InicializarLista()
-    {
-        entityDocumento = new EntityDocumento();
+    public void InicializarLista()
+    { 
         CargarDataSource();
         CargarGridViewData();
     }
 
-    private void CargarGridViewData()
+    public void CargarGridViewData()
     {
-        gvDocumentos.DataSource = DataSource;
-        gvDocumentos.DataBind();
+        GvEntityList.DataSource = DataSource;
+        GvEntityList.DataBind();
     }
 
-    private void CargarDataSource()
+    public void CargarDataSource()
     {
         try
         {
-            DataSource = entityDocumento.GetList();
+            DataSource = Entity.GetList();
         }
         catch (Exception ex)
         {
@@ -92,7 +109,7 @@ public partial class LisOftDocuments : UserControl
         }
     }
 
-    private void ExportExcel()
+    public void ExportExcel()
     {
         try
         {
@@ -131,13 +148,13 @@ public partial class LisOftDocuments : UserControl
 
             Response.AddHeader("Content-Disposition", "attachment;filename=DocumentsList.xls");
             Response.Charset = "UTF-8";
-            Response.ContentEncoding = System.Text.Encoding.Default;
+            Response.ContentEncoding = Encoding.Default;
             Response.Write(sb.ToString());
             Response.End();
 
             //DataView dv = dtDocumento.DefaultView;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             //Session["error"] = ex;
         }
@@ -147,30 +164,30 @@ public partial class LisOftDocuments : UserControl
 
     #region [ GRID EVENTS ]
 
-    protected void chkSel_Checked(object sender, EventArgs e)
+    protected void ChkSel_Checked(object sender, EventArgs e)
     {
         try
         {
             Int32 gvSelectedIndex = ((GridViewRow)((CheckBox)sender).Parent.Parent).RowIndex;
-            Int32 idselected = Convert.ToInt32(gvDocumentos.DataKeys[gvSelectedIndex].Value);
-            List<Int32> lst = controlSelectedCenter(Convert.ToInt32(gvDocumentos.DataKeys[gvSelectedIndex].Value));
+            Int32 idselected = Convert.ToInt32(GvEntityList.DataKeys[gvSelectedIndex].Value);
+            List<Int32> lst = ControlSelectedCenter(Convert.ToInt32(GvEntityList.DataKeys[gvSelectedIndex].Value));
 
 
             if (((CheckBox)sender).Checked)
             {
-                gvDocumentos.Rows[gvSelectedIndex].BackColor = System.Drawing.ColorTranslator.FromHtml("lemonchiffon");
+                GvEntityList.Rows[gvSelectedIndex].BackColor = System.Drawing.ColorTranslator.FromHtml("lemonchiffon");
                 Session["SelectedDocument"] = (Int32)Session["SelectedDocument"] + 1;
                 Int32 SelectedRow = ((GridViewRow)(((CheckBox)sender).Parent.Parent)).RowIndex;
 
-                DtDocumento.Rows[gvSelectedIndex]["chkSelect"] = true;
+                EntityDataTable.Rows[gvSelectedIndex]["chkSelect"] = true;
             }
             else
             {
-                gvDocumentos.Rows[gvSelectedIndex].BackColor = System.Drawing.Color.White; 
+                GvEntityList.Rows[gvSelectedIndex].BackColor = System.Drawing.Color.White; 
                Session["SelectedDocument"] = (Int32)Session["SelectedDocument"] - 1; 
                 lst.Remove(idselected);
                 Session["SelectedTestID"] = lst;
-               DtDocumento.Rows[gvSelectedIndex]["chkSelect"] = false;
+                EntityDataTable.Rows[gvSelectedIndex]["chkSelect"] = false;
             }
         }
         catch (Exception ex)
@@ -179,7 +196,7 @@ public partial class LisOftDocuments : UserControl
         }
     }
 
-    protected void chkSelAll_Checked(object sender, System.EventArgs e)
+    protected void ChkSelAll_Checked(object sender, System.EventArgs e)
     {
         //Dim rowSelectedRow As Integer = TryCast(TryCast(sender, CheckBox).Parent.Parent, GridViewRow).RowIndex
 
@@ -190,7 +207,7 @@ public partial class LisOftDocuments : UserControl
         {
             check = true;
             color = System.Drawing.ColorTranslator.FromHtml("lemonchiffon");
-            Session["SelectedDocument"] = gvDocumentos.Rows.Count;
+            Session["SelectedDocument"] = GvEntityList.Rows.Count;
 
             Int32 SelectedRow = ((GridViewRow)(((CheckBox)sender).Parent.Parent)).RowIndex;
 
@@ -207,27 +224,27 @@ public partial class LisOftDocuments : UserControl
 
         Session["Checkall_selected"] = check;
 
-        foreach (GridViewRow row in gvDocumentos.Rows)
+        foreach (GridViewRow row in GvEntityList.Rows)
         {
             CheckBox cb = (CheckBox)(row.FindControl("chkSel"));
             cb.Checked = check;
             row.BackColor = color;
 
-            Int32 idselected = Convert.ToInt32(gvDocumentos.DataKeys[row.RowIndex].Value);
+            Int32 idselected = Convert.ToInt32(GvEntityList.DataKeys[row.RowIndex].Value);
             if (check)
             {
-                controlSelectedCenter(idselected);
+                ControlSelectedCenter(idselected);
             }
             else
             {
-                controlSelectedCenter(idselected);
+                ControlSelectedCenter(idselected);
                 //lo elimino aki fuera, pk no me va bien meter dentro el remove.
                 ((List<Int32>)Session["SelectedDocumentID"]).Remove(idselected);
             } 
         } 
     }
 
-    private List<Int32> controlSelectedCenter(Int32 _idSC)
+    private List<Int32> ControlSelectedCenter(Int32 _idSC)
     { 
         if (Session["SelectedCenterID"] != null)
         {
@@ -239,11 +256,7 @@ public partial class LisOftDocuments : UserControl
                     lst.Add(_idSC);
                     Session["SelectedCenterID"] = lst;
                 }
-            }
-            else
-            {
-                //Error?
-            }
+            } 
         }
         else
         {
@@ -254,7 +267,7 @@ public partial class LisOftDocuments : UserControl
         return (List<Int32>)Session["SelectedDocumentID"]; 
     }
 
-    protected void gvDocumentos_RowDataBound(object sender, GridViewRowEventArgs e)
+    protected void GvEntityList_RowDataBound(object sender, GridViewRowEventArgs e)
     {
         //if (e.Row.RowType == DataControlRowType.DataRow)
         //{
@@ -262,30 +275,30 @@ public partial class LisOftDocuments : UserControl
         //}
     }
 
-    protected void gvDocumentos_RowCommand(object sender, GridViewCommandEventArgs e)
+    protected void GvEntityList_RowCommand(object sender, GridViewCommandEventArgs e)
     {
-        //int rowIndex = int.Parse(e.CommandArgument.ToString());
-        //string idDocumento = gvDocumentos.DataKeys[rowIndex]["Id"].ToString();
+        int rowIndex = int.Parse(e.CommandArgument.ToString());
+        string idDocumento = GvEntityList.DataKeys[rowIndex]["Id"].ToString();
 
-        //Response.Redirect(e.CommandName);
+        Response.Redirect(e.CommandName);
     }
 
     #endregion
 
     #region [ BUTTON EVENTS ]
 
-    protected void btnExportExcel_Click(object sender, EventArgs e)
+    protected void BtnExportExcel_Click(object sender, EventArgs e)
     {
         ExportExcel();
     }
 
-    protected void OnPaging(object sender, GridViewPageEventArgs e)
+    protected void GvEntityList_OnPaging(object sender, GridViewPageEventArgs e)
     {
-        gvDocumentos.PageIndex = e.NewPageIndex;
-        gvDocumentos.DataBind();
+        GvEntityList.PageIndex = e.NewPageIndex;
+        GvEntityList.DataBind();
     }
 
-    protected void gvDocumentos_Sorting(object sender, GridViewSortEventArgs e)
+    protected void GvEntityList_Sorting(object sender, GridViewSortEventArgs e)
     {
         string SortDir = string.Empty;
         if (Dir == SortDirection.Ascending)
@@ -303,8 +316,8 @@ public partial class LisOftDocuments : UserControl
         //DataView sortedView = new DataView(DataSource);
         //sortedView.Sort = e.SortExpression + " " + SortDir;
 
-        gvDocumentos.DataSource = DataSource;
-        gvDocumentos.DataBind();
+        GvEntityList.DataSource = DataSource;
+        GvEntityList.DataBind();
         //dtDocumento = sortedView.Table; 
     }
 

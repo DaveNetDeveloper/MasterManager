@@ -1,6 +1,5 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="~/UI/WebPages/AsyncJavascriptCall.aspx.cs" Inherits="AsyncJavascriptCall" %> 
-
-<%@ Register Src="~/UI/UserControls/LisOftDocuments.ascx" TagPrefix="ucDocuments" TagName="LisOftDocuments" %>
+<%@ Register Src="~/UI/UserControls/EntityList.ascx" TagPrefix="uc" TagName="EntityList" %>
 
 <!DOCTYPE html> 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -9,8 +8,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Async Javascript Call Page</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-
-     <style type="text/css"> 
+    <style type="text/css"> 
         .gridClass th
             {  
                 text-align: center;
@@ -124,8 +122,10 @@
         <input id="inputUpdateAreaNombre" type="text" value="" /> 
         <input id="btnUpdateArea" type="button" value="Modificar area existentes" onclick="UpdateAreaById($('#inputUpdateAreaId').val(), $('#inputUpdateAreaNombre').val());" />
     </div>
+
     <br /><br />
-    <ucDocuments:LisOftDocuments runat="server" ID="LisOftDocuments" Visible="true"/>
+
+    <uc:EntityList runat="server" EntityType="Documento" ID="LisOftDocuments" Visible="true" />
 </form>
 </body>
 
