@@ -2,9 +2,7 @@
  
 public class ModelUsuarioAlumno : IModel
 {
-    public ModelUsuarioAlumno()
-    { 
-    }
+    public ModelUsuarioAlumno() { }
 
     public ModelUsuarioAlumno(int pId, string pNombre, string pApellidos, string pEmail, DateTime pFechaNacimiento, int pTelefono)
     {

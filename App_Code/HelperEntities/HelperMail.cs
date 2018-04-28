@@ -58,8 +58,8 @@ public static class HelperMail
             mailBody += "<b>Mensaje: </b>" + datosContacto.Mensaje + "<br />";
             mailBody += "<br />";
             mailBody += "Atentamente, " + "<br />";
-            //mailBody += "Luxsuy</div>";  
-            mailBody += "<table style = 'float: right; width: 100%' id = 'tLogo'> <tr><td style ='float:right;'><a target='_blank' href='http://www.luxsuy.com'><img src='http://www.luxsuy.com/Luxsuy/images/LogoMail.png' width='135px' height='85px' /></a></td></tr></table>";
+            //mailBody += "Corporation</div>";  
+            mailBody += "<table style = 'float: right; width: 100%' id = 'tLogo'> <tr><td style ='float:right;'><a target='_blank' href='http://www.com'><img src='http://www' width='135px' height='85px' /></a></td></tr></table>";
             return mailBody;
         }
         catch (Exception)

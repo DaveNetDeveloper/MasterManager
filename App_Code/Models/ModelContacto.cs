@@ -2,10 +2,7 @@
  
 public class ModelUserContact : IModel
 {
-    public ModelUserContact()
-    {
-        
-    }
+    public ModelUserContact() { }
 
     public ModelUserContact(string pNombreCompleto, string pTelefono, string pEmail, string pAsunto, string pMensaje)
     {

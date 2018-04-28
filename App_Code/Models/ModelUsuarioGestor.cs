@@ -1,8 +1,6 @@
 ﻿public class ModelUsuarioGestor : IModel
 {
-    public ModelUsuarioGestor()
-    {  
-    }
+    public ModelUsuarioGestor() { }
 
     public ModelUsuarioGestor(int pId, string pNombre, string pLogin, string pPassword, string pApellidos, string pEmail)
     {
