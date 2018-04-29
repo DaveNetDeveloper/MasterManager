@@ -125,7 +125,8 @@
 
     <br /><br />
 
-    <uc:EntityList runat="server" EntityType="Documento" ID="LisOftDocuments" Visible="true" />
+    <uc:EntityList runat="server" EntityType="Documento" ID="LisOftDocuments" />
+
 </form>
 </body>
 

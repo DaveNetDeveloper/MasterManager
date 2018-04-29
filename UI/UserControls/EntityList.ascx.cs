@@ -3,24 +3,12 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 using System.Web.UI;
-using System.Web.UI.WebControls; 
+using System.Web.UI.WebControls;
+using System.Drawing;
 
-public partial class EntityList : UserControl, IucEntityList
+public partial class EntityList : UserControl, IUcEntityList
 {
     #region [ PUBLIC PROPERTIES ]
-
-    private IEntity _entity;
-    public IEntity Entity
-    {
-        get
-        {
-            if(_entity == null)
-            {
-                _entity = EntityManager.GetEntity(EntityType);
-            }
-            return _entity;
-        } 
-    }
 
     public DataTable EntityDataTable
     {
@@ -30,21 +18,18 @@ public partial class EntityList : UserControl, IucEntityList
         }
         set
         {
-            Session["EntityDataTable"] = (DataTable)value;
+            Session["EntityDataTable"] = value;
         }
     }
 
-    public Enums.EntityType EntityType
-    {
-        get;
-        set;
-    }
+    public Enums.EntityType EntityType { get; set; }
 
     public IEnumerable<IModel> DataSource
     {
         get
         {
-            return Session["DataSource"] as IEnumerable<IModel>;
+            if (Session["DataSource"] == null) return EntityManager.GetEntity(EntityType).GetList();
+            else return (IEnumerable<IModel>)Session["DataSource"]; 
         }
         set
         {
@@ -83,27 +68,9 @@ public partial class EntityList : UserControl, IucEntityList
     #region [ PUBLIC METHODS ]
 
     public void InitializeList()
-    { 
-        LoadDataSource();
-        LoadGridViewData();
-    }
-
-    public void LoadGridViewData()
     {
         GvEntityList.DataSource = DataSource;
         GvEntityList.DataBind();
-    }
-
-    public void LoadDataSource()
-    {
-        try
-        {
-            DataSource = Entity.GetList();
-        }
-        catch (Exception ex)
-        {
-            Session["error"] = ex;
-        }
     }
 
     public void ExportToExcel()
@@ -169,19 +136,17 @@ public partial class EntityList : UserControl, IucEntityList
             Int32 idselected = Convert.ToInt32(GvEntityList.DataKeys[gvSelectedIndex].Value);
             List<Int32> lst = ControlSelectedCenter(Convert.ToInt32(GvEntityList.DataKeys[gvSelectedIndex].Value));
 
-
             if (((CheckBox)sender).Checked)
             {
                 GvEntityList.Rows[gvSelectedIndex].BackColor = System.Drawing.ColorTranslator.FromHtml("lemonchiffon");
                 Session["SelectedDocument"] = (Int32)Session["SelectedDocument"] + 1;
                 Int32 SelectedRow = ((GridViewRow)(((CheckBox)sender).Parent.Parent)).RowIndex;
-
                 EntityDataTable.Rows[gvSelectedIndex]["chkSelect"] = true;
             }
             else
             {
                 GvEntityList.Rows[gvSelectedIndex].BackColor = System.Drawing.Color.White; 
-               Session["SelectedDocument"] = (Int32)Session["SelectedDocument"] - 1; 
+                Session["SelectedDocument"] = (Int32)Session["SelectedDocument"] - 1; 
                 lst.Remove(idselected);
                 Session["SelectedTestID"] = lst;
                 EntityDataTable.Rows[gvSelectedIndex]["chkSelect"] = false;
@@ -197,13 +162,14 @@ public partial class EntityList : UserControl, IucEntityList
     {
         //Dim rowSelectedRow As Integer = TryCast(TryCast(sender, CheckBox).Parent.Parent, GridViewRow).RowIndex
 
-        System.Drawing.Color color;
-        Boolean check;
+        var currentCheck = ((CheckBox)sender);
 
-        if (((CheckBox)sender).Checked)
+        Color color;
+        Boolean check = currentCheck.Checked;
+
+        if (currentCheck.Checked)
         {
-            check = true;
-            color = System.Drawing.ColorTranslator.FromHtml("lemonchiffon");
+            color = ColorTranslator.FromHtml("lemonchiffon");
             Session["SelectedDocument"] = GvEntityList.Rows.Count;
 
             Int32 SelectedRow = ((GridViewRow)(((CheckBox)sender).Parent.Parent)).RowIndex;
@@ -213,9 +179,7 @@ public partial class EntityList : UserControl, IucEntityList
         }
         else
         {
-            check = false;
-            color = System.Drawing.Color.White;
-
+            color = Color.White;
             //btnEditar.Attributes.Add("class", "action"); 
         }
 
@@ -228,16 +192,11 @@ public partial class EntityList : UserControl, IucEntityList
             row.BackColor = color;
 
             Int32 idselected = Convert.ToInt32(GvEntityList.DataKeys[row.RowIndex].Value);
-            if (check)
+            ControlSelectedCenter(idselected);
+            if (!check)
             {
-                ControlSelectedCenter(idselected);
-            }
-            else
-            {
-                ControlSelectedCenter(idselected);
-                //lo elimino aki fuera, pk no me va bien meter dentro el remove.
                 ((List<Int32>)Session["SelectedDocumentID"]).Remove(idselected);
-            } 
+            }
         } 
     }
 

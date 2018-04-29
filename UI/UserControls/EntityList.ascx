@@ -2,8 +2,8 @@
 <div class="row">
 	<div class="column width-12">
 		<div class="row content-grid-1">  
-            <asp:GridView Visible="true" ID="GvEntityList" Width="100%" runat="server"   OnRowDataBound="GvEntityList_RowDataBound" 
-                OnRowCommand="GvEntityList_RowCommand" DataKeyNames="Id"  AutoGenerateColumns="false" CssClass ="gridClass" EmptyDataText="No hay datos." 
+            <asp:GridView Visible="true" ID="GvEntityList" Width="100%" runat="server"  OnRowDataBound="GvEntityList_RowDataBound" 
+                OnRowCommand="GvEntityList_RowCommand" DataKeyNames="Id" AutoGenerateColumns="false" CssClass ="gridClass" EmptyDataText="No hay datos." 
                 ClientIDMode="AutoID"  FooterStyle-CssClass="mGrid" 
                 HeaderStyle-Font-Bold="true" HeaderStyle-BackColor="Transparent" HeaderStyle-HorizontalAlign="Center" 
                 HeaderStyle-Height="40px" GridLines="Horizontal" AllowPaging="true"
