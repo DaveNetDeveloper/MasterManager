@@ -60,7 +60,7 @@ public partial class EntityList : UserControl, IUcEntityList
 
     #endregion
 
-    #region [ PAGE EVENTS ]
+    #region [ UC EVENTS ]
 
     protected void Page_Load(object sender, EventArgs e)
     {
