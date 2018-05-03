@@ -28,8 +28,12 @@ public partial class EntityList : UserControl, IUcEntityList
     {
         get
         {
-            if (Session["DataSource"] == null) return EntityManager.GetEntity(EntityType).GetList();
-            else return (IEnumerable<IModel>)Session["DataSource"]; 
+            if (Session["DataSource"] == null)
+            {
+                var aux = EntityManager.GetEntity(EntityType).GetList();
+                Session["DataSource"] = aux;
+            }
+            return (IEnumerable<IModel>)Session["DataSource"]; 
         }
         set
         {
@@ -158,7 +162,7 @@ public partial class EntityList : UserControl, IUcEntityList
         }
     }
 
-    protected void ChkSelAll_Checked(object sender, System.EventArgs e)
+    protected void ChkSelAll_Checked(object sender, EventArgs e)
     {
         //Dim rowSelectedRow As Integer = TryCast(TryCast(sender, CheckBox).Parent.Parent, GridViewRow).RowIndex
 
@@ -225,10 +229,10 @@ public partial class EntityList : UserControl, IUcEntityList
 
     protected void GvEntityList_RowDataBound(object sender, GridViewRowEventArgs e)
     {
-        //if (e.Row.RowType == DataControlRowType.DataRow)
-        //{
-        //    e.Row.Cells[1].Text = "<i>" + e.Row.Cells[1].Text + "</i>";
-        //}
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            //e.Row.Cells[1].Text = "<i>" + e.Row.Cells[1].Text + "</i>";
+        }
     }
 
     protected void GvEntityList_RowCommand(object sender, GridViewCommandEventArgs e)
