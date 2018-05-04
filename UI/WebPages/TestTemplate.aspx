@@ -1,6 +1,5 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="TestTemplate.aspx.cs" Inherits="TestTemplate" %>
-
-<%@ Register Src="~/UI/UserControls/NewsByEntity.ascx" TagPrefix="ucNews" TagName="NewsByEntity" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="TestTemplate.aspx.cs" Inherits="TestTemplate" %> 
+<%@ Register Src="~/UI/UserControls/DbEntities/NewsByEntity.ascx" TagPrefix="ucNews" TagName="NewsByEntity" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -19,7 +18,7 @@
     <script src="js/jquery-1.8.2.min.js"></script>
     <%--<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>--%>
 	
-    <script src="../js/timber.master.min.js"></script>
+    <script src="js/timber.master.min.js"></script>
     <link rel="stylesheet" href="css/core.min.css" />
     <link rel="stylesheet" href="css/skin.css" />
 	<!--[if lt IE 9]>
@@ -30,7 +29,7 @@
 <body onload="FillAreasFromDataBase()">
 
     <br /><br />
-    <ucNews:NewsByEntity runat="server" ID="NewsByEntity" />
+    <ucNews:NewsByEntity  runat="server" ID="NewsByEntity" />
 
     <script type="text/javascript">
 

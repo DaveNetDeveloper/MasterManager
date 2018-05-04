@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="~/UI/WebPages/AsyncJavascriptCall.aspx.cs" Inherits="AsyncJavascriptCall" %> 
-<%@ Register Src="~/UI/UserControls/EntityList.ascx" TagPrefix="uc" TagName="EntityList" %>
+<%@ Register Src="~/UI/UserControls/DbEntities/EntityList.ascx" TagPrefix="uc" TagName="EntityList" %>
 
 <!DOCTYPE html> 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -123,8 +123,7 @@
         <input id="btnUpdateArea" type="button" value="Modificar area existentes" onclick="UpdateAreaById($('#inputUpdateAreaId').val(), $('#inputUpdateAreaNombre').val());" />
     </div>
 
-    <br /><br />
-
+    <br /><br /> 
     <uc:EntityList runat="server" EntityType="Documento" ID="LisOftDocuments" />
 
 </form>

@@ -1,4 +1,5 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="EntityList.ascx.cs" Inherits="EntityList" %> 
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="EntityList.ascx.cs" Inherits="EntityList" %>  
+
 <div class="row">
 	<div class="column width-12">
 		<div class="row content-grid-1">  
