@@ -38,11 +38,11 @@ public class WsAreas : WebService, IWsEntity
     }
 
     [WebMethod(EnableSession = true)]
-    public bool EliminarById(int id)
+    public bool EliminarById(int pKValue)
     {
         try
         {
-            return entityAreas.RemoveById(id);
+            return entityAreas.RemoveById(pKValue);
         }
         catch (Exception)
         {
@@ -64,11 +64,11 @@ public class WsAreas : WebService, IWsEntity
     }
 
     [WebMethod(EnableSession = true)]
-    public bool UpdateById(int id, string nombre)
+    public bool UpdateById(int pKValue, string nombre)
     {
         try
         {
-            return entityAreas.UpdateById(id, nombre);
+            return entityAreas.UpdateById(pKValue, nombre);
         }
         catch (Exception)
         {

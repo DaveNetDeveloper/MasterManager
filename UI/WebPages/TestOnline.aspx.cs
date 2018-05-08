@@ -248,7 +248,7 @@ public partial class TestOnline : BasePage
                     dtPreguntas.Rows.Add(dr.GetInt32(0), dr.GetInt32(1), dr.GetString(2), dr.GetString(3), dr.GetString(4), urlImage, false);
                     string apartadoActual = dr.GetString(3);
 
-                    if (apartadoUltimo == string.Empty)
+                    if (string.IsNullOrEmpty(apartadoUltimo))
                     {
                         //Primera vez, abrimos apartado
                         crearApartado = true;
@@ -337,11 +337,14 @@ public partial class TestOnline : BasePage
             divRadioButtonsPregunta.Attributes.Add("style", "margin: 0px 65px 0;");
             divRadioButtonsPregunta.Attributes.Add("runat", "server");
 
-            RadioButtonList rblOpciones = new RadioButtonList();
-            rblOpciones.Enabled = true;
-            rblOpciones.Visible = true;
+            RadioButtonList rblOpciones = new RadioButtonList
+            {
+                Enabled = true,
+                Visible = true,
+                ID = "rblOpciones_" + nombreApartado + "_" + idPregunta
+            };
+
             rblOpciones.Attributes.Add("style", "margin-top: 0px;");
-            rblOpciones.ID = "rblOpciones_" + nombreApartado + "_" + idPregunta; 
 
             DataTable dtRespuestas = GetRespuesta(idPregunta);
             if (dtRespuestas != null && dtRespuestas.Rows.Count > 0)
@@ -349,10 +352,11 @@ public partial class TestOnline : BasePage
                 ListItem lstItem;
                 foreach (DataRow dr in dtRespuestas.Rows)
                 {
-                    lstItem = new ListItem();
-                        
-                    lstItem.Text = dr[3].ToString();
-                    lstItem.Value = dr[4].ToString();
+                    lstItem = new ListItem
+                    {
+                        Text = dr[3].ToString(),
+                        Value = dr[4].ToString()
+                    };
                     /*if (dr[4].ToString() == "1")
                     {
                         lstItem.Selected = true;
@@ -366,7 +370,7 @@ public partial class TestOnline : BasePage
             //Guardamos para posterior validación
             lstPreguntasRespuestas.Add(rblOpciones);
         
-            if (urlImage != string.Empty && urlImage != Constants.NoImageParaPreguntaTestOnline)
+            if (!string.IsNullOrEmpty(urlImage) && urlImage != Constants.NoImageParaPreguntaTestOnline)
             {
                 HtmlGenericControl tableRadioButtonsPregunta = null;
                 tableRadioButtonsPregunta = new HtmlGenericControl("table");
@@ -395,20 +399,18 @@ public partial class TestOnline : BasePage
                 aLinkImagen.Attributes.Add("style", "margin-top:0; padding-top:0; cursor: pointer;");
                 aLinkImagen.Attributes.Add("runat", "server");
 
-                Image imgImagen = new Image();
-                imgImagen.Width= Unit.Pixel(150);
-                imgImagen.Height = Unit.Pixel(110);
-                imgImagen.ImageUrl = urlImage;
-                imgImagen.ID = "PreguntaImagenMiniatura" + nombreApartado + "_" + idPregunta;
+                Image imgImagen = new Image
+                {
+                    Width = Unit.Pixel(150),
+                    Height = Unit.Pixel(110),
+                    ImageUrl = urlImage,
+                    ID = "PreguntaImagenMiniatura" + nombreApartado + "_" + idPregunta
+                };
 
-                FeatureImage.ImageUrl = urlImage;
-
-                aLinkImagen.Controls.Add(imgImagen);
-
-                divLinkImagen.Controls.Add(aLinkImagen);
-
-                tdImagenPregunta.Controls.Add(divLinkImagen);
-
+                FeatureImage.ImageUrl = urlImage; 
+                aLinkImagen.Controls.Add(imgImagen); 
+                divLinkImagen.Controls.Add(aLinkImagen); 
+                tdImagenPregunta.Controls.Add(divLinkImagen); 
                 trRadioButtonsPregunta.Controls.Add(tdImagenPregunta);
 
                 tableRadioButtonsPregunta.Controls.Add(trRadioButtonsPregunta);
@@ -423,27 +425,16 @@ public partial class TestOnline : BasePage
             if(crearApartado)
             {
                 divApartado.Controls.Add(divRadioButtonsPregunta);
-            }
-            else
-            {
-                divApartadoReferenceIN.Controls.Add(divRadioButtonsPregunta);
-            }
-        
-            if(crearApartado)
-            {
                 HtmlControl divContaiunerPpal = (HtmlControl)myPlaceHolder.FindControl("accordion_container");
                 divContaiunerPpal.Controls.Add(h2Apartado);
                 divContaiunerPpal.Controls.Add(divApartado);
-            }
-
-            if(crearApartado)
-            {
                 return divApartado;
             }
             else
             {
+                divApartadoReferenceIN.Controls.Add(divRadioButtonsPregunta);
                 return divApartadoReferenceIN;
-            }
+            } 
      }
 
     private DataTable GetRespuesta(int preguntaID)

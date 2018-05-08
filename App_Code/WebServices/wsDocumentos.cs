@@ -37,11 +37,11 @@ public class WsDocumentos : WebService , IWsEntity
     }
 
     [WebMethod(EnableSession = true)]
-    public bool EliminarById(int id)
+    public bool EliminarById(int pKValue)
     {
         try
         {
-            return entityDocumentos.RemoveById(id);
+            return entityDocumentos.RemoveById(pKValue);
         }
         catch (Exception ex)
         {
@@ -63,11 +63,11 @@ public class WsDocumentos : WebService , IWsEntity
     }
 
     [WebMethod(EnableSession = true)]
-    public bool UpdateById(int id, string nombre)
+    public bool UpdateById(int pKValue, string nombre)
     {
         try
         {
-            return entityDocumentos.UpdateById(id, nombre);
+            return entityDocumentos.UpdateById(pKValue, nombre);
         }
         catch (Exception ex)
         {
