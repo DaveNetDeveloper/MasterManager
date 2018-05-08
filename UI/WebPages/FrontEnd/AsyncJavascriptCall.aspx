@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="~/UI/WebPages/AsyncJavascriptCall.aspx.cs" Inherits="AsyncJavascriptCall" %> 
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="~/UI/WebPages/FrontEnd/AsyncJavascriptCall.aspx.cs" Inherits="AsyncJavascriptCall" %> 
 <%@ Register Src="~/UI/UserControls/DbEntities/EntityList.ascx" TagPrefix="uc" TagName="EntityList" %>
 
 <!DOCTYPE html> 

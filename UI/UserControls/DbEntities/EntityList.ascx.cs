@@ -4,13 +4,13 @@ using System.Data;
 using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Drawing;
+using System.Drawing; 
 
-public partial class EntityList : UserControl, IUcEntityList
+public partial class EntityList : UserControl
 {
     #region [ PUBLIC PROPERTIES ]
 
-    public DataTable EntityDataTable
+    private DataTable EntityDataTable
     {
         get
         {
@@ -21,10 +21,8 @@ public partial class EntityList : UserControl, IUcEntityList
             Session["EntityDataTable"] = value;
         }
     }
-
-    public Enums.EntityType EntityType { get; set; }
-
-    public IEnumerable<IModel> DataSource
+    private EntityManager.EntityType EntityType { get; set; }
+    private IEnumerable<IModel> DataSource
     {
         get
         {
@@ -40,8 +38,7 @@ public partial class EntityList : UserControl, IUcEntityList
             Session["DataSource"] = value;
         }
     }
-     
-    public SortDirection Dir
+    private SortDirection Dir
     {
         get
         {
@@ -60,7 +57,7 @@ public partial class EntityList : UserControl, IUcEntityList
 
     #endregion
 
-    #region [ UC EVENTS ]
+    #region [ uc events ]
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -69,15 +66,14 @@ public partial class EntityList : UserControl, IUcEntityList
 
     #endregion
 
-    #region [ PUBLIC METHODS ]
+    #region [ private methods ]
 
-    public void InitializeList()
+    private void InitializeList()
     {
         GvEntityList.DataSource = DataSource;
         GvEntityList.DataBind();
     }
-
-    public void ExportToExcel()
+    private void ExportToExcel()
     {
         try
         {
@@ -87,12 +83,14 @@ public partial class EntityList : UserControl, IUcEntityList
             Page pagina = new Page();
             System.Web.UI.HtmlControls.HtmlForm form = new System.Web.UI.HtmlControls.HtmlForm();
 
-            GridView gridToExport = new GridView();
+            GridView gridToExport = new GridView
+            {
+                DataSource = DataSource
+            };
 
             //DataTable tableToExport = dtDocumento;
             //tableToExport.Columns.RemoveAt(7);
 
-            gridToExport.DataSource = DataSource;
             gridToExport.DataBind();
 
             foreach (TableCell cell in gridToExport.HeaderRow.Cells)
@@ -127,10 +125,31 @@ public partial class EntityList : UserControl, IUcEntityList
             //Session["error"] = ex;
         }
     }
+    private List<Int32> ControlSelectedCenter(Int32 _idSC)
+    {
+        if (Session["SelectedCenterID"] != null)
+        {
+            List<Int32> lst = (List<Int32>)Session["SelectedCenterID"];
+            if (lst.Count != 0)
+            {
+                if (!lst.Contains(_idSC))
+                {
+                    lst.Add(_idSC);
+                    Session["SelectedCenterID"] = lst;
+                }
+            }
+        }
+        else
+        {
+            List<Int32> lstSelectedCentersbyID = new List<Int32> { _idSC };
+            Session["SelectedDocumentID"] = lstSelectedCentersbyID;
+        }
+        return (List<Int32>)Session["SelectedDocumentID"];
+    }
 
     #endregion
 
-    #region [ GRID EVENTS ]
+    #region [ gridview events ]
 
     protected void ChkSel_Checked(object sender, EventArgs e)
     {
@@ -160,8 +179,7 @@ public partial class EntityList : UserControl, IUcEntityList
         {
             Session["error"] = ex;
         }
-    }
-
+    } 
     protected void ChkSelAll_Checked(object sender, EventArgs e)
     {
         //Dim rowSelectedRow As Integer = TryCast(TryCast(sender, CheckBox).Parent.Parent, GridViewRow).RowIndex
@@ -202,39 +220,14 @@ public partial class EntityList : UserControl, IUcEntityList
                 ((List<Int32>)Session["SelectedDocumentID"]).Remove(idselected);
             }
         } 
-    }
-
-    private List<Int32> ControlSelectedCenter(Int32 _idSC)
-    { 
-        if (Session["SelectedCenterID"] != null)
-        {
-            List<Int32> lst = (List<Int32>)Session["SelectedCenterID"];
-            if (lst.Count != 0)
-            {
-                if (!lst.Contains(_idSC))
-                {
-                    lst.Add(_idSC);
-                    Session["SelectedCenterID"] = lst;
-                }
-            } 
-        }
-        else
-        {
-            List<Int32> lstSelectedCentersbyID = new List<Int32>();
-            lstSelectedCentersbyID.Add(_idSC);
-            Session["SelectedDocumentID"] = lstSelectedCentersbyID;
-        } 
-        return (List<Int32>)Session["SelectedDocumentID"]; 
-    }
-
+    }  
     protected void GvEntityList_RowDataBound(object sender, GridViewRowEventArgs e)
     {
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
             //e.Row.Cells[1].Text = "<i>" + e.Row.Cells[1].Text + "</i>";
         }
-    }
-
+    } 
     protected void GvEntityList_RowCommand(object sender, GridViewCommandEventArgs e)
     {
         int rowIndex = int.Parse(e.CommandArgument.ToString());
