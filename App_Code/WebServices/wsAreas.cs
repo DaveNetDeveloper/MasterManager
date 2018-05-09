@@ -10,8 +10,7 @@ public class WsAreas : WebService, IWsEntity
 {
     IEntity entityAreas = new EntityArea();
      
-    [WebMethod(EnableSession = true)]
-    //public IModel GetById(IModel pModel)
+    [WebMethod(EnableSession = true)] 
     public IModel GetById(ModelArea pModel)
     {
         try

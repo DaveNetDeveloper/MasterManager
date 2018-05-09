@@ -29,7 +29,7 @@
 <body onload="FillAreasFromDataBase()">
 
     <br /><br />
-    <ucNews:NewsByEntity  runat="server" ID="NewsByEntity" />
+    <ucNews:NewsByEntity runat="server" ID="NewsByEntity" />
 
     <script type="text/javascript">
 

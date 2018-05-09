@@ -81,8 +81,7 @@ public static class HelperLogger
             log.WriteLine("NavegadorCompañia: " + visitante.NavegadorCompañia);
         }
         log.Close();
-    }
-
+    } 
     private static void WriteVisitorXmlDocument(string filename, ModelArea visitante)
     {
         try
@@ -120,8 +119,7 @@ public static class HelperLogger
         {
             //Log Error File using ex Exception 
         }
-    }
-
+    } 
     private static void WriteContactXmlDocument(string filename, ModelUserContact contacto)
     {
         try

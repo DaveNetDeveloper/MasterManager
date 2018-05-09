@@ -8,8 +8,9 @@ using System.Drawing;
 
 public partial class EntityList : UserControl
 {
-    #region [ PUBLIC PROPERTIES ]
+    #region [ private properties ]
 
+    private EntityManager.EntityType EntityType { get; set; }
     private DataTable EntityDataTable
     {
         get
@@ -21,7 +22,6 @@ public partial class EntityList : UserControl
             Session["EntityDataTable"] = value;
         }
     }
-    private EntityManager.EntityType EntityType { get; set; }
     private IEnumerable<IModel> DataSource
     {
         get
@@ -235,22 +235,11 @@ public partial class EntityList : UserControl
 
         Response.Redirect(e.CommandName);
     }
-
-    #endregion
-
-    #region [ BUTTON EVENTS ]
-
-    protected void BtnExportExcel_Click(object sender, EventArgs e)
-    {
-        ExportToExcel();
-    }
-
     protected void GvEntityList_OnPaging(object sender, GridViewPageEventArgs e)
     {
         GvEntityList.PageIndex = e.NewPageIndex;
         GvEntityList.DataBind();
     }
-
     protected void GvEntityList_Sorting(object sender, GridViewSortEventArgs e)
     {
         string SortDir = string.Empty;
@@ -272,6 +261,15 @@ public partial class EntityList : UserControl
         GvEntityList.DataSource = DataSource;
         GvEntityList.DataBind();
         //dtDocumento = sortedView.Table; 
+    }
+
+    #endregion
+
+    #region [ button events ]
+
+    protected void BtnExportExcel_Click(object sender, EventArgs e)
+    {
+        ExportToExcel();
     }
 
     #endregion

@@ -25,8 +25,7 @@ public class BasePage : Page
     //    {
     //        //Log ex as ERROR
     //    }
-    //}
-
+    //} 
     private void AplicarIdioma(CultureInfo culture)
     {
         try

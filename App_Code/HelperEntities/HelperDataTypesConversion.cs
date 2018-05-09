@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Web;
+﻿using System; 
+using System.Globalization; 
 
 /// <summary>
 /// Descripción breve de HelperDataTypesConversion
 /// </summary>
 public static class HelperDataTypesConversion
-{
-
+{ 
     public static DateTime GetDateTimeFromText(string dateTime, string inputDateTimeFormat, CultureInfo culture)
     {
         try
@@ -37,6 +33,5 @@ public static class HelperDataTypesConversion
             //return new DateTime(dateTime);
             return new DateTime();
         }
-    }
-
+    } 
 }

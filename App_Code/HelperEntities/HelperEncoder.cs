@@ -1,11 +1,5 @@
-﻿using System;
-using System.Web;
-using System.Net.Mail;
-using System.Net;
-using System.Xml.Linq;
-using System.Text;
-using System.IO;
-using System.Globalization;
+﻿using System; 
+using System.Text; 
 
 /// <summary>
 /// Descripción breve de HelperEncoder
@@ -16,8 +10,7 @@ public static class HelperEncoder
     {
         var plainTextBytes = Encoding.UTF8.GetBytes(textToEndode);
         return Convert.ToBase64String(plainTextBytes);
-    }
-
+    } 
     public static string Base64Decode(string base64EncodedData)
     {
         try
@@ -29,6 +22,5 @@ public static class HelperEncoder
         {
             return null;
         }
-    }
-
+    } 
 }
