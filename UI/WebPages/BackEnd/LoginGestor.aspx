@@ -2,9 +2,9 @@
 
 <!DOCTYPE html> 
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head runat="server">
+<head runat="server"> 
     <link rel="stylesheet" href="reveal.css" />
-	  	 
+    <title>Login Gestor</title>
 	<script type="text/javascript" src="jquery.reveal.js"></script>
 	
     <style type="text/css">

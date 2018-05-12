@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Web.Services;
   
@@ -12,11 +11,11 @@ public class WsTests : WebService, IWsEntity
     IEntity entityTests = new EntityTest();
      
     [WebMethod(EnableSession = true)]
-    public IModel GetById(IModel pModel)
+    public IModel GetByPrimaryKey(IModel pModel)
     {
         try
         {
-            return entityTests.GetById(pModel.Id);
+            return entityTests.GetByPrimaryKey(pModel.Id);
         }
         catch(Exception ex)
         {
@@ -42,7 +41,7 @@ public class WsTests : WebService, IWsEntity
     {
         try
         {
-            return entityTests.RemoveById(pKValue);
+            return entityTests.RemoveByPrimaryKey(pKValue);
         }
         catch (Exception ex)
         {
@@ -68,7 +67,7 @@ public class WsTests : WebService, IWsEntity
     {
         try
         {
-            return entityTests.UpdateById(pKValue, nombre);
+            return entityTests.UpdateByPrimaryKey(pKValue, nombre);
         }
         catch (Exception ex)
         {

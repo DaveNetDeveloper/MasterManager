@@ -1,0 +1,29 @@
+﻿using System;
+
+public interface IModelEdition
+{
+    #region [ properties ]
+
+    string Mode { get; set; }
+    string PrimaryKey { get; set; }
+
+    #endregion
+
+    #region [ methods ]
+
+    void GetPrimaryKey();
+    void GetMode();
+    void ApplyLayout();
+
+    IModel GetModel();
+    void FillFromModel();
+    IModel GetModelFromForm();
+    bool SaveModel(IModel mdoel);
+    bool IsValidModel();
+    void ResetFields();
+
+    void GoBackClick(object sender, EventArgs e);
+    void SaveModelClick(object sender, EventArgs e);
+     
+    #endregion
+}

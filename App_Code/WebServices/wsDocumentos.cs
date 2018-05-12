@@ -11,11 +11,11 @@ public class WsDocumentos : WebService , IWsEntity
     IEntity entityDocumentos = new EntityDocumento();
      
     [WebMethod(EnableSession = true)]
-    public IModel GetById(IModel pModel)
+    public IModel GetByPrimaryKey(IModel pModel)
     {
         try
         {
-            return entityDocumentos.GetById(pModel.Id);
+            return entityDocumentos.GetByPrimaryKey(pModel.Id);
         }
         catch(Exception ex)
         {
@@ -41,7 +41,7 @@ public class WsDocumentos : WebService , IWsEntity
     {
         try
         {
-            return entityDocumentos.RemoveById(pKValue);
+            return entityDocumentos.RemoveByPrimaryKey(pKValue);
         }
         catch (Exception ex)
         {
@@ -67,7 +67,7 @@ public class WsDocumentos : WebService , IWsEntity
     {
         try
         {
-            return entityDocumentos.UpdateById(pKValue, nombre);
+            return entityDocumentos.UpdateByPrimaryKey(pKValue, nombre);
         }
         catch (Exception ex)
         {

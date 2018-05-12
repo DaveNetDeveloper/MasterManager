@@ -66,7 +66,7 @@ public partial class TestOnline : BasePage
     {
         if (!IsPostBack)
         {
-            if (Request.QueryString["Id"] != null && !string.IsNullOrEmpty(Request.QueryString["Id"]))
+            if (!string.IsNullOrEmpty(Request.QueryString["Id"]))
             {
                 Id = Request.QueryString["Id"].ToString();
             }
@@ -291,12 +291,7 @@ public partial class TestOnline : BasePage
             HtmlGenericControl h2Apartado= null;
             HtmlGenericControl divApartado = null;
 
-            if(!crearApartado)
-            {
-                //divApartadoReference = (HtmlControl)FindControl("div" + nombreApartado.Replace(" ", "_"));
-                //h2ApartadoReference = (HtmlControl)FindControl("h2" + nombreApartado.Replace(" ", "_"));
-            }
-            else
+            if(crearApartado)
             {
                 h2Apartado = new HtmlGenericControl("h2");
                 h2Apartado.Attributes.Add("class", "accordion-header");
@@ -346,7 +341,7 @@ public partial class TestOnline : BasePage
 
             rblOpciones.Attributes.Add("style", "margin-top: 0px;");
 
-            DataTable dtRespuestas = GetRespuesta(idPregunta);
+            DataTable dtRespuestas = GetRespuestas(idPregunta);
             if (dtRespuestas != null && dtRespuestas.Rows.Count > 0)
             {
                 ListItem lstItem;
@@ -421,7 +416,7 @@ public partial class TestOnline : BasePage
                 divRadioButtonsPregunta.Controls.Add(rblOpciones);
             }
            
-            //
+
             if(crearApartado)
             {
                 divApartado.Controls.Add(divRadioButtonsPregunta);
@@ -437,18 +432,18 @@ public partial class TestOnline : BasePage
             } 
      }
 
-    private DataTable GetRespuesta(int preguntaID)
+    private DataTable GetRespuestas(int preguntaID)
     {
         try
         {
             DataTable dtRespuesta = new DataTable();
             dtRespuesta.Columns.AddRange(new DataColumn[5] { new DataColumn("ID"), new DataColumn("PREGUNTA_ID"), new DataColumn("RESPUESTA_ID"), new DataColumn("TEXTO"), new DataColumn("SOLUCION_CORRECTA") });
 
-                string cadenaConexion = "Database=qsg265;Data Source=localhost;User Id=dbUser;Password=123;sslMode=none;";
-                string Consulta = "SELECT ID, PREGUNTA_ID, RESPUESTA_ID, TEXTO, SOLUCION_CORRECTA FROM RESPUESTA WHERE PREGUNTA_ID = @Id ORDER BY RESPUESTA_ID ASC ";
+            string cadenaConexion = "Database=qsg265;Data Source=localhost;User Id=dbUser;Password=123;sslMode=none;";
+            string Consulta = "SELECT ID, PREGUNTA_ID, RESPUESTA_ID, TEXTO, SOLUCION_CORRECTA FROM RESPUESTA WHERE PREGUNTA_ID = @Id ORDER BY RESPUESTA_ID ASC ";
 
-                MySqlConnection cnn = new MySqlConnection(cadenaConexion);
-                MySqlCommand mc = new MySqlCommand(Consulta, cnn);
+            MySqlConnection cnn = new MySqlConnection(cadenaConexion);
+            MySqlCommand mc = new MySqlCommand(Consulta, cnn);
 
             mc.Parameters.Add(new MySqlParameter("@Id", MySqlDbType.Int32)).Value = preguntaID;
 

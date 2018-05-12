@@ -11,11 +11,11 @@ public class WsAreas : WebService, IWsEntity
     IEntity entityAreas = new EntityArea();
      
     [WebMethod(EnableSession = true)] 
-    public IModel GetById(ModelArea pModel)
+    public IModel GetByPrimaryKey(ModelArea pModel)
     {
         try
         {
-            return entityAreas.GetById(pModel.Id);
+            return entityAreas.GetByPrimaryKey(pModel.Id);
         }
         catch(Exception)
         {
@@ -41,7 +41,7 @@ public class WsAreas : WebService, IWsEntity
     {
         try
         {
-            return entityAreas.RemoveById(pKValue);
+            return entityAreas.RemoveByPrimaryKey(pKValue);
         }
         catch (Exception)
         {
@@ -67,7 +67,7 @@ public class WsAreas : WebService, IWsEntity
     {
         try
         {
-            return entityAreas.UpdateById(pKValue, nombre);
+            return entityAreas.UpdateByPrimaryKey(pKValue, nombre);
         }
         catch (Exception)
         {

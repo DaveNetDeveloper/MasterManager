@@ -1,21 +1,16 @@
-﻿<%@ Page  Title="EditUserAlumno" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true" CodeFile="~/EditUserAlumno.aspx.cs" Inherits="EditUserAlumno" %>
-   
-<%@ Import Namespace="System.Resources" %>
-
-<asp:Content runat="server" ID="HeaderContent" ContentPlaceHolderID="HeadContent">
-     
+﻿<%@ Page  Title="EditUserAlumno" Language="C#" AutoEventWireup="true" CodeFile="~/UI/WebPages/BackEnd/EditUserAlumno.aspx.cs" Inherits="EditUserAlumno" %>
+<!DOCTYPE html> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server"> 
+    <title title="Edición de un alumno"></title> 
     <script type="text/javascript" src="js/jquery-1.9.0.min.js"></script>
-    
     <script type="text/javascript" src="js/jquery-ui-1.10.0.custom.min.js"></script>
-    
     <link rel="stylesheet" href="css/jquery-ui-1.10.0.custom.min.css" type="text/css"/>
-  
 	<style type="text/css">
-			body { font-family: "HelveticaNeue","Helvetica-Neue", "Helvetica", "Arial", sans-serif; }
-			.big-link { display:block; text-align: center; font-size: 70px; color: #06f; }
+        body { font-family: "HelveticaNeue","Helvetica-Neue", "Helvetica", "Arial", sans-serif; }
+        .big-link { display:block; text-align: center; font-size: 70px; color: #06f; }
 	</style>
-     
-    <script type="text/javascript">
+<%--    <script type="text/javascript">
 
         //AJAX for web method Guardar()
         function Guardar() {
@@ -44,18 +39,16 @@
             }
         }
 
-    </script>
+    </script>--%>
+</head> 
+<body>
 
-</asp:Content>
+    <form id="form" runat="server">
 
-<asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
-    
-    <br />
-     
     <div>
-         <asp:Button OnClick="btnGuardar_Click" runat="server" style="float: right;width: 105px;height:26px;font-family:Verdana;border: 1px solid #D8D8D8 !important;background: #F2F2F2;background: -webkit-linear-gradient(top, #F5F5F5, #F1F1F1);background: -moz-linear-gradient(top, #F5F5F5, #F1F1F1);background: -ms-linear-gradient(top, #F5F5F5, #F1F1F1);background: -o-linear-gradient(top, #F5F5F5, #F1F1F1);-webkit-transition: border .20s;-moz-transition: border .20s;-o-transition: border .20s;transition: border .20s;" id="btnGuardar" class="action" Text="Guardar" />
+         <asp:Button OnClick="SaveModelClick" runat="server" style="float: right;width: 105px;height:26px;font-family:Verdana;border: 1px solid #D8D8D8 !important;background: #F2F2F2;background: -webkit-linear-gradient(top, #F5F5F5, #F1F1F1);background: -moz-linear-gradient(top, #F5F5F5, #F1F1F1);background: -ms-linear-gradient(top, #F5F5F5, #F1F1F1);background: -o-linear-gradient(top, #F5F5F5, #F1F1F1);-webkit-transition: border .20s;-moz-transition: border .20s;-o-transition: border .20s;transition: border .20s;" id="btnGuardar" class="action" Text="Guardar" />
         <div id="emptyDiv" runat="server" style="width:25px;float: right;">&nbsp</div>
-        <asp:Button id="btnVolver" OnClick="btnVolver_Click" Text="Volver" runat="server" style="float: right; width: 105px;height:26px;font-family:Verdana;border: 1px solid #D8D8D8 !important;background: #F2F2F2;background: -webkit-linear-gradient(top, #F5F5F5, #F1F1F1);background: -moz-linear-gradient(top, #F5F5F5, #F1F1F1);background: -ms-linear-gradient(top, #F5F5F5, #F1F1F1);background: -o-linear-gradient(top, #F5F5F5, #F1F1F1);-webkit-transition: border .20s;-moz-transition: border .20s;-o-transition: border .20s;transition: border .20s;" />
+        <asp:Button id="btnVolver" OnClick="GoBackClick" Text="Volver" runat="server" style="float: right; width: 105px;height:26px;font-family:Verdana;border: 1px solid #D8D8D8 !important;background: #F2F2F2;background: -webkit-linear-gradient(top, #F5F5F5, #F1F1F1);background: -moz-linear-gradient(top, #F5F5F5, #F1F1F1);background: -ms-linear-gradient(top, #F5F5F5, #F1F1F1);background: -o-linear-gradient(top, #F5F5F5, #F1F1F1);-webkit-transition: border .20s;-moz-transition: border .20s;-o-transition: border .20s;transition: border .20s;" />
     </div>
     
     <br /><br /><br />
@@ -203,6 +196,6 @@
         </table>
     </div>
 
-    <br /><br />
-
-</asp:Content>
+    </form>
+</body>  
+</html>
