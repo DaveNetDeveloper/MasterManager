@@ -1,10 +1,10 @@
-﻿using System;
+﻿using System; 
 
 public interface IModelEdition
 {
     #region [ properties ]
 
-    string Mode { get; set; }
+    BasePage.ViewMode Mode { get; set; }
     string PrimaryKey { get; set; }
 
     #endregion
@@ -15,7 +15,7 @@ public interface IModelEdition
     void GetMode();
     void ApplyLayout();
 
-    IModel GetModel();
+    //IModel GetModel();
     void FillFromModel();
     IModel GetModelFromForm();
     bool SaveModel(IModel mdoel);

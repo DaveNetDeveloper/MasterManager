@@ -4,7 +4,14 @@ using System.Threading;
 using System.Web.UI;
 
 public class BasePage : Page
-{
+{ 
+    public enum ViewMode
+    {
+        View,
+        Edit,
+        Create
+    }
+
     //protected override void OnPreInit(EventArgs e)
     //{
     //    try
@@ -26,15 +33,16 @@ public class BasePage : Page
     //        //Log ex as ERROR
     //    }
     //} 
+
     private void AplicarIdioma(CultureInfo culture)
-    {
-        try
         {
-            Thread.CurrentThread.CurrentUICulture = culture;
+            try
+            {
+                Thread.CurrentThread.CurrentUICulture = culture;
+            }
+            catch (Exception)
+            {
+                //Log ex as ERROR
+            }
         }
-        catch (Exception)
-        {
-            //Log ex as ERROR
-        }
-    }
 } 

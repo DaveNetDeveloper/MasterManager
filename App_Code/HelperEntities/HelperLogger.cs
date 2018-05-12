@@ -65,20 +65,20 @@ public static class HelperLogger
         {
             log.WriteLine("IP: " + visitante.IP);
             log.WriteLine("Region: " + visitante.Region);
-            log.WriteLine("Pais: " + visitante.Pais);
-            log.WriteLine("CodigoZIP: " + visitante.CodigoZIP);
-            log.WriteLine("CodigoPais: " + visitante.CodigoPais);
-            log.WriteLine("Latitud: " + visitante.Latitud);
-            log.WriteLine("Longitud: " + visitante.Longitud);
-            log.WriteLine("ZonaHoraria: " + visitante.ZonaHoraria);
-            log.WriteLine("Ciudad: " + visitante.Ciudad);
+            //log.WriteLine("Pais: " + visitante.Pais);
+            //log.WriteLine("CodigoZIP: " + visitante.CodigoZIP);
+            //log.WriteLine("CodigoPais: " + visitante.CodigoPais);
+            //log.WriteLine("Latitud: " + visitante.Latitud);
+            //log.WriteLine("Longitud: " + visitante.Longitud);
+            //log.WriteLine("ZonaHoraria: " + visitante.ZonaHoraria);
+            //log.WriteLine("Ciudad: " + visitante.Ciudad);
 
-            log.WriteLine("NavegadorCookkies: " + visitante.NavegadorCookkies);
-            log.WriteLine("NavegadorLenguaje: " + visitante.NavegadorLenguaje);
-            log.WriteLine("NavegadorPlataforma: " + visitante.NavegadorPlataforma);
-            log.WriteLine("NavegadorProducto: " + visitante.NavegadorProducto);
-            log.WriteLine("NavegadorAgente: " + visitante.NavegadorAgente);
-            log.WriteLine("NavegadorCompañia: " + visitante.NavegadorCompañia);
+            //log.WriteLine("NavegadorCookkies: " + visitante.NavegadorCookkies);
+            //log.WriteLine("NavegadorLenguaje: " + visitante.NavegadorLenguaje);
+            //log.WriteLine("NavegadorPlataforma: " + visitante.NavegadorPlataforma);
+            //log.WriteLine("NavegadorProducto: " + visitante.NavegadorProducto);
+            //log.WriteLine("NavegadorAgente: " + visitante.NavegadorAgente);
+            //log.WriteLine("NavegadorCompañia: " + visitante.NavegadorCompañia);
         }
         log.Close();
     } 
@@ -92,25 +92,25 @@ public static class HelperLogger
 
             if (null != visitante)
             {
-                root.Add(new XElement("SessionID", visitante.SessionID));
-                root.Add(new XElement("SessionStartTicks", visitante.SessionStartTicks));
+                //root.Add(new XElement("SessionID", visitante.SessionID));
+                //root.Add(new XElement("SessionStartTicks", visitante.SessionStartTicks));
 
                 root.Add(new XElement("IP", visitante.IP));
                 root.Add(new XElement("Region", visitante.Region));
-                root.Add(new XElement("Pais", visitante.Pais));
-                root.Add(new XElement("CodigoZIP", visitante.CodigoZIP));
-                root.Add(new XElement("CodigoPais", visitante.CodigoPais));
-                root.Add(new XElement("Latitud", visitante.Latitud));
-                root.Add(new XElement("Longitud", visitante.Longitud));
-                root.Add(new XElement("ZonaHoraria", visitante.ZonaHoraria));
-                root.Add(new XElement("Ciudad", visitante.Ciudad));
+                //root.Add(new XElement("Pais", visitante.Pais));
+                //root.Add(new XElement("CodigoZIP", visitante.CodigoZIP));
+                //root.Add(new XElement("CodigoPais", visitante.CodigoPais));
+                //root.Add(new XElement("Latitud", visitante.Latitud));
+                //root.Add(new XElement("Longitud", visitante.Longitud));
+                //root.Add(new XElement("ZonaHoraria", visitante.ZonaHoraria));
+                //root.Add(new XElement("Ciudad", visitante.Ciudad));
 
-                root.Add(new XElement("NavegadorCookkies", visitante.NavegadorCookkies));
-                root.Add(new XElement("NavegadorLenguaje", visitante.NavegadorLenguaje));
-                root.Add(new XElement("NavegadorPlataforma", visitante.NavegadorPlataforma));
-                root.Add(new XElement("NavegadorProducto", visitante.NavegadorProducto));
-                root.Add(new XElement("NavegadorAgente", visitante.NavegadorAgente));
-                root.Add(new XElement("NavegadorCompañia", visitante.NavegadorCompañia));
+                //root.Add(new XElement("NavegadorCookkies", visitante.NavegadorCookkies));
+                //root.Add(new XElement("NavegadorLenguaje", visitante.NavegadorLenguaje));
+                //root.Add(new XElement("NavegadorPlataforma", visitante.NavegadorPlataforma));
+                //root.Add(new XElement("NavegadorProducto", visitante.NavegadorProducto));
+                //root.Add(new XElement("NavegadorAgente", visitante.NavegadorAgente));
+                //root.Add(new XElement("NavegadorCompañia", visitante.NavegadorCompañia));
             }
             doc.Element("VisitorEntries").Add(root);
             doc.Save(filename);
