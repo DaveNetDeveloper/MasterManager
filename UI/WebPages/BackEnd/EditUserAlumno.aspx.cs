@@ -36,9 +36,8 @@ public partial class EditUserAlumno : BasePage, IModelEdition
         get
         {
             if (Session["Model"] == null)
-            {
-                var aux = Entity.GetByPrimaryKey(Int32.Parse(PrimaryKey));
-                Session["Model"] = (ModelUsuarioAlumno)aux;
+            { 
+                Session["Model"] = Entity.GetByPrimaryKey(Int32.Parse(PrimaryKey));
             }
             return (ModelUsuarioAlumno)Session["Model"];
         }
@@ -53,9 +52,8 @@ public partial class EditUserAlumno : BasePage, IModelEdition
         get
         {
             if (Session["Entity"] == null)
-            {
-                var aux = EntityManager.GetEntity(EntityManager.EntityType.UsuarioAlumno);
-                Session["IEntity"] = aux;
+            { 
+                Session["Entity"] = EntityManager.GetEntity(EntityManager.EntityType.UsuarioAlumno);
             }
             return (IEntity)Session["Entity"];
         }
@@ -184,14 +182,15 @@ public partial class EditUserAlumno : BasePage, IModelEdition
     { 
         try
         {
-            var userAlumnoModel = ((ModelUsuarioAlumno)Model); 
+            var userAlumnoModel = ((ModelUsuarioAlumno)Model);
+            privateUserName.Text = userAlumnoModel.Name;
             privateUserSurname.Text = userAlumnoModel.Surname;
             privateUserBirthDate.Text = userAlumnoModel.BirthDate.ToString("dd/MM/yyyy");
             privateUserMail.Text = userAlumnoModel.Mail;
             privateUserUserName.Text = userAlumnoModel.UserName;
             privateUserPassword.Text = userAlumnoModel.Password;
             privateUserEntered.Checked = userAlumnoModel.Entered;
-            privateUserPhone.Text = userAlumnoModel.Phone;
+            privateUserPhone.Text = userAlumnoModel.Phone.ToString();
 
             var updateDate = string.Empty;
             var createdDate = string.Empty; 
@@ -226,7 +225,7 @@ public partial class EditUserAlumno : BasePage, IModelEdition
         {
             bool validationResult = true; 
             privateUserName.BorderColor = System.Drawing.ColorTranslator.FromHtml("#e2e2e2");
-           // privateUserSurname.BorderColor = System.Drawing.ColorTranslator.FromHtml("#e2e2e2");
+            privateUserSurname.BorderColor = System.Drawing.ColorTranslator.FromHtml("#e2e2e2");
             privateUserMail.BorderColor = System.Drawing.ColorTranslator.FromHtml("#e2e2e2");
             privateUserBirthDate.BorderColor = System.Drawing.ColorTranslator.FromHtml("#e2e2e2");
             privateUserPhone.BorderColor = System.Drawing.ColorTranslator.FromHtml("#e2e2e2");
@@ -241,12 +240,12 @@ public partial class EditUserAlumno : BasePage, IModelEdition
                 privateUserName.BorderWidth = new Unit(1);
             }
 
-            /*if (string.IsNullOrEmpty(privateUserSurname.Text.Trim()))
+            if (string.IsNullOrEmpty(privateUserSurname.Text.Trim()))
             {
                 validationResult = false;
                 privateUserSurname.BorderColor = System.Drawing.Color.Red;
                 privateUserSurname.BorderWidth = new Unit(1);
-            }*/
+            }
 
             if (string.IsNullOrEmpty(privateUserMail.Text.Trim()))
             {
@@ -304,9 +303,6 @@ public partial class EditUserAlumno : BasePage, IModelEdition
     public bool SaveModel(IModel model)
     {
         // TODO
-        // entityUserAlumno.SaveModel(model)
-
-        // TODO
         // Llamar a metodos UserAlumno.Insert(model) y UserAlumno.Update(model)
         //Entity.Insert(model);
         //Entity.UpdateByPrimaryKey(model);
@@ -319,7 +315,8 @@ public partial class EditUserAlumno : BasePage, IModelEdition
 
             int active = privateUserActive.Checked ? 1 : 0;
             DateTime dt = HelperDataTypesConversion.GetDateTimeFromText(privateUserBirthDate.Text, Constants.inputDateTimeFormat_ddmmaaaa, CultureInfo.CurrentCulture);
-           
+            var dtNow = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+
             string cadenaDateTime = dt.ToString("d", CultureInfo.CurrentCulture);
             switch (Mode)
             {
@@ -327,7 +324,7 @@ public partial class EditUserAlumno : BasePage, IModelEdition
                 case ViewMode.Create:
 
                     _id = Entity.GetNextPrimaryKey();
-                    consulta = "INSERT INTO USER_ALUMNO(id, NAME, surname, birth_date, mail, user_name, PASSWORD, entered, active, created, updated, phone) VALUES(" + _id + ",'" + privateUserName.Text + "','" + privateUserSurname.Text + "','" + dt.ToString("yyyy-MM-dd HH:mm:ss") + "','" + privateUserMail.Text + "','" + privateUserUserName.Text + "','" + privateUserPassword.Text + "', 0, " + active + ",'" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "', null, " + privateUserPhone.Text + ")";
+                    consulta = "INSERT INTO USER_ALUMNO(id, NAME, surname, birth_date, mail, user_name, PASSWORD, entered, active, created, updated, phone) VALUES(" + _id + ",'" + privateUserName.Text + "','" + privateUserSurname.Text + "','" + dt.ToString("yyyy-MM-dd HH:mm:ss") + "','" + privateUserMail.Text + "','" + privateUserUserName.Text + "','" + privateUserPassword.Text + "', 0, " + active + ",'" + dtNow + "', null, " + privateUserPhone.Text + ")";
 
                     break;
                 //Editar
