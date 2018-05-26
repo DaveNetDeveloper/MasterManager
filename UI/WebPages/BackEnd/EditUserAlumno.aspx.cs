@@ -152,9 +152,8 @@ public partial class EditUserAlumno : BasePage, IModelEdition
             privateUserUserName.Enabled = enabled;
             privateUserPassword.Enabled = enabled;
             privateUserBirthDate.Enabled = enabled;
-            privateUserActive.Enabled = enabled;
 
-            privateUserEntered.Enabled = false;
+            //privateUserEntered.Attributes["disabled"] = "disabled";
             privateUserCreated.Enabled = false;
             privateUserUpdated.Enabled = false;
         }
