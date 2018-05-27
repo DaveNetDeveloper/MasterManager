@@ -31,6 +31,7 @@ public partial class EditUserAlumno : BasePage, IModelEdition
         }
 
     } 
+
     private IModel Model {
         get
         {
@@ -73,8 +74,7 @@ public partial class EditUserAlumno : BasePage, IModelEdition
             if (!IsPostBack)
             {
                 Title = "Edición de alumno";
-                GetPrimaryKey();
-                GetViewMode();
+                GetPageParameters();
                 ApplyLayout();
             }
         }
@@ -85,20 +85,23 @@ public partial class EditUserAlumno : BasePage, IModelEdition
             //this.SetLOG("ERROR", "Loading Page", "EditUserContact.aspx", "Center", "Page_Init()", ex.Message, DateTime.Now, 1);
             //Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
         }
-    }  
+    }
 
     #endregion
 
     #region [ Methods ]
 
-    public void GetPrimaryKey()
+    public void GetPageParameters()
     {
-        if (Request.QueryString["Id"] != null)
-        {
-            PrimaryKey = Request.QueryString["Id"].ToString();
-        } 
+        GetPrimaryKey();
+        GetViewMode();
     }
-    public void GetViewMode()
+
+    private void GetPrimaryKey()
+    {
+        if (!string.IsNullOrEmpty(Request.QueryString["Id"])) PrimaryKey = Request.QueryString["Id"].ToString();
+    }
+    private void GetViewMode()
     {
         if (Request.QueryString["M"] != null)
         {
@@ -149,8 +152,7 @@ public partial class EditUserAlumno : BasePage, IModelEdition
             privateUserUserName.Enabled = enabled;
             privateUserPassword.Enabled = enabled;
             privateUserBirthDate.Enabled = enabled;
-
-            //privateUserEntered.Attributes["disabled"] = "disabled";
+            if(!enabled) privateUserEntered.Attributes["disabled"] = "disabled";
             privateUserCreated.Enabled = false;
             privateUserUpdated.Enabled = false;
         }
@@ -310,7 +312,7 @@ public partial class EditUserAlumno : BasePage, IModelEdition
 
         return true;
     }
-
+     
     #endregion
 
     #region [ Button Events ]

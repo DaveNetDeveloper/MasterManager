@@ -11,8 +11,7 @@ public interface IModelEdition
 
     #region [ methods ]
 
-    void GetPrimaryKey();
-    void GetViewMode();
+    void GetPageParameters();
     void ApplyLayout();
 
     //IModel GetModel();
