@@ -7,6 +7,7 @@ public partial class EditUserAlumno : BasePage, IModelEdition
 {
     #region [ Properties ]
 
+    public String PageTitle = "Edición de alumno";
     public ViewMode Mode
     {
         get
@@ -46,7 +47,24 @@ public partial class EditUserAlumno : BasePage, IModelEdition
             Session["Model"] = value;
         }
     }
-    private IModel UIModel { get; set; }
+
+    private ModelUsuarioAlumno _uiModel;
+    private ModelUsuarioAlumno UIModel
+    {
+        get
+        {
+            if (_uiModel == null)
+            {
+                return new ModelUsuarioAlumno();
+            }
+            return (ModelUsuarioAlumno)_uiModel;
+        }
+        set
+        {
+            _uiModel = value;
+        }
+    }
+
     private IEntity Entity
     {
         get
@@ -73,7 +91,7 @@ public partial class EditUserAlumno : BasePage, IModelEdition
         {
             if (!IsPostBack)
             {
-                Title = "Edición de alumno";
+                Title = PageTitle;
                 GetPageParameters();
                 ApplyLayout();
             }
@@ -96,7 +114,6 @@ public partial class EditUserAlumno : BasePage, IModelEdition
         GetPrimaryKey();
         GetViewMode();
     }
-
     private void GetPrimaryKey()
     {
         if (!string.IsNullOrEmpty(Request.QueryString["Id"])) PrimaryKey = Request.QueryString["Id"].ToString();
@@ -119,6 +136,7 @@ public partial class EditUserAlumno : BasePage, IModelEdition
             } 
         } 
     }
+    
     public void ApplyLayout()
     {
         try
@@ -221,7 +239,9 @@ public partial class EditUserAlumno : BasePage, IModelEdition
     {
         try
         {
+            ModelUsuarioAlumno auxUsuarioAlumno = new ModelUsuarioAlumno();
             bool validationResult = true; 
+
             privateUserName.BorderColor = HtmlColor;
             privateUserSurname.BorderColor = HtmlColor;
             privateUserMail.BorderColor = HtmlColor;
@@ -229,28 +249,49 @@ public partial class EditUserAlumno : BasePage, IModelEdition
             privateUserPhone.BorderColor = HtmlColor;
             privateUserUserName.BorderColor = HtmlColor;
             privateUserPassword.BorderColor = HtmlColor;
-             
+
             if (string.IsNullOrEmpty(privateUserName.Text.Trim()))
                 SetControlAsInvalid(privateUserName, ref validationResult);
+            else
+                auxUsuarioAlumno.Name = privateUserName.Text;
 
             if (string.IsNullOrEmpty(privateUserSurname.Text.Trim()))
-                SetControlAsInvalid(privateUserSurname, ref validationResult); 
+                SetControlAsInvalid(privateUserSurname, ref validationResult);
+            else
+                auxUsuarioAlumno.Surname = privateUserSurname.Text;
 
             if (string.IsNullOrEmpty(privateUserMail.Text.Trim()))
-                SetControlAsInvalid(privateUserMail, ref validationResult); 
-             
+                SetControlAsInvalid(privateUserMail, ref validationResult);
+            else
+                auxUsuarioAlumno.Mail = privateUserMail.Text;
+
             if (string.IsNullOrEmpty(privateUserBirthDate.Text.Trim()))
-                SetControlAsInvalid(privateUserBirthDate, ref validationResult); 
-            
+                SetControlAsInvalid(privateUserBirthDate, ref validationResult);
+            else 
+                auxUsuarioAlumno.BirthDate = HelperDataTypesConversion.GetDateTimeFromText(privateUserBirthDate.Text, Constants.inputDateTimeFormat_ddmmaaaa, CultureInfo.CurrentCulture);
+
             if (string.IsNullOrEmpty(privateUserPhone.Text.Trim()))
                 SetControlAsInvalid(privateUserSurname, ref validationResult);
-            
+            else
+                auxUsuarioAlumno.Phone = Int32.Parse(privateUserPhone.Text);
+
             if (string.IsNullOrEmpty(privateUserUserName.Text.Trim()))
-                SetControlAsInvalid(privateUserUserName, ref validationResult); 
-             
+                SetControlAsInvalid(privateUserUserName, ref validationResult);
+            else
+                auxUsuarioAlumno.UserName = privateUserUserName.Text;
+
             if (string.IsNullOrEmpty(privateUserPassword.Text.Trim()))
                 SetControlAsInvalid(privateUserPassword, ref validationResult);
+            else
+                auxUsuarioAlumno.Password = privateUserPassword.Text;
 
+            auxUsuarioAlumno.Active = privateUserActive.Checked;
+            auxUsuarioAlumno.Entered = privateUserEntered.Checked;
+            auxUsuarioAlumno.Created = HelperDataTypesConversion.GetDateTimeFromText(privateUserCreated.Text, Constants.inputDateTimeFormat_ddmmaaaa, CultureInfo.CurrentCulture);
+            auxUsuarioAlumno.Updated = HelperDataTypesConversion.GetDateTimeFromText(privateUserUpdated.Text, Constants.inputDateTimeFormat_ddmmaaaa, CultureInfo.CurrentCulture);
+            //auxUsuarioAlumno.Productos = ;
+
+            UIModel = auxUsuarioAlumno;
             return validationResult;
         }
         catch (Exception ex)
@@ -261,42 +302,30 @@ public partial class EditUserAlumno : BasePage, IModelEdition
             return false;
         }
     }  
-    public bool SaveModel(IModel model)
+    public bool SaveModel()
     {
-        // TODO
-        // Llamar a metodos UserAlumno.Insert(model) y UserAlumno.Update(model)
-        //Entity.Insert(model);
-        //Entity.UpdateByPrimaryKey(model);
-         
         try
-        {
-            string cadenaConexion = ConfigurationManager.ConnectionStrings["Connection_qsg265"].ConnectionString;
-            string consulta = string.Empty;
-            int _id = 0;
+        { 
+            var consulta = string.Empty;
+            int active = UIModel.Active ? 1 : 0;
+            var now = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
-            int active = privateUserActive.Checked ? 1 : 0;
-            DateTime dt = HelperDataTypesConversion.GetDateTimeFromText(privateUserBirthDate.Text, Constants.inputDateTimeFormat_ddmmaaaa, CultureInfo.CurrentCulture);
-            var dtNow = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-
-            string cadenaDateTime = dt.ToString("d", CultureInfo.CurrentCulture);
             switch (Mode)
             {
-                //Nuevo
                 case ViewMode.Create:
-
-                    _id = Entity.GetNextPrimaryKey();
-                    consulta = "INSERT INTO USER_ALUMNO(id, NAME, surname, birth_date, mail, user_name, PASSWORD, entered, active, created, updated, phone) VALUES(" + _id + ",'" + privateUserName.Text + "','" + privateUserSurname.Text + "','" + dt.ToString("yyyy-MM-dd HH:mm:ss") + "','" + privateUserMail.Text + "','" + privateUserUserName.Text + "','" + privateUserPassword.Text + "', 0, " + active + ",'" + dtNow + "', null, " + privateUserPhone.Text + ")";
-
+                    UIModel.Id = Entity.GetNextPrimaryKey();
+                    Entity.Insert(UIModel);
+                    consulta = "INSERT INTO USER_ALUMNO(id, NAME, surname, birth_date, mail, user_name, PASSWORD, entered, active, created, updated, phone) VALUES(" + UIModel.Id + ",'" + privateUserName.Text + "','" + privateUserSurname.Text + "','" + UIModel.BirthDate.ToString("yyyy-MM-dd HH:mm:ss") + "','" + privateUserMail.Text + "','" + privateUserUserName.Text + "','" + privateUserPassword.Text + "', 0, " + active + ",'" + now + "', null, " + privateUserPhone.Text + ")";
                     break;
-                //Editar
-                case ViewMode.Edit:
 
-                    _id = int.Parse(PrimaryKey);
-                    consulta = "UPDATE USER_ALUMNO SET NAME='" + privateUserName.Text + "', surname='" + privateUserSurname.Text + "', birth_date='" + dt.ToString("yyyy-MM-dd HH:mm:ss") + "', mail='" + privateUserMail.Text + "', user_name='" + privateUserUserName.Text + "', PASSWORD='" + privateUserPassword.Text + "', active=" + active + ", updated='" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "', phone=" + privateUserPhone.Text + " WHERE ID=" + _id;
+                case ViewMode.Edit:
+                    UIModel.Id = int.Parse(PrimaryKey);
+                    Entity.UpdateByPrimaryKey(UIModel);
+                    consulta = "UPDATE USER_ALUMNO SET NAME='" + privateUserName.Text + "', surname='" + privateUserSurname.Text + "', birth_date='" + UIModel.BirthDate.ToString("yyyy-MM-dd HH:mm:ss") + "', mail='" + privateUserMail.Text + "', user_name='" + privateUserUserName.Text + "', PASSWORD='" + privateUserPassword.Text + "', active=" + active + ", updated='" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "', phone=" + privateUserPhone.Text + " WHERE ID=" + UIModel.Id;
                     break;
             }
 
-            MySqlConnection cnn = new MySqlConnection(cadenaConexion);
+            MySqlConnection cnn = new MySqlConnection(ConfigurationManager.ConnectionStrings["Connection_qsg265"].ConnectionString);
             MySqlCommand mc = new MySqlCommand(consulta, cnn);
             cnn.Open();
             mc.ExecuteNonQuery();
@@ -308,11 +337,10 @@ public partial class EditUserAlumno : BasePage, IModelEdition
             //this.SetLOG("ERROR", "Loading Page", "EditUserContact.aspx", "Center", "FillCenter()", ex.Message, DateTime.Now, 1);
             //Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
         }
-        //Response.Redirect(Constantes.PAGE_TITLE_UserAlumnoList + Constantes.ASP_PAGE_EXTENSION);
-
+       
         return true;
     }
-     
+
     #endregion
 
     #region [ Button Events ]
@@ -323,12 +351,11 @@ public partial class EditUserAlumno : BasePage, IModelEdition
     }
     public void SaveModelClick(object sender, EventArgs e)
     {
-        if(IsValidModel())
+        if(IsValidModel() && SaveModel())
         {
-            //UIModel = GetModelFromForm();
-            SaveModel(UIModel);
+            //Response.Redirect(Constantes.PAGE_TITLE_UserAlumnoList + Constantes.ASP_PAGE_EXTENSION);
         }
     }
-
+    
     #endregion
 }

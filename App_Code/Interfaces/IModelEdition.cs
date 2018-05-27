@@ -12,12 +12,9 @@ public interface IModelEdition
     #region [ methods ]
 
     void GetPageParameters();
-    void ApplyLayout();
-
-    //IModel GetModel();
-    void FillFromModel();
-    //IModel GetModelFromForm();
-    bool SaveModel(IModel mdoel);
+    void ApplyLayout(); 
+    void FillFromModel(); 
+    bool SaveModel();
     bool IsValidModel();
     void ResetFields();
 
