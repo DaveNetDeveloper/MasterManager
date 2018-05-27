@@ -12,12 +12,12 @@ public interface IModelEdition
     #region [ methods ]
 
     void GetPrimaryKey();
-    void GetMode();
+    void GetViewMode();
     void ApplyLayout();
 
     //IModel GetModel();
     void FillFromModel();
-    IModel GetModelFromForm();
+    //IModel GetModelFromForm();
     bool SaveModel(IModel mdoel);
     bool IsValidModel();
     void ResetFields();

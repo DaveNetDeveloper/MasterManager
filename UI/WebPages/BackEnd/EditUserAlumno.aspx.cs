@@ -1,8 +1,7 @@
-﻿using System;
-using System.Web.UI.WebControls;
+﻿using System; 
 using System.Configuration; 
 using System.Globalization;
-using MySql.Data.MySqlClient;
+using MySql.Data.MySqlClient; 
 
 public partial class EditUserAlumno : BasePage, IModelEdition
 {
@@ -62,7 +61,7 @@ public partial class EditUserAlumno : BasePage, IModelEdition
             Session["Entity"] = value;
         }
     }
-
+     
     #endregion
 
     #region [ Page Events ]
@@ -75,7 +74,7 @@ public partial class EditUserAlumno : BasePage, IModelEdition
             {
                 Title = "Edición de alumno";
                 GetPrimaryKey();
-                GetMode();
+                GetViewMode();
                 ApplyLayout();
             }
         }
@@ -99,7 +98,7 @@ public partial class EditUserAlumno : BasePage, IModelEdition
             PrimaryKey = Request.QueryString["Id"].ToString();
         } 
     }
-    public void GetMode()
+    public void GetViewMode()
     {
         if (Request.QueryString["M"] != null)
         {
@@ -129,14 +128,12 @@ public partial class EditUserAlumno : BasePage, IModelEdition
                     ResetFields();
                     break;
 
-                case ViewMode.View:
-
+                case ViewMode.View: 
                     enabled = false; 
                     if (!string.IsNullOrEmpty(PrimaryKey)) FillFromModel(); 
                     break;
 
-                case ViewMode.Edit:
-
+                case ViewMode.Edit: 
                     enabled = true;
                     if (!string.IsNullOrEmpty(PrimaryKey)) FillFromModel();
                     break;
@@ -223,63 +220,34 @@ public partial class EditUserAlumno : BasePage, IModelEdition
         try
         {
             bool validationResult = true; 
-            privateUserName.BorderColor = System.Drawing.ColorTranslator.FromHtml("#e2e2e2");
-            privateUserSurname.BorderColor = System.Drawing.ColorTranslator.FromHtml("#e2e2e2");
-            privateUserMail.BorderColor = System.Drawing.ColorTranslator.FromHtml("#e2e2e2");
-            privateUserBirthDate.BorderColor = System.Drawing.ColorTranslator.FromHtml("#e2e2e2");
-            privateUserPhone.BorderColor = System.Drawing.ColorTranslator.FromHtml("#e2e2e2");
-            privateUserUserName.BorderColor = System.Drawing.ColorTranslator.FromHtml("#e2e2e2");
-            privateUserPassword.BorderColor = System.Drawing.ColorTranslator.FromHtml("#e2e2e2");
-            
-
+            privateUserName.BorderColor = HtmlColor;
+            privateUserSurname.BorderColor = HtmlColor;
+            privateUserMail.BorderColor = HtmlColor;
+            privateUserBirthDate.BorderColor = HtmlColor;
+            privateUserPhone.BorderColor = HtmlColor;
+            privateUserUserName.BorderColor = HtmlColor;
+            privateUserPassword.BorderColor = HtmlColor;
+             
             if (string.IsNullOrEmpty(privateUserName.Text.Trim()))
-            {
-                validationResult = false;
-                privateUserName.BorderColor = System.Drawing.Color.Red;
-                privateUserName.BorderWidth = new Unit(1);
-            }
+                SetControlAsInvalid(privateUserName, ref validationResult);
 
             if (string.IsNullOrEmpty(privateUserSurname.Text.Trim()))
-            {
-                validationResult = false;
-                privateUserSurname.BorderColor = System.Drawing.Color.Red;
-                privateUserSurname.BorderWidth = new Unit(1);
-            }
+                SetControlAsInvalid(privateUserSurname, ref validationResult); 
 
             if (string.IsNullOrEmpty(privateUserMail.Text.Trim()))
-            {
-                validationResult = false;
-                privateUserMail.BorderColor = System.Drawing.Color.Red;
-                privateUserMail.BorderWidth = new Unit(1);
-            }
+                SetControlAsInvalid(privateUserMail, ref validationResult); 
              
             if (string.IsNullOrEmpty(privateUserBirthDate.Text.Trim()))
-            {
-                validationResult = false;
-                privateUserBirthDate.BorderColor = System.Drawing.Color.Red;
-                privateUserBirthDate.BorderWidth = new Unit(1);
-            }
+                SetControlAsInvalid(privateUserBirthDate, ref validationResult); 
             
             if (string.IsNullOrEmpty(privateUserPhone.Text.Trim()))
-            {
-                validationResult = false;
-                privateUserPhone.BorderColor = System.Drawing.Color.Red;
-                privateUserPhone.BorderWidth = new Unit(1);
-            }
+                SetControlAsInvalid(privateUserSurname, ref validationResult);
             
             if (string.IsNullOrEmpty(privateUserUserName.Text.Trim()))
-            {
-                validationResult = false;
-                privateUserUserName.BorderColor = System.Drawing.Color.Red;
-                privateUserUserName.BorderWidth = new Unit(1);
-            }
+                SetControlAsInvalid(privateUserUserName, ref validationResult); 
              
             if (string.IsNullOrEmpty(privateUserPassword.Text.Trim()))
-            {
-                validationResult = false;
-                privateUserPassword.BorderColor = System.Drawing.Color.Red;
-                privateUserPassword.BorderWidth = new Unit(1);
-            }
+                SetControlAsInvalid(privateUserPassword, ref validationResult);
 
             return validationResult;
         }
@@ -290,15 +258,7 @@ public partial class EditUserAlumno : BasePage, IModelEdition
             //Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
             return false;
         }
-    }
-    //public IModel GetModel()
-    //{ 
-    //    return new ModelUsuarioAlumno();
-    //}
-    public IModel GetModelFromForm()
-    {
-        return new ModelUsuarioAlumno();
-    }
+    }  
     public bool SaveModel(IModel model)
     {
         // TODO
@@ -362,8 +322,8 @@ public partial class EditUserAlumno : BasePage, IModelEdition
     public void SaveModelClick(object sender, EventArgs e)
     {
         if(IsValidModel())
-        { 
-            UIModel = GetModelFromForm();
+        {
+            //UIModel = GetModelFromForm();
             SaveModel(UIModel);
         }
     }
