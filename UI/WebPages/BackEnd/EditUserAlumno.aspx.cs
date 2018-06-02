@@ -64,7 +64,6 @@ public partial class EditUserAlumno : BasePage, IModelEdition
             _uiModel = value;
         }
     }
-
     private IEntity Entity
     {
         get
@@ -80,7 +79,7 @@ public partial class EditUserAlumno : BasePage, IModelEdition
             Session["Entity"] = value;
         }
     }
-     
+
     #endregion
 
     #region [ Page Events ]
@@ -151,13 +150,16 @@ public partial class EditUserAlumno : BasePage, IModelEdition
 
                 case ViewMode.View: 
                     enabled = false; 
-                    if (!string.IsNullOrEmpty(PrimaryKey)) FillFromModel(); 
                     break;
 
                 case ViewMode.Edit: 
                     enabled = true;
-                    if (!string.IsNullOrEmpty(PrimaryKey)) FillFromModel();
                     break;
+            }
+
+            if(!Mode.Equals(ViewMode.Create))
+            {
+                FillFromModel();
             }
 
             btnGuardar.Visible = enabled;
