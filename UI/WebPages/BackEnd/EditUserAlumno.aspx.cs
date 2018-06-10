@@ -1,102 +1,23 @@
-﻿using System; 
-using System.Configuration; 
+﻿using System;
 using System.Globalization;
-using MySql.Data.MySqlClient; 
 
 public partial class EditUserAlumno : BasePage, IModelEdition
 {
-    #region [ Properties ]
-
-    public String PageTitle = "Edición de alumno";
-    public ViewMode Mode
-    {
-        get
-        {
-            return (ViewMode)Session["Mode"];
-        }
-        set
-        {
-            Session["Mode"] = value;
-        }
-
-    } 
-    public string PrimaryKey
-    {
-        get
-        {
-            return (string)Session["PrimaryKey"];
-        }
-        set
-        {
-            Session["PrimaryKey"] = value;
-        }
-
-    } 
-
-    private IModel Model {
-        get
-        {
-            if (Session["Model"] == null)
-            { 
-                Session["Model"] = Entity.GetByPrimaryKey(Int32.Parse(PrimaryKey));
-            }
-            return (ModelUsuarioAlumno)Session["Model"];
-        }
-        set
-        {
-            Session["Model"] = value;
-        }
-    }
-
-    private ModelUsuarioAlumno _uiModel;
-    private ModelUsuarioAlumno UIModel
-    {
-        get
-        {
-            if (_uiModel == null)
-            {
-                return new ModelUsuarioAlumno();
-            }
-            return (ModelUsuarioAlumno)_uiModel;
-        }
-        set
-        {
-            _uiModel = value;
-        }
-    }
-    private IEntity Entity
-    {
-        get
-        {
-            if (Session["Entity"] == null)
-            { 
-                Session["Entity"] = EntityManager.GetEntity(EntityManager.EntityType.UsuarioAlumno);
-            }
-            return (IEntity)Session["Entity"];
-        }
-        set
-        {
-            Session["Entity"] = value;
-        }
-    }
-
-    #endregion
-
     #region [ Page Events ]
 
     protected void Page_Init(object sender, EventArgs e)
     {
         try
         {
-            if (!IsPostBack)
-            {
+            if (!IsPostBack) {
+                ModelClass = typeof(ModelUsuarioAlumno); // Informar del type desde el diseñador cuando cree el userControl de edicion de esta entidad ->  ModelClass='<%# typeof(ModelDocumento) %>' 
+                Session.RemoveAll();
                 Title = PageTitle;
                 GetPageParameters();
                 ApplyLayout();
             }
         }
-        catch (Exception ex)
-        {
+        catch (Exception ex) {
             Session["error"] = ex;
             //((MasterPage)(this.Master)).SetLOG("ERROR", "Loading Page", "EditCenter.aspx", "Center", "Page_Init()", ex.Message, DateTime.Now, 1);
             //this.SetLOG("ERROR", "Loading Page", "EditUserContact.aspx", "Center", "Page_Init()", ex.Message, DateTime.Now, 1);
@@ -113,29 +34,6 @@ public partial class EditUserAlumno : BasePage, IModelEdition
         GetPrimaryKey();
         GetViewMode();
     }
-    private void GetPrimaryKey()
-    {
-        if (!string.IsNullOrEmpty(Request.QueryString["Id"])) PrimaryKey = Request.QueryString["Id"].ToString();
-    }
-    private void GetViewMode()
-    {
-        if (Request.QueryString["M"] != null)
-        {
-            switch (Request.QueryString["M"].ToString())
-            {
-                case "V":
-                    Mode = ViewMode.View;
-                    break;
-                case "E":
-                    Mode = ViewMode.Edit;
-                    break;
-                case "N":
-                    Mode = ViewMode.Create;
-                    break; 
-            } 
-        } 
-    }
-    
     public void ApplyLayout()
     {
         try
@@ -155,11 +53,10 @@ public partial class EditUserAlumno : BasePage, IModelEdition
                 case ViewMode.Edit: 
                     enabled = true;
                     break;
-            }
-
-            if(!Mode.Equals(ViewMode.Create))
-            {
-                FillFromModel();
+                case ViewMode.None:
+                    enabled = false;
+                    ResetFields();
+                    break;
             }
 
             btnGuardar.Visible = enabled;
@@ -173,8 +70,13 @@ public partial class EditUserAlumno : BasePage, IModelEdition
             privateUserPassword.Enabled = enabled;
             privateUserBirthDate.Enabled = enabled;
             if(!enabled) privateUserEntered.Attributes["disabled"] = "disabled";
+            if (!enabled) privateUserActive.Attributes["disabled"] = "disabled";
+            message.Disabled = ! enabled;
+
             privateUserCreated.Enabled = false;
             privateUserUpdated.Enabled = false;
+
+            if (Mode.Equals(ViewMode.Edit) | Mode.Equals(ViewMode.View)) FillFromModel();
         }
         catch (Exception ex)
         {
@@ -185,22 +87,25 @@ public partial class EditUserAlumno : BasePage, IModelEdition
     }
     public void ResetFields()
     {
-        privateUserName.Text = String.Empty;
-        privateUserSurname.Text = String.Empty;
-        privateUserMail.Text = String.Empty;
-        privateUserPhone.Text = String.Empty;
-        privateUserUserName.Text = String.Empty;
-        privateUserPassword.Text = String.Empty;
+        privateUserName.Text = string.Empty;
+        privateUserSurname.Text = string.Empty;
+        privateUserMail.Text = string.Empty;
+        privateUserPhone.Text = string.Empty;
+        privateUserUserName.Text = string.Empty;
+        privateUserPassword.Text = string.Empty;
         privateUserEntered.Checked = false;
         privateUserCreated.Text = DateTime.Now.ToString("dd/MM/yyyy"); 
-        privateUserBirthDate.Text = String.Empty;
+        privateUserBirthDate.Text = string.Empty;
         privateUserActive.Checked = false;
+        privateUserUpdated.Text = string.Empty;
+        message.Value = string.Empty;
     }
     public void FillFromModel()
     { 
         try
         {
             var userAlumnoModel = ((ModelUsuarioAlumno)Model);
+
             privateUserName.Text = userAlumnoModel.Name;
             privateUserSurname.Text = userAlumnoModel.Surname;
             privateUserBirthDate.Text = userAlumnoModel.BirthDate.ToString("dd/MM/yyyy");
@@ -208,7 +113,9 @@ public partial class EditUserAlumno : BasePage, IModelEdition
             privateUserUserName.Text = userAlumnoModel.UserName;
             privateUserPassword.Text = userAlumnoModel.Password;
             privateUserEntered.Checked = userAlumnoModel.Entered;
+            privateUserActive.Checked = userAlumnoModel.Active;
             privateUserPhone.Text = userAlumnoModel.Phone.ToString();
+            //message.Value = "Extra info";
 
             var updateDate = string.Empty;
             var createdDate = string.Empty; 
@@ -242,6 +149,7 @@ public partial class EditUserAlumno : BasePage, IModelEdition
         try
         {
             ModelUsuarioAlumno auxUsuarioAlumno = new ModelUsuarioAlumno();
+
             bool validationResult = true; 
 
             privateUserName.BorderColor = HtmlColor;
@@ -289,6 +197,7 @@ public partial class EditUserAlumno : BasePage, IModelEdition
 
             auxUsuarioAlumno.Active = privateUserActive.Checked;
             auxUsuarioAlumno.Entered = privateUserEntered.Checked;
+
             auxUsuarioAlumno.Created = HelperDataTypesConversion.GetDateTimeFromText(privateUserCreated.Text, Constants.inputDateTimeFormat_ddmmaaaa, CultureInfo.CurrentCulture);
             auxUsuarioAlumno.Updated = HelperDataTypesConversion.GetDateTimeFromText(privateUserUpdated.Text, Constants.inputDateTimeFormat_ddmmaaaa, CultureInfo.CurrentCulture);
             //auxUsuarioAlumno.Productos = ;
@@ -308,30 +217,22 @@ public partial class EditUserAlumno : BasePage, IModelEdition
     {
         try
         { 
-            var consulta = string.Empty;
-            int active = UIModel.Active ? 1 : 0;
-            var now = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-
             switch (Mode)
             {
                 case ViewMode.Create:
-                    UIModel.Id = Entity.GetNextPrimaryKey();
                     Entity.Insert(UIModel);
-                    consulta = "INSERT INTO USER_ALUMNO(id, NAME, surname, birth_date, mail, user_name, PASSWORD, entered, active, created, updated, phone) VALUES(" + UIModel.Id + ",'" + privateUserName.Text + "','" + privateUserSurname.Text + "','" + UIModel.BirthDate.ToString("yyyy-MM-dd HH:mm:ss") + "','" + privateUserMail.Text + "','" + privateUserUserName.Text + "','" + privateUserPassword.Text + "', 0, " + active + ",'" + now + "', null, " + privateUserPhone.Text + ")";
                     break;
 
                 case ViewMode.Edit:
+
                     UIModel.Id = int.Parse(PrimaryKey);
                     Entity.UpdateByPrimaryKey(UIModel);
-                    consulta = "UPDATE USER_ALUMNO SET NAME='" + privateUserName.Text + "', surname='" + privateUserSurname.Text + "', birth_date='" + UIModel.BirthDate.ToString("yyyy-MM-dd HH:mm:ss") + "', mail='" + privateUserMail.Text + "', user_name='" + privateUserUserName.Text + "', PASSWORD='" + privateUserPassword.Text + "', active=" + active + ", updated='" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "', phone=" + privateUserPhone.Text + " WHERE ID=" + UIModel.Id;
+
+                    //var now = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                    //int active = UIModel.Active ? 1 : 0;
+                    //var consulta = "UPDATE USER_ALUMNO SET NAME='" + privateUserName.Text + "', surname='" + privateUserSurname.Text + "', birth_date='" + UIModel.BirthDate.ToString("yyyy-MM-dd HH:mm:ss") + "', mail='" + privateUserMail.Text + "', user_name='" + privateUserUserName.Text + "', PASSWORD='" + privateUserPassword.Text + "', active=" + active + ", updated='" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "', phone=" + privateUserPhone.Text + " WHERE ID=" + UIModel.Id;
                     break;
             }
-
-            MySqlConnection cnn = new MySqlConnection(ConfigurationManager.ConnectionStrings["Connection_qsg265"].ConnectionString);
-            MySqlCommand mc = new MySqlCommand(consulta, cnn);
-            cnn.Open();
-            mc.ExecuteNonQuery();
-            cnn.Close(); 
         }
         catch (Exception ex)
         {
@@ -339,7 +240,6 @@ public partial class EditUserAlumno : BasePage, IModelEdition
             //this.SetLOG("ERROR", "Loading Page", "EditUserContact.aspx", "Center", "FillCenter()", ex.Message, DateTime.Now, 1);
             //Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
         }
-       
         return true;
     }
 
@@ -353,11 +253,13 @@ public partial class EditUserAlumno : BasePage, IModelEdition
     }
     public void SaveModelClick(object sender, EventArgs e)
     {
-        if(IsValidModel() && SaveModel())
-        {
-            //Response.Redirect(Constantes.PAGE_TITLE_UserAlumnoList + Constantes.ASP_PAGE_EXTENSION);
+        if (IsValidModel() && SaveModel()) {
+            //Response.Redirect("PAGE_TITLE_UserAlumnoList.aspx");
+        }
+        else {
+            // TODO Alerta --> revisar los campos no válidos
         }
     }
-    
+
     #endregion
 }

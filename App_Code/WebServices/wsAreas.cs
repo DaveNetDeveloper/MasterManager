@@ -47,14 +47,14 @@ public class WsAreas : WebService, IWsEntity
         {
             throw;
         }
-    }   
+    }
 
     [WebMethod(EnableSession = true)]
     public bool Insertar(string nombre)
     {
         try
         {
-            return entityAreas.Insert(nombre);
+            return true;
         }
         catch (Exception)
         {

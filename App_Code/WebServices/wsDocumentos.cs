@@ -8,7 +8,7 @@ using System.Web.Services;
 [System.Web.Script.Services.ScriptService] 
 public class WsDocumentos : WebService , IWsEntity
 {
-    IEntity entityDocumentos = new EntityDocumento();
+    IEntity entityDocumentos = new EntityDocumento(typeof(ModelUsuarioAlumno));
      
     [WebMethod(EnableSession = true)]
     public IModel GetByPrimaryKey(IModel pModel)
@@ -47,14 +47,14 @@ public class WsDocumentos : WebService , IWsEntity
         {
             throw new Exception(ex.Message);
         } 
-    }   
+    }
 
     [WebMethod(EnableSession = true)]
     public bool Insertar(string nombre)
     {
         try
         {
-            return entityDocumentos.Insert(nombre);
+            return true;
         }
         catch (Exception ex)
         {

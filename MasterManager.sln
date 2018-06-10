@@ -24,6 +24,9 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "MasterManager", ".", "{9267
 		SlnRelativePath = "..\MasterManager\"
 		DefaultWebSiteLanguage = "Visual C#"
 	EndProjectSection
+	ProjectSection(ProjectDependencies) = postProject
+		{50143CA4-FE52-4FC0-84D6-7383D6F17158} = {50143CA4-FE52-4FC0-84D6-7383D6F17158}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityLayer", "..\EntityLayer\EntityLayer.csproj", "{50143CA4-FE52-4FC0-84D6-7383D6F17158}"
 EndProject

@@ -4,13 +4,16 @@ using System.Data;
 using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Drawing; 
+using System.Drawing;
+using System.ComponentModel;
 
 public partial class EntityList : UserControl
 {
     #region [ private properties ]
 
-    private EntityManager.EntityType EntityType { get; set; }
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+    public Type ModelClass { get; set; }
+
     private DataTable EntityDataTable
     {
         get
@@ -27,9 +30,8 @@ public partial class EntityList : UserControl
         get
         {
             if (Session["DataSource"] == null)
-            {
-                var aux = EntityManager.GetEntity(EntityType).GetList();
-                Session["DataSource"] = aux;
+            { 
+                Session["DataSource"] = EntityManager.GetEntity(ModelClass).GetList();
             }
             return (IEnumerable<IModel>)Session["DataSource"]; 
         }

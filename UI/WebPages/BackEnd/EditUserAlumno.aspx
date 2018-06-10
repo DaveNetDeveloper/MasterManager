@@ -1,4 +1,4 @@
-﻿<%@ Page  Title="EditUserAlumno" Language="C#" AutoEventWireup="true" CodeFile="~/UI/WebPages/BackEnd/EditUserAlumno.aspx.cs" Inherits="EditUserAlumno" %>
+﻿<%@ Page  Language="C#" AutoEventWireup="true" CodeFile="~/UI/WebPages/BackEnd/EditUserAlumno.aspx.cs" Inherits="EditUserAlumno" %>
 <!DOCTYPE html> 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server"> 
@@ -89,7 +89,7 @@
 								    </div>
 								    <div class="column width-12">
 									    <div class="field-wrapper">
-										    <textarea runat="server" name="message" id="message" class="form-message form-element large" placeholder="mensaje" tabindex="7" required="required"></textarea>
+										    <textarea runat ="server" name="message" id="message" class="form-message form-element large" placeholder="mensaje" tabindex="7" required="required"></textarea>
 									    </div>
 								    </div>
                                     <div class="column width-6">

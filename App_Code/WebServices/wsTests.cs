@@ -47,14 +47,14 @@ public class WsTests : WebService, IWsEntity
         {
             throw new Exception(ex.Message);
         } 
-    }   
+    }
 
     [WebMethod(EnableSession = true)]
     public bool Insertar(string nombre)
     {
         try
         {
-            return entityTests.Insert(nombre);
+            return true;
         }
         catch (Exception ex)
         {

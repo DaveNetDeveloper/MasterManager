@@ -6,6 +6,7 @@ public interface IModelEdition
 
     BasePage.ViewMode Mode { get; set; }
     string PrimaryKey { get; set; }
+    string PageTitle { get; }
 
     #endregion
 

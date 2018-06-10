@@ -4,7 +4,6 @@
 <!DOCTYPE html> 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Async Javascript Call Page</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
@@ -122,10 +121,8 @@
         <input id="inputUpdateAreaNombre" type="text" value="" /> 
         <input id="btnUpdateArea" type="button" value="Modificar area existentes" onclick="UpdateAreaById($('#inputUpdateAreaId').val(), $('#inputUpdateAreaNombre').val());" />
     </div>
-
     <br /><br /> 
-    <uc:EntityList runat="server" EntityType="Documento" ID="LisOftDocuments" />
-
+    <uc:EntityList runat="server" ModelClass='<%# typeof(ModelDocumento) %>' ID="LisOftDocuments" />
 </form>
 </body>
 
