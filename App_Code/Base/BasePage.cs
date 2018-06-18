@@ -76,6 +76,7 @@ public class BasePage : Page
     {
         //Substituir "Id" por la variable PrimaryKeyName que se obtiene de la definicion de base de datos
         if (!string.IsNullOrEmpty(Request.QueryString["Id"])) PrimaryKey = Request.QueryString["Id"].ToString();
+        else throw new Exception();
     }
     protected void GetViewMode()
     {
@@ -100,6 +101,8 @@ public class BasePage : Page
         else {
             Mode = ViewMode.None;
         }
+
+        if (Mode == ViewMode.None) throw new Exception();
     }
     protected void SetControlAsInvalid(TextBox control, ref bool validationResult)
     {
@@ -111,10 +114,9 @@ public class BasePage : Page
     {
        try { 
             if (!IsPostBack) {
-
-            TypedObject = EntityManager.GetBussinesObjectType(BussinesObject);
-            InitializeSession();
-            // AplicarIdioma(new CultureInfo(Utils.GetDefautLanguage()));
+                TypedObject = EntityManager.GetBussinesObjectType(BussinesObject);
+                InitializeSession();
+                //AplicarIdioma(new CultureInfo(Utils.GetDefautLanguage()));
             }
        }
        catch (Exception ex) {
