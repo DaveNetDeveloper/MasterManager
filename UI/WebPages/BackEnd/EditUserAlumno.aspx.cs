@@ -1,5 +1,5 @@
-﻿using System;
-using System.Globalization;
+﻿using System; 
+using System.Globalization; 
 
 public partial class EditUserAlumno : BasePage, IModelEdition
 {
@@ -22,31 +22,29 @@ public partial class EditUserAlumno : BasePage, IModelEdition
     } 
 
     private ModelUsuarioAlumno UIModel;
-
+    
     #endregion
 
     #region [ events ]
 
     public void Page_Load(object sender, EventArgs e)
     {
-        if (!IsPostBack)
-        {
+        if (!IsPostBack) {
             ApplyLayout();
         }
-    }
+    } 
     public void Page_Init(object sender, EventArgs e)
     {
         try {
-            if (!IsPostBack)
-            {
+            if (!IsPostBack) {
                 Title = PageTitle;
                 BussinesObject = BussinesTypedObject.BussinesObjectTypeEnum.UsuarioAlumno;
-
-                // Informar del type desde el diseñador cuando cree el userControl de edicion de esta entidad ->  
-                //      --> ModelClass ='<%# typeof(ModelDocumento) %>' 
-
                 Session.RemoveAll();
                 GetPageParameters();
+                LoadPageControls();
+                
+                // Informar del type desde el diseñador cuando cree el userControl de edicion de esta entidad ->  
+                //      --> ModelClass ='<%# typeof(ModelDocumento) %>' 
             }
         }
         catch (Exception ex) {
@@ -92,19 +90,21 @@ public partial class EditUserAlumno : BasePage, IModelEdition
             btnGuardar.Visible = enabled;
             btnVolver.Visible = true;
 
-            privateUserName.Enabled = enabled;
-            privateUserSurname.Enabled = enabled;
-            privateUserMail.Enabled = enabled;
-            privateUserPhone.Enabled = enabled;
-            privateUserUserName.Enabled = enabled;
-            privateUserPassword.Enabled = enabled;
-            privateUserBirthDate.Enabled = enabled;
-            if(!enabled) privateUserEntered.Attributes["disabled"] = "disabled";
-            if (!enabled) privateUserActive.Attributes["disabled"] = "disabled";
-            message.Disabled = ! enabled;
+            ActivateControls(enabled);
 
-            privateUserCreated.Enabled = false;
-            privateUserUpdated.Enabled = false;
+            //privateUserName.Enabled = enabled;
+            //privateUserSurname.Enabled = enabled;
+            //privateUserMail.Enabled = enabled;
+            //privateUserPhone.Enabled = enabled;
+            //privateUserUserName.Enabled = enabled;
+            //privateUserPassword.Enabled = enabled;
+            //privateUserBirthDate.Enabled = enabled;
+            //if(!enabled) privateUserEntered.Attributes["disabled"] = "disabled";
+            //if (!enabled) privateUserActive.Attributes["disabled"] = "disabled";
+            //privateUserMessage.Disabled = ! enabled;
+
+            //privateUserCreated.Enabled = false;
+            //privateUserUpdated.Enabled = false;
 
             if (Mode.Equals(ViewMode.Edit) | Mode.Equals(ViewMode.View)) FillFromModel();
         }
@@ -127,7 +127,7 @@ public partial class EditUserAlumno : BasePage, IModelEdition
         privateUserBirthDate.Text = string.Empty;
         privateUserActive.Checked = false;
         privateUserUpdated.Text = string.Empty;
-        message.Value = string.Empty;
+        privateUserMessage.Value = string.Empty;
     }
     public void FillFromModel()
     { 
@@ -152,7 +152,7 @@ public partial class EditUserAlumno : BasePage, IModelEdition
                 privateUserEntered.Checked = userAlumnoModel.Entered;
                 privateUserActive.Checked = userAlumnoModel.Active;
                 privateUserPhone.Text = userAlumnoModel.Phone.ToString();
-                message.Value = "more info";
+                privateUserMessage.Value = "more info";
 
                 var updateDate = string.Empty;
                 var createdDate = string.Empty; 

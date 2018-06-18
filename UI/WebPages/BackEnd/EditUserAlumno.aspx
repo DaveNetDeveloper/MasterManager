@@ -89,7 +89,7 @@
 								    </div>
 								    <div class="column width-12">
 									    <div class="field-wrapper">
-										    <textarea runat ="server" name="message" id="message" class="form-message form-element large" placeholder="mensaje" tabindex="7" required="required"></textarea>
+										    <textarea runat ="server" name="privateUserMessage" id="privateUserMessage" class="form-message form-element large" placeholder="mensaje" tabindex="7" required="required"></textarea>
 									    </div>
 								    </div>
                                     <div class="column width-6">

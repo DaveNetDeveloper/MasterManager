@@ -4,6 +4,8 @@ using System.Globalization;
 using System.Threading;
 using System.Web.UI.WebControls;
 using System.Web.UI;
+using System.Collections.Generic;
+using System.Web.UI.HtmlControls;
 
 public class BasePage : Page
 {
@@ -41,7 +43,7 @@ public class BasePage : Page
             return "Título";
         }
     } 
-
+    public List<Control> ControlList; 
     public EntityManager EntityManager
     {
         get {
@@ -53,8 +55,7 @@ public class BasePage : Page
                 throw ex;
             }
         }
-    }
-
+    } 
     public IEntity Entity
     {
         get {
@@ -77,9 +78,26 @@ public class BasePage : Page
     private Color invalidDataColor = Color.Red;
 
     #endregion
-    
+
     #region [ methods ]
 
+    protected void AplicarIdioma(CultureInfo culture)
+    {
+        try
+        {
+            Thread.CurrentThread.CurrentUICulture = culture;
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+    }
+    protected void ErrorTreatment(Exception ex)
+    {
+        Session["error"] = ex;
+        //this.SetLOG("ERROR", "Loading Page", "EditUserContact.aspx", "Center", "FillCenter()", ex.Message, DateTime.Now, 1);
+        //Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+    } 
     protected void GetPrimaryKey()
     {
         //Substituir "Id" por la variable PrimaryKeyName que se obtiene de la definicion de base de datos
@@ -117,21 +135,46 @@ public class BasePage : Page
         validationResult = false;
         control.BorderColor = invalidDataColor;
         control.BorderWidth = new Unit(1);
-    }
-    protected void AplicarIdioma(CultureInfo culture)
+    } 
+    protected void LoadPageControls()
     {
-        try {
-            Thread.CurrentThread.CurrentUICulture = culture;
-        }
-        catch (Exception ex) {
-            throw ex;
-        }
+        ControlList = new List<Control>();
+        foreach (Control form in Page.Controls) {
+            if (form.GetType().Name.Equals("HtmlForm")) {
+                foreach (Control c in form.Controls) {
+                    if ((c.GetType().Name.Equals("TextBox")) | (c.GetType().Name.Equals("CheckBox"))) {
+                        if (c.ID.Contains("privateUser")) ControlList.Add(c);
+                    }
+                    else {
+                        try {
+                            if (((HtmlControl)c).TagName.ToLower().Equals("textarea")) {
+                                ControlList.Add(c);
+                            }
+                        }
+                        catch (Exception ex) {
+                            var except = ex;
+                        }
+                    }
+                } break;
+            }
+        } 
     }
-    protected void ErrorTreatment(Exception ex)
-    {
-        Session["error"] = ex;
-        //this.SetLOG("ERROR", "Loading Page", "EditUserContact.aspx", "Center", "FillCenter()", ex.Message, DateTime.Now, 1);
-        //Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
+
+    protected void ActivateControls(bool enabled)
+    {  
+        foreach (Control c in ControlList) {
+            switch(c.GetType().Name) {
+                case "TextBox":
+                    ((TextBox)c).Enabled = enabled;
+                    break;
+                case "CheckBox":
+                    ((CheckBox)c).Enabled = enabled;
+                    break;
+                case "HtmlTextArea":
+                    ((HtmlTextArea)c).Disabled = !enabled;
+                    break; 
+            }
+        } 
     }
 
     private void InitializeSession()
@@ -149,27 +192,22 @@ public class BasePage : Page
 
     protected override void OnPreInit(EventArgs e)
     {
-        try
-        {
-            if (!IsPostBack)
-            {
+        try {
+            if (!IsPostBack) {
                 InitializeSession();
                 //AplicarIdioma(new CultureInfo(Utils.GetDefautLanguage()));
             }
         }
-        catch (Exception ex)
-        {
+        catch (Exception ex) {
             throw ex;
         }
     }
     protected override void OnPreLoad(EventArgs e)
     {
-        try
-        {
+        try {
             if (!IsPostBack) EntityManager.InitializeTypes(BussinesObject);
         }
-        catch (Exception ex)
-        {
+        catch (Exception ex) {
             throw ex;
         }
     }
