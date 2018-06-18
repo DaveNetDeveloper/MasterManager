@@ -12,7 +12,7 @@ public partial class EditUserAlumno : BasePage, IModelEdition
                 if (Session["Model"] == null) Session["Model"] = Entity.GetByPrimaryKey(Int32.Parse(PrimaryKey));
             }
             catch (Exception ex) { 
-                var aux = ex;
+                throw ex;
             }
             return (ModelUsuarioAlumno)Session["Model"];
         }
@@ -25,11 +25,14 @@ public partial class EditUserAlumno : BasePage, IModelEdition
 
     #endregion
 
-    #region [ page events ]
+    #region [ events ]
 
     public void Page_Load(object sender, EventArgs e)
     {
-        if (!IsPostBack) ApplyLayout();
+        if (!IsPostBack)
+        {
+            ApplyLayout();
+        }
     }
     public void Page_Init(object sender, EventArgs e)
     {
@@ -37,8 +40,7 @@ public partial class EditUserAlumno : BasePage, IModelEdition
             if (!IsPostBack)
             {
                 Title = PageTitle;
-                //ModelClass = typeof(ModelUsuarioAlumno);
-                BussinesObject = BussinesTypedObject.BOType.UsuarioAlumno;
+                BussinesObject = BussinesTypedObject.BussinesObjectTypeEnum.UsuarioAlumno;
 
                 // Informar del type desde el diseñador cuando cree el userControl de edicion de esta entidad ->  
                 //      --> ModelClass ='<%# typeof(ModelDocumento) %>' 
@@ -68,8 +70,7 @@ public partial class EditUserAlumno : BasePage, IModelEdition
     {
         try {
             var enabled = false;
-            switch (Mode)
-            {
+            switch (Mode) {
                 case ViewMode.Create:
                     enabled = true; 
                     ResetFields();
@@ -131,17 +132,17 @@ public partial class EditUserAlumno : BasePage, IModelEdition
     public void FillFromModel()
     { 
         try {
+
             //var modelType = TypedObject.ModelLayerType;
             //var userAlumnoModel2 = ((modelType.GetType())Model);
 
-            var modelType = Type.GetType(TypedObject.ModelLayerType.Name);
-            var userAlumnoModel_CustomConvert = ConvertType<IModel>(Model);
-             
+            //var modelType = Type.GetType(EntityManager.TypedBO.ModelLayerType.Name);
+            //var userAlumnoModel_CustomConvert = ConvertType<IModel>(Model);
 
             var userAlumnoModel = ((ModelUsuarioAlumno)Model);
 
-            if (TryCast(ref TypedObject.ModelLayerType, Model))
-            { 
+            //if (TryCast(ref EntityManager.TypedBO.ModelLayerType, Model))
+            //{ 
                 privateUserName.Text = userAlumnoModel.Name;
                 privateUserSurname.Text = userAlumnoModel.Surname;
                 privateUserBirthDate.Text = userAlumnoModel.BirthDate.ToString("dd/MM/yyyy");
@@ -171,24 +172,21 @@ public partial class EditUserAlumno : BasePage, IModelEdition
                 } 
                 privateUserCreated.Text = createdDate;
                 privateUserUpdated.Text = updateDate;
-
-            }
-
+            //}
         }
         catch (Exception ex) {
-            
             ErrorTreatment(ex); 
         }
     }
      
-    public bool TryCast<T>(ref T t, object o)
+    private bool TryCast<T>(ref T t, object o)
     {
         if (o == null || !typeof(T).IsAssignableFrom(o.GetType())) return false;
         else t = (T)o;
         return true;
     }
 
-    public T ConvertType<T>(object input)
+    private T ConvertType<T>(object input)
     {
         return (T)Convert.ChangeType(input, typeof(T));
     }

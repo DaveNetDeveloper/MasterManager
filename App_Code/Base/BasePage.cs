@@ -15,7 +15,7 @@ public class BasePage : Page
         None
     }
 
-    #region [ public properties ]
+    #region [ properties ]
 
     public string PrimaryKey
     {
@@ -31,8 +31,7 @@ public class BasePage : Page
         get {
             return (ViewMode)Session["Mode"];
         }
-        set
-        {
+        set {
             Session["Mode"] = value;
         } 
     }
@@ -40,6 +39,19 @@ public class BasePage : Page
     {
         get {
             return "Título";
+        }
+    } 
+
+    public EntityManager EntityManager
+    {
+        get {
+            try {
+                if (Session["EntityManager"] == null) Session["EntityManager"] = new EntityManager();
+                return (EntityManager)Session["EntityManager"];
+            }
+            catch (Exception ex) {
+                throw ex;
+            }
         }
     }
 
@@ -58,14 +70,10 @@ public class BasePage : Page
             Session["Entity"] = value;
         }
     }
-    public BussinesTypedObject.BOType BussinesObject { get; set; }
-    public BussinesTypedObject TypedObject { get; set; }
-
-    #endregion
-
-    #region [ properties ]
+    public BussinesTypedObject.BussinesObjectTypeEnum BussinesObject { get; set; }
 
     protected Color GrayHtmlColor = ColorTranslator.FromHtml("#e2e2e2");
+
     private Color invalidDataColor = Color.Red;
 
     #endregion
@@ -110,29 +118,13 @@ public class BasePage : Page
         control.BorderColor = invalidDataColor;
         control.BorderWidth = new Unit(1);
     }
-    protected override void OnPreInit(EventArgs e)
-    {
-       try { 
-            if (!IsPostBack) {
-                TypedObject = EntityManager.GetBussinesObjectType(BussinesObject);
-                InitializeSession();
-                //AplicarIdioma(new CultureInfo(Utils.GetDefautLanguage()));
-            }
-       }
-       catch (Exception ex) {
-            var aux = ex;
-            //Log ex as ERROR
-       }
-    }
     protected void AplicarIdioma(CultureInfo culture)
     {
-        try
-        {
+        try {
             Thread.CurrentThread.CurrentUICulture = culture;
         }
-        catch (Exception)
-        {
-            //Log ex as ERROR
+        catch (Exception ex) {
+            throw ex;
         }
     }
     protected void ErrorTreatment(Exception ex)
@@ -144,11 +136,41 @@ public class BasePage : Page
 
     private void InitializeSession()
     {
-        if (Session == null || !(Session.Count > 0))
-        {
+        if (Session == null || !(Session.Count > 0)) {
             Session["SessionStartTicks"] = DateTime.Now.Ticks;
             Session["SessionID"] = Session.SessionID;
             Session["UserClosedCokkiesBar"] = false;
+        }
+    }
+
+    #endregion
+
+    #region [ events ]
+
+    protected override void OnPreInit(EventArgs e)
+    {
+        try
+        {
+            if (!IsPostBack)
+            {
+                InitializeSession();
+                //AplicarIdioma(new CultureInfo(Utils.GetDefautLanguage()));
+            }
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+    }
+    protected override void OnPreLoad(EventArgs e)
+    {
+        try
+        {
+            if (!IsPostBack) EntityManager.InitializeTypes(BussinesObject);
+        }
+        catch (Exception ex)
+        {
+            throw ex;
         }
     }
 

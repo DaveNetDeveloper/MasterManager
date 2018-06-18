@@ -6,7 +6,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Drawing;
 
-public partial class EntityList : UserControl
+public partial class EntityList : BaseUC
 {
     #region [ private properties ]
 
@@ -26,16 +26,11 @@ public partial class EntityList : UserControl
     }
     private IEnumerable<IModel> DataSource
     {
-        get
-        {
-            if (Session["DataSource"] == null)
-            { 
-                Session["DataSource"] = EntityManager.GetEntity().GetList();
-            }
+        get {
+            if (Session["DataSource"] == null) Session["DataSource"] = EntityManager.GetEntity().GetList();
             return (IEnumerable<IModel>)Session["DataSource"]; 
         }
-        set
-        {
+        set {
             Session["DataSource"] = value;
         }
     }
@@ -61,10 +56,7 @@ public partial class EntityList : UserControl
 
     protected void Page_Init(object sender, EventArgs e)
     {
-        if (!IsPostBack)
-        {
-            ModelClass = typeof(ModelDocumento);
-        }
+        if (!IsPostBack) ModelClass = typeof(ModelDocumento);
     }
 
     protected void Page_Load(object sender, EventArgs e)
