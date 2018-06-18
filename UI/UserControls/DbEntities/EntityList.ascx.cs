@@ -5,13 +5,12 @@ using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Drawing;
-using System.ComponentModel;
 
 public partial class EntityList : UserControl
 {
     #region [ private properties ]
 
-    [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+    //[DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
     public Type ModelClass { get; set; }
 
     private DataTable EntityDataTable
@@ -31,7 +30,7 @@ public partial class EntityList : UserControl
         {
             if (Session["DataSource"] == null)
             { 
-                Session["DataSource"] = EntityManager.GetEntity(ModelClass).GetList();
+                Session["DataSource"] = EntityManager.GetEntity().GetList();
             }
             return (IEnumerable<IModel>)Session["DataSource"]; 
         }
@@ -53,17 +52,26 @@ public partial class EntityList : UserControl
         set
         {
             Session["dirState"] = value;
-        }
-
+        } 
     }
 
     #endregion
 
     #region [ uc events ]
 
+    protected void Page_Init(object sender, EventArgs e)
+    {
+        if (!IsPostBack)
+        {
+            ModelClass = typeof(ModelDocumento);
+        }
+    }
+
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (!IsPostBack) InitializeList(); 
+        if (!IsPostBack) {
+            InitializeList(); 
+        }
     }
 
     #endregion
@@ -97,7 +105,7 @@ public partial class EntityList : UserControl
 
             foreach (TableCell cell in gridToExport.HeaderRow.Cells)
             {
-                cell.BackColor = System.Drawing.Color.DeepSkyBlue;
+                cell.BackColor = Color.DeepSkyBlue;
             }
 
             gridToExport.EnableViewState = false;
@@ -163,14 +171,14 @@ public partial class EntityList : UserControl
 
             if (((CheckBox)sender).Checked)
             {
-                GvEntityList.Rows[gvSelectedIndex].BackColor = System.Drawing.ColorTranslator.FromHtml("lemonchiffon");
+                GvEntityList.Rows[gvSelectedIndex].BackColor = ColorTranslator.FromHtml("lemonchiffon");
                 Session["SelectedDocument"] = (Int32)Session["SelectedDocument"] + 1;
                 Int32 SelectedRow = ((GridViewRow)(((CheckBox)sender).Parent.Parent)).RowIndex;
                 EntityDataTable.Rows[gvSelectedIndex]["chkSelect"] = true;
             }
             else
             {
-                GvEntityList.Rows[gvSelectedIndex].BackColor = System.Drawing.Color.White; 
+                GvEntityList.Rows[gvSelectedIndex].BackColor = Color.White; 
                 Session["SelectedDocument"] = (Int32)Session["SelectedDocument"] - 1; 
                 lst.Remove(idselected);
                 Session["SelectedTestID"] = lst;

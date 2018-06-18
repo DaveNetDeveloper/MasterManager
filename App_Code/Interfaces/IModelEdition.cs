@@ -8,6 +8,8 @@ public interface IModelEdition
     string PrimaryKey { get; set; }
     string PageTitle { get; }
 
+    IModel Model { get; set; }
+
     #endregion
 
     #region [ methods ]
@@ -19,6 +21,12 @@ public interface IModelEdition
     bool IsValidModel();
     void ResetFields();
 
+    #endregion
+
+    #region [ events ]
+
+    void Page_Init(object sender, EventArgs e);
+    void Page_Load(object sender, EventArgs e);
     void GoBackClick(object sender, EventArgs e);
     void SaveModelClick(object sender, EventArgs e);
      
