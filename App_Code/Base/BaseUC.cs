@@ -5,11 +5,14 @@ public class BaseUC : UserControl
 {
     #region [ public properties ]
 
+    public BussinesTypedObject.BussinesObjectTypeEnum BussinesObject { get; set; }
+    public BussinesTypedObject.ProyectNameEnum ProyectName;
+
     public EntityManager EntityManager
     {
         get {
             try {
-                if (Session["EntityManager"] == null) Session["EntityManager"] = new EntityManager();
+                if (Session["EntityManager"] == null) Session["EntityManager"] = new EntityManager(ProyectName);
                 return (EntityManager)Session["EntityManager"];
             }
             catch (Exception ex) {
@@ -33,13 +36,12 @@ public class BaseUC : UserControl
             Session["Entity"] = value;
         }
     }
-    public BussinesTypedObject.BussinesObjectTypeEnum BussinesObject { get; set; }
 
     #endregion
 
     protected override void OnLoad(EventArgs e)
     {
-        if (!IsPostBack) EntityManager.InitializeTypes(BussinesObject);
+        if (!IsPostBack) EntityManager.InitializeTypes(BussinesObject, ProyectName);
     }
 
     protected void ErrorTreatment(Exception ex)

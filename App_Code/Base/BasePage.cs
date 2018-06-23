@@ -5,7 +5,7 @@ using System.Threading;
 using System.Web.UI.WebControls;
 using System.Web.UI;
 using System.Collections.Generic;
-using System.Web.UI.HtmlControls;
+using System.Web.UI.HtmlControls; 
 
 public class BasePage : Page
 {
@@ -48,7 +48,7 @@ public class BasePage : Page
     {
         get {
             try {
-                if (Session["EntityManager"] == null) Session["EntityManager"] = new EntityManager();
+                if (Session["EntityManager"] == null) Session["EntityManager"] = new EntityManager(ProyectName);
                 return (EntityManager)Session["EntityManager"];
             }
             catch (Exception ex) {
@@ -72,7 +72,8 @@ public class BasePage : Page
         }
     }
     public BussinesTypedObject.BussinesObjectTypeEnum BussinesObject { get; set; }
-
+    public BussinesTypedObject.ProyectNameEnum ProyectName;
+     
     protected Color GrayHtmlColor = ColorTranslator.FromHtml("#e2e2e2");
 
     private Color invalidDataColor = Color.Red;
@@ -83,12 +84,10 @@ public class BasePage : Page
 
     protected void AplicarIdioma(CultureInfo culture)
     {
-        try
-        {
+        try {
             Thread.CurrentThread.CurrentUICulture = culture;
         }
-        catch (Exception ex)
-        {
+        catch (Exception ex) {
             throw ex;
         }
     }
@@ -142,7 +141,7 @@ public class BasePage : Page
         foreach (Control form in Page.Controls) {
             if (form.GetType().Name.Equals("HtmlForm")) {
                 foreach (Control c in form.Controls) {
-                    if ((c.GetType().Name.Equals("TextBox")) | (c.GetType().Name.Equals("CheckBox"))) {
+                    if ((c.GetType().Name.Equals("TextBox")) || (c.GetType().Name.Equals("CheckBox"))) {
                         if (c.ID.Contains("privateUser")) ControlList.Add(c);
                     }
                     else {
@@ -158,8 +157,7 @@ public class BasePage : Page
                 } break;
             }
         } 
-    }
-
+    } 
     protected void ActivateControls(bool enabled)
     {  
         foreach (Control c in ControlList) {
@@ -205,7 +203,7 @@ public class BasePage : Page
     protected override void OnPreLoad(EventArgs e)
     {
         try {
-            if (!IsPostBack) EntityManager.InitializeTypes(BussinesObject);
+            if (!IsPostBack) EntityManager.InitializeTypes(BussinesObject, ProyectName);
         }
         catch (Exception ex) {
             throw ex;

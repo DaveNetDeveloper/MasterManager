@@ -38,13 +38,17 @@ public partial class EditUserAlumno : BasePage, IModelEdition
         try {
             if (!IsPostBack) {
                 Title = PageTitle;
+
+                //montar dinamicamento la enum de nombre de tablas segun el proyecto("prefijo" + "TableNamesEnum")
+
                 BussinesObject = BussinesTypedObject.BussinesObjectTypeEnum.UsuarioAlumno;
+
                 Session.RemoveAll();
                 GetPageParameters();
                 LoadPageControls();
                 
                 // Informar del type desde el diseñador cuando cree el userControl de edicion de esta entidad ->  
-                //      --> ModelClass ='<%# typeof(ModelDocumento) %>' 
+                // --> ModelClass ='<%# typeof(ModelDocumento) %>' 
             }
         }
         catch (Exception ex) {
@@ -132,7 +136,6 @@ public partial class EditUserAlumno : BasePage, IModelEdition
     public void FillFromModel()
     { 
         try {
-
             //var modelType = TypedObject.ModelLayerType;
             //var userAlumnoModel2 = ((modelType.GetType())Model);
 
@@ -185,7 +188,6 @@ public partial class EditUserAlumno : BasePage, IModelEdition
         else t = (T)o;
         return true;
     }
-
     private T ConvertType<T>(object input)
     {
         return (T)Convert.ChangeType(input, typeof(T));
