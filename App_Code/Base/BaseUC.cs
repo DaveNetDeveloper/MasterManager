@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BussinesTypedObject;
+using System;
 using System.Web.UI;
 
 public class BaseUC : UserControl

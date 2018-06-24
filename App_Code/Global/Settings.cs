@@ -2,24 +2,15 @@
 
 internal static class Settings
 {
+    #region [ Proyect Configurations ]
+
     public static string ProyectName{
         get {
             return WebConfigurationManager.AppSettings["ProyectName"];
         }
     }
 
-    public enum AppSettings
-    {
-        settings_DefaultLanguag,
-        mail_Host,
-        mail_Port,
-        mail_To,
-        mail_From,
-        mail_Subject,
-        mail_Body,
-        mail_user,
-        mail_password
-    }
+    #endregion
 
     #region [ Language Configurations ]
 

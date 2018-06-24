@@ -5,16 +5,17 @@ using System.Threading;
 using System.Web.UI.WebControls;
 using System.Web.UI;
 using System.Collections.Generic;
-using System.Web.UI.HtmlControls; 
+using System.Web.UI.HtmlControls;
+using BussinesTypedObject;
 
 public class BasePage : Page
 {
     public enum ViewMode
     {
+        None,
         View,
         Edit,
-        Create,
-        None
+        Create
     }
 
     #region [ properties ]

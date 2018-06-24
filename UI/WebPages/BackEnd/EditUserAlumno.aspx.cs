@@ -1,4 +1,5 @@
-﻿using System; 
+﻿using BussinesTypedObject;
+using System; 
 using System.Globalization; 
 
 public partial class EditUserAlumno : BasePage, IModelEdition
@@ -44,8 +45,7 @@ public partial class EditUserAlumno : BasePage, IModelEdition
                 GetPageParameters();
                 LoadPageControls();
                 
-                // Informar del type desde el diseñador cuando cree el userControl de edicion de esta entidad ->  
-                // --> ModelClass ='<%# typeof(ModelDocumento) %>' 
+                // Informar del type desde el diseñador cuando cree el userControl de edicion de esta entidad --> ModelClass ='<%# typeof(ModelDocumento) %>' 
             }
         }
         catch (Exception ex) {
@@ -62,8 +62,10 @@ public partial class EditUserAlumno : BasePage, IModelEdition
 
     public void GetPageParameters()
     {
-        GetPrimaryKey();
-        GetViewMode();
+        if(Request.QueryString.Count > 0) {
+            GetPrimaryKey();
+            GetViewMode();
+        }
     }
     public void ApplyLayout()
     {
@@ -119,11 +121,8 @@ public partial class EditUserAlumno : BasePage, IModelEdition
     public void FillFromModel()
     { 
         try {
-            //var modelType = TypedObject.ModelLayerType;
-            //var userAlumnoModel2 = ((modelType.GetType())Model);
-
-            //var modelType = Type.GetType(EntityManager.TypedBO.ModelLayerType.Name);
-            //var userAlumnoModel_CustomConvert = ConvertType<IModel>(Model);
+            var modelTypeName = EntityManager.TypedBO.ModelLayerType.Name;
+            var modelType = Type.GetType(EntityManager.TypedBO.ModelLayerType.Name);
 
             var userAlumnoModel = ((ModelUsuarioAlumno)Model);
 
@@ -164,18 +163,7 @@ public partial class EditUserAlumno : BasePage, IModelEdition
             ErrorTreatment(ex); 
         }
     }
-     
-    private bool TryCast<T>(ref T t, object o)
-    {
-        if (o == null || !typeof(T).IsAssignableFrom(o.GetType())) return false;
-        else t = (T)o;
-        return true;
-    }
-    private T ConvertType<T>(object input)
-    {
-        return (T)Convert.ChangeType(input, typeof(T));
-    }
-
+      
     public bool IsValidModel()
     {
         try {
