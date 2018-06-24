@@ -5,8 +5,8 @@ public class BaseUC : UserControl
 {
     #region [ public properties ]
 
-    public BussinesTypedObject.BussinesObjectTypeEnum BussinesObject { get; set; }
-    public BussinesTypedObject.ProyectNameEnum ProyectName;
+    public BussinesTypes.BussinesObjectTypeEnum BussinesObject { get; set; }
+    public BussinesTypes.ProyectNameEnum ProyectName;
 
     public EntityManager EntityManager
     {

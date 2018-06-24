@@ -71,9 +71,13 @@ public class BasePage : Page
             Session["Entity"] = value;
         }
     }
-    public BussinesTypedObject.BussinesObjectTypeEnum BussinesObject { get; set; }
-    public BussinesTypedObject.ProyectNameEnum ProyectName;
-     
+    public BussinesTypes.BussinesObjectTypeEnum BussinesObject { get; set; }
+    public BussinesTypes.ProyectNameEnum ProyectName{
+        get {
+            return (BussinesTypes.ProyectNameEnum)Enum.Parse(typeof(BussinesTypes.ProyectNameEnum), Settings.ProyectName);
+        }
+    }
+
     protected Color GrayHtmlColor = ColorTranslator.FromHtml("#e2e2e2");
 
     private Color invalidDataColor = Color.Red;

@@ -1,10 +1,13 @@
 ﻿ using System.Web.Configuration;
 
-/// <summary>
-/// Summary description for Settings
-/// </summary>
 internal static class Settings
 {
+    public static string ProyectName{
+        get {
+            return WebConfigurationManager.AppSettings["ProyectName"];
+        }
+    }
+
     public enum AppSettings
     {
         settings_DefaultLanguag,
@@ -18,7 +21,8 @@ internal static class Settings
         mail_password
     }
 
-    //Language Settings
+    #region [ Language Configurations ]
+
     private static string _defaultLanguage = WebConfigurationManager.AppSettings["settings_DefaultLanguage"];
     public static string DefaultLanguage
     {
@@ -32,7 +36,10 @@ internal static class Settings
         }
     }
 
-    //File Log Settings 
+    #endregion
+
+    #region [ Log Configurations ]
+
     private static string _logXmlVisitorFileName = WebConfigurationManager.AppSettings["settings_XmlVisitorLogFileName"];
     public static string LogXmlVisitorFileName
     {
@@ -60,6 +67,10 @@ internal static class Settings
     //    }
     //}
 
+    #endregion
+
+    #region [ Directory Configurations ]
+
     private static string _dataDirectory = WebConfigurationManager.AppSettings["settings_DataDirectory"];
     public static string DataDirectory
     {
@@ -78,7 +89,6 @@ internal static class Settings
         } 
     }
 
-    //URL Redirect Settings
     private static string _rootStartPath = @"~/";
     public static string RootStartPath
     {
@@ -97,7 +107,10 @@ internal static class Settings
         }
     }
 
-    //Mail Settings
+    #endregion
+
+    #region [ Mail Configurations ]
+
     private static string _mailFrom = WebConfigurationManager.AppSettings["mail_From"];
     public static string MailFrom
     {
@@ -159,6 +172,7 @@ internal static class Settings
         {
             return _mailEnableSsl;
         }
-    } 
+    }
 
+    #endregion
 }

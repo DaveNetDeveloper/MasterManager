@@ -38,10 +38,7 @@ public partial class EditUserAlumno : BasePage, IModelEdition
         try {
             if (!IsPostBack) {
                 Title = PageTitle;
-
-                //montar dinamicamento la enum de nombre de tablas segun el proyecto("prefijo" + "TableNamesEnum")
-
-                BussinesObject = BussinesTypedObject.BussinesObjectTypeEnum.UsuarioAlumno;
+                BussinesObject = BussinesTypes.BussinesObjectTypeEnum.UsuarioAlumno;
 
                 Session.RemoveAll();
                 GetPageParameters();
@@ -95,20 +92,6 @@ public partial class EditUserAlumno : BasePage, IModelEdition
             btnVolver.Visible = true;
 
             ActivateControls(enabled);
-
-            //privateUserName.Enabled = enabled;
-            //privateUserSurname.Enabled = enabled;
-            //privateUserMail.Enabled = enabled;
-            //privateUserPhone.Enabled = enabled;
-            //privateUserUserName.Enabled = enabled;
-            //privateUserPassword.Enabled = enabled;
-            //privateUserBirthDate.Enabled = enabled;
-            //if(!enabled) privateUserEntered.Attributes["disabled"] = "disabled";
-            //if (!enabled) privateUserActive.Attributes["disabled"] = "disabled";
-            //privateUserMessage.Disabled = ! enabled;
-
-            //privateUserCreated.Enabled = false;
-            //privateUserUpdated.Enabled = false;
 
             if (Mode.Equals(ViewMode.Edit) | Mode.Equals(ViewMode.View)) FillFromModel();
         }
