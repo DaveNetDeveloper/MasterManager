@@ -1,6 +1,8 @@
 ﻿using BussinesTypedObject;
 using System; 
-using System.Globalization; 
+using System.Globalization;
+using System.Reflection;
+using System.Runtime.Remoting;
 
 public partial class EditUserAlumno : BasePage, IModelEdition
 {
@@ -15,14 +17,14 @@ public partial class EditUserAlumno : BasePage, IModelEdition
             catch (Exception ex) { 
                 throw ex;
             }
-            return (ModelUsuarioAlumno)Session["Model"];
+            return Convertion(Session["Model"], EntityManager.TypedBO.ModelLayerType);
         }
         set {
             Session["Model"] = value;
         }
     } 
 
-    private ModelUsuarioAlumno UIModel;
+    private IModel UIModel;
     
     #endregion
 
@@ -121,53 +123,35 @@ public partial class EditUserAlumno : BasePage, IModelEdition
     public void FillFromModel()
     { 
         try {
-            var modelTypeName = EntityManager.TypedBO.ModelLayerType.Name;
-            var modelType = Type.GetType(EntityManager.TypedBO.ModelLayerType.Name);
+            //Asignar valor a las propiedades por Reflexion - haciendo macth por nombre
+            privateUserName.Text = ((dynamic)Model).Name;
+            privateUserSurname.Text = ((dynamic)Model).Surname;
+            privateUserBirthDate.Text = ((dynamic)Model).BirthDate.ToString("dd/MM/yyyy");
+            privateUserMail.Text = ((dynamic)Model).Mail;
+            privateUserUserName.Text = ((dynamic)Model).UserName;
+            privateUserPassword.Text = ((dynamic)Model).Password;
+            privateUserEntered.Checked = ((dynamic)Model).Entered;
+            privateUserActive.Checked = ((dynamic)Model).Active;
+            privateUserPhone.Text = ((dynamic)Model).Phone.ToString();
+            privateUserMessage.Value = "more info...";
 
-            var userAlumnoModel = ((ModelUsuarioAlumno)Model);
-
-            //if (TryCast(ref EntityManager.TypedBO.ModelLayerType, Model))
-            //{ 
-                privateUserName.Text = userAlumnoModel.Name;
-                privateUserSurname.Text = userAlumnoModel.Surname;
-                privateUserBirthDate.Text = userAlumnoModel.BirthDate.ToString("dd/MM/yyyy");
-                privateUserMail.Text = userAlumnoModel.Mail;
-                privateUserUserName.Text = userAlumnoModel.UserName;
-                privateUserPassword.Text = userAlumnoModel.Password;
-                privateUserEntered.Checked = userAlumnoModel.Entered;
-                privateUserActive.Checked = userAlumnoModel.Active;
-                privateUserPhone.Text = userAlumnoModel.Phone.ToString();
-                privateUserMessage.Value = "more info";
-
-                var updateDate = string.Empty;
-                var createdDate = string.Empty; 
-                switch (Mode) {
-                    case ViewMode.Create:
-                        updateDate = string.Empty;
-                        createdDate = DateTime.Now.ToString("dd/MM/yyyy");
-                        break;
-                    case ViewMode.Edit:
-                        updateDate = DateTime.Now.ToString("dd/MM/yyyy");
-                        createdDate = userAlumnoModel.Created.ToString("dd/MM/yyyy");
-                        break;
-                    case ViewMode.View:
-                        updateDate = userAlumnoModel.Updated.ToString("dd/MM/yyyy");
-                        createdDate = userAlumnoModel.Created.ToString("dd/MM/yyyy");
-                        break; 
-                } 
-                privateUserCreated.Text = createdDate;
-                privateUserUpdated.Text = updateDate;
-            //}
+            var createdDate = string.Empty;
+            var updateDate = string.Empty;
+            SetCreatedUpdatedData(ref createdDate, ref updateDate);
+            privateUserCreated.Text = createdDate;
+            privateUserUpdated.Text = updateDate;
         }
         catch (Exception ex) {
             ErrorTreatment(ex); 
         }
     }
-      
+     
     public bool IsValidModel()
     {
         try {
-            UIModel = new ModelUsuarioAlumno();
+            var uiModel = Convertion((IModel)CreateNewInstance(EntityManager.TypedBO.ModelLayerType), EntityManager.TypedBO.ModelLayerType);
+            //Type modelType = newObject.GetType();
+
             bool validationResult = true;
 
             SetBorderToDefaultColor();
@@ -175,45 +159,53 @@ public partial class EditUserAlumno : BasePage, IModelEdition
             if (string.IsNullOrEmpty(privateUserName.Text.Trim()))
                 SetControlAsInvalid(privateUserName, ref validationResult);
             else
-                UIModel.Name = privateUserName.Text;
+                uiModel.Name = privateUserName.Text;
 
             if (string.IsNullOrEmpty(privateUserSurname.Text.Trim()))
                 SetControlAsInvalid(privateUserSurname, ref validationResult);
             else
-                UIModel.Surname = privateUserSurname.Text;
+                uiModel.Surname = privateUserSurname.Text;
 
             if (string.IsNullOrEmpty(privateUserMail.Text.Trim()))
                 SetControlAsInvalid(privateUserMail, ref validationResult);
             else
-                UIModel.Mail = privateUserMail.Text;
+                uiModel.Mail = privateUserMail.Text;
 
             if (string.IsNullOrEmpty(privateUserBirthDate.Text.Trim()))
                 SetControlAsInvalid(privateUserBirthDate, ref validationResult);
             else
-                UIModel.BirthDate = HelperDataTypesConversion.GetDateTimeFromText(privateUserBirthDate.Text, Constants.inputDateTimeFormat_ddmmaaaa, CultureInfo.CurrentCulture);
+                uiModel.BirthDate = HelperDataTypesConversion.GetDateTimeFromText(privateUserBirthDate.Text, 
+                                                                                  Constants.inputDateTimeFormat_ddmmaaaa, 
+                                                                                  CultureInfo.CurrentCulture);
 
             if (string.IsNullOrEmpty(privateUserPhone.Text.Trim()))
                 SetControlAsInvalid(privateUserSurname, ref validationResult);
             else
-                UIModel.Phone = Int32.Parse(privateUserPhone.Text);
+                uiModel.Phone = Int32.Parse(privateUserPhone.Text);
 
             if (string.IsNullOrEmpty(privateUserUserName.Text.Trim()))
                 SetControlAsInvalid(privateUserUserName, ref validationResult);
             else
-                UIModel.UserName = privateUserUserName.Text;
+                uiModel.UserName = privateUserUserName.Text;
 
             if (string.IsNullOrEmpty(privateUserPassword.Text.Trim()))
                 SetControlAsInvalid(privateUserPassword, ref validationResult);
             else
-                UIModel.Password = privateUserPassword.Text;
+                uiModel.Password = privateUserPassword.Text;
 
-            UIModel.Active = privateUserActive.Checked;
-            UIModel.Entered = privateUserEntered.Checked;
+            uiModel.Active = privateUserActive.Checked;
+            uiModel.Entered = privateUserEntered.Checked;
 
-            UIModel.Created = HelperDataTypesConversion.GetDateTimeFromText(privateUserCreated.Text, Constants.inputDateTimeFormat_ddmmaaaa, CultureInfo.CurrentCulture);
-            UIModel.Updated = HelperDataTypesConversion.GetDateTimeFromText(privateUserUpdated.Text, Constants.inputDateTimeFormat_ddmmaaaa, CultureInfo.CurrentCulture);
+            uiModel.Created = HelperDataTypesConversion.GetDateTimeFromText(privateUserCreated.Text, 
+                                                                            Constants.inputDateTimeFormat_ddmmaaaa, 
+                                                                            CultureInfo.CurrentCulture);
+
+            uiModel.Updated = HelperDataTypesConversion.GetDateTimeFromText(privateUserUpdated.Text,
+                                                                            Constants.inputDateTimeFormat_ddmmaaaa, 
+                                                                            CultureInfo.CurrentCulture);
             //UIModel.Productos = ;
-             
+
+            UIModel = uiModel;
             return validationResult;
         }
         catch (Exception ex) {
@@ -249,8 +241,40 @@ public partial class EditUserAlumno : BasePage, IModelEdition
         return true;
     }
 
+    private void SetCreatedUpdatedData(ref string createdDate, ref string updateDate)
+    {
+        switch (Mode)
+        {
+            case ViewMode.Create:
+                updateDate = string.Empty;
+                createdDate = DateTime.Now.ToString("dd/MM/yyyy");
+                break;
+            case ViewMode.Edit:
+                updateDate = DateTime.Now.ToString("dd/MM/yyyy");
+                createdDate = Model.Created.ToString("dd/MM/yyyy");
+                break;
+            case ViewMode.View:
+                updateDate = Model.Updated.ToString("dd/MM/yyyy");
+                createdDate = Model.Created.ToString("dd/MM/yyyy");
+                break;
+        }
+    }
+    private Object CreateNewInstance(Type type)
+    {
+        var bussinesAssembly = Assembly.GetAssembly(EntityManager.TypedBO.ModelLayerType);
+        ObjectHandle handle = Activator.CreateInstance(bussinesAssembly.GetName().Name, EntityManager.TypedBO.ModelLayerType.Name);
+        Object modelInstance = handle.Unwrap();
+        return modelInstance;
+    }
+    private static dynamic Convertion(dynamic source, Type dest)
+    {
+        return Convert.ChangeType(source, dest);
+    }
     private void SetBorderToDefaultColor()
     {
+        // Cambiar por método polivalente(recibe accion a realizar en formato Enum) que recorra la lista de controles y setee el color del borde
+        // Después de este cambio mover este metodo a BasePage
+
         privateUserName.BorderColor = GrayHtmlColor;
         privateUserSurname.BorderColor = GrayHtmlColor;
         privateUserMail.BorderColor = GrayHtmlColor;
@@ -258,8 +282,8 @@ public partial class EditUserAlumno : BasePage, IModelEdition
         privateUserPhone.BorderColor = GrayHtmlColor;
         privateUserUserName.BorderColor = GrayHtmlColor;
         privateUserPassword.BorderColor = GrayHtmlColor;
-    }
-    
+    } 
+
     #endregion
 
     #region [ button events ]

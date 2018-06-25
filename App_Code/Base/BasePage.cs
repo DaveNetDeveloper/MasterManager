@@ -32,7 +32,8 @@ public class BasePage : Page
     public ViewMode Mode
     {
         get {
-            return (ViewMode)Session["Mode"];
+            if (Session["Mode"] == null) Session["Mode"] = ViewMode.None;
+            return (ViewMode)Session["Mode"]; 
         }
         set {
             Session["Mode"] = value;
@@ -179,7 +180,7 @@ public class BasePage : Page
             }
         } 
     }
-
+    
     private void InitializeSession()
     {
         if (Session == null || !(Session.Count > 0)) {
