@@ -29,16 +29,16 @@
 						    <div class="contact-form-container"> 	 
 							    <div class="row">
 								    <div class="column width-6">
-									    <asp:TextBox runat="server" ID="privateUserName" CssClass="form-fname form-element large" placeholder="Nombre" tabindex="1" required="required"></asp:TextBox>
+									    <asp:TextBox runat="server" ID="UsuarioAlumno_Name" CssClass="form-fname form-element large" placeholder="Nombre" tabindex="1" required="required"></asp:TextBox>
 								    </div>
 								    <div class="column width-6">
-									    <asp:TextBox runat="server" ID="privateUserSurname" CssClass="form-lname form-element large" placeholder="Apellidos" tabindex="2" ></asp:TextBox>
+									    <asp:TextBox runat="server" ID="UsuarioAlumno_Surname" CssClass="form-lname form-element large" placeholder="Apellidos" tabindex="2" ></asp:TextBox>
 								    </div>
 								    <div class="column width-6">
-									    <asp:TextBox runat="server" ID="privateUserMail" CssClass="form-email form-element large" placeholder="Email" tabindex="3" required="required" ></asp:TextBox>
+									    <asp:TextBox runat="server" ID="UsuarioAlumno_Mail" CssClass="form-email form-element large" placeholder="Email" tabindex="3" required="required" ></asp:TextBox>
 								    </div>
 								    <div class="column width-6">
-									    <asp:TextBox runat="server" ID="privateUserPhone" CssClass="form-website form-element large" placeholder="Teléfono" tabindex="4" ></asp:TextBox>
+									    <asp:TextBox runat="server" ID="UsuarioAlumno_Phone" CssClass="form-website form-element large" placeholder="Teléfono" tabindex="4" ></asp:TextBox>
 								    </div>
 								    <div class="column width-6">
 									    <div class="form-select form-element large">
@@ -67,39 +67,39 @@
 									    <input type="text" name="honeypot" class="form-honeypot form-element large" />
 								    </div> 
                                     <div class="column width-6">
-									    <asp:TextBox runat="server" ID="privateUserUserName"  CssClass="form-lname form-element large" placeholder="Nombre de usuario" tabindex="2" ></asp:TextBox>
+									    <asp:TextBox runat="server" ID="UsuarioAlumno_UserName"  CssClass="form-lname form-element large" placeholder="Nombre de usuario" tabindex="2" ></asp:TextBox>
 							        </div>
                                         <div class="column width-6">
-									    <asp:TextBox runat="server" TextMode="Password" ID="privateUserPassword" CssClass="form-lname form-element large" placeholder="Contraseña" tabindex="2" ></asp:TextBox>
+									    <asp:TextBox runat="server" TextMode="Password" ID="UsuarioAlumno_Password" CssClass="form-lname form-element large" placeholder="Contraseña" tabindex="2" ></asp:TextBox>
 							        </div>
                                    <div class="column width-6">
 									    <div class="field-wrapper pt-10 pb-10">
-										    <input id="privateUserActive" runat="server" class="form-element checkbox" name="privateUserActive" type="checkbox" />
-										    <label for="privateUserActive" class="checkbox-label">Activo?</label>
+										    <input id="UsuarioAlumno_Active" runat="server" class="form-element checkbox" name="UsuarioAlumno_Active" type="checkbox" />
+										    <label for="UsuarioAlumno_Active" class="checkbox-label">Activo?</label>
 									    </div>
                                     </div>
                                     <div class="column width-6">
 									    <div class="field-wrapper pt-10 pb-10">
-										    <input id="privateUserEntered" runat="server" class="form-element checkbox" name="privateUserEntered" type="checkbox" />
-										    <label for="privateUserEntered" class="checkbox-label">Ha accedido?</label>
+										    <input id="UsuarioAlumno_Entered" runat="server" class="form-element checkbox" name="UsuarioAlumno_Entered" type="checkbox" />
+										    <label for="UsuarioAlumno_Entered" class="checkbox-label">Ha accedido?</label>
 									    </div>
                                     </div> 
                                     <div class="column width-6">
-									    <asp:TextBox runat="server" id="privateUserBirthDate" TextMode="DateTime" name="privateUserBirthDate" CssClass="form-lname form-element large" placeholder="Fecha de nacimiento" tabindex="2" />
+									    <asp:TextBox runat="server" id="UsuarioAlumno_BirthDate" TextMode="DateTime" name="UsuarioAlumno_BirthDate" CssClass="form-lname form-element large" placeholder="Fecha de nacimiento" tabindex="2" />
 								    </div>
 								    <div class="column width-12">
 									    <div class="field-wrapper">
-										    <textarea runat ="server" name="privateUserMessage" id="privateUserMessage" class="form-message form-element large" placeholder="mensaje" tabindex="7" required="required"></textarea>
+										    <textarea runat ="server" name="UsuarioAlumno_Message" id="UsuarioAlumno_Message" class="form-message form-element large" placeholder="mensaje" tabindex="7" required="required"></textarea>
 									    </div>
 								    </div>
                                     <div class="column width-6">
 									    <div class="field-wrapper pt-10 pb-10">
-										    <asp:TextBox runat="server" id="privateUserCreated" TextMode="DateTime" name="privateUserCreated" CssClass="form-lname form-element large" tabindex="2" />
+										    <asp:TextBox runat="server" id="UsuarioAlumno_Created" TextMode="DateTime" name="UsuarioAlumno_Created" CssClass="form-lname form-element large" tabindex="2" />
 									    </div>
                                     </div>
                                     <div class="column width-6">
 									    <div class="field-wrapper pt-10 pb-10">
-										    <asp:TextBox runat="server" id="privateUserUpdated" TextMode="DateTime" name="privateUserUpdated" CssClass="form-lname form-element large" tabindex="2" />
+										    <asp:TextBox runat="server" id="UsuarioAlumno_Updated" TextMode="DateTime" name="UsuarioAlumno_Updated" CssClass="form-lname form-element large" tabindex="2" />
 									    </div>
                                     </div>
 								    <div class="column width-12">

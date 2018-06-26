@@ -25,7 +25,7 @@ public partial class EditUserAlumno : BasePage, IModelEdition
     } 
 
     private IModel UIModel;
-    
+
     #endregion
 
     #region [ events ]
@@ -34,6 +34,7 @@ public partial class EditUserAlumno : BasePage, IModelEdition
     {
         if (!IsPostBack) {
             ApplyLayout();
+            FillFromModel();
         }
     } 
     public void Page_Init(object sender, EventArgs e)
@@ -41,7 +42,8 @@ public partial class EditUserAlumno : BasePage, IModelEdition
         try {
             if (!IsPostBack) {
                 Title = PageTitle;
-                BussinesObject = BussinesTypes.BussinesObjectTypeEnum.UsuarioAlumno;
+                BussinesObject = BussinesTypes.BussinesObjectType.UsuarioAlumno;
+                UIControlPrefix = BussinesObject.ToString() + "_";
 
                 Session.RemoveAll();
                 GetPageParameters();
@@ -95,9 +97,7 @@ public partial class EditUserAlumno : BasePage, IModelEdition
             btnGuardar.Visible = enabled;
             btnVolver.Visible = true;
 
-            ActivateControls(enabled);
-
-            if (Mode.Equals(ViewMode.Edit) | Mode.Equals(ViewMode.View)) FillFromModel();
+            ActivateControls(enabled); 
         }
         catch (Exception ex) {
             Session["error"] = ex;
@@ -107,39 +107,43 @@ public partial class EditUserAlumno : BasePage, IModelEdition
     }
     public void ResetFields()
     {
-        privateUserName.Text = string.Empty;
-        privateUserSurname.Text = string.Empty;
-        privateUserMail.Text = string.Empty;
-        privateUserPhone.Text = string.Empty;
-        privateUserUserName.Text = string.Empty;
-        privateUserPassword.Text = string.Empty;
-        privateUserEntered.Checked = false;
-        privateUserCreated.Text = DateTime.Now.ToString("dd/MM/yyyy"); 
-        privateUserBirthDate.Text = string.Empty;
-        privateUserActive.Checked = false;
-        privateUserUpdated.Text = string.Empty;
-        privateUserMessage.Value = string.Empty;
+        UsuarioAlumno_Name.Text = string.Empty;
+        UsuarioAlumno_Surname.Text = string.Empty;
+        UsuarioAlumno_Mail.Text = string.Empty;
+        UsuarioAlumno_Phone.Text = string.Empty;
+        UsuarioAlumno_UserName.Text = string.Empty;
+        UsuarioAlumno_Password.Text = string.Empty;
+        UsuarioAlumno_Entered.Checked = false;
+        UsuarioAlumno_Created.Text = DateTime.Now.ToString("dd/MM/yyyy"); 
+        UsuarioAlumno_BirthDate.Text = string.Empty;
+        UsuarioAlumno_Active.Checked = false;
+        UsuarioAlumno_Updated.Text = string.Empty;
+        UsuarioAlumno_Message.Value = string.Empty;
     }
     public void FillFromModel()
     { 
         try {
-            //Asignar valor a las propiedades por Reflexion - haciendo macth por nombre
-            privateUserName.Text = ((dynamic)Model).Name;
-            privateUserSurname.Text = ((dynamic)Model).Surname;
-            privateUserBirthDate.Text = ((dynamic)Model).BirthDate.ToString("dd/MM/yyyy");
-            privateUserMail.Text = ((dynamic)Model).Mail;
-            privateUserUserName.Text = ((dynamic)Model).UserName;
-            privateUserPassword.Text = ((dynamic)Model).Password;
-            privateUserEntered.Checked = ((dynamic)Model).Entered;
-            privateUserActive.Checked = ((dynamic)Model).Active;
-            privateUserPhone.Text = ((dynamic)Model).Phone.ToString();
-            privateUserMessage.Value = "more info...";
+            if (Mode.Equals(ViewMode.Edit) || Mode.Equals(ViewMode.View))
+            { 
+                //llamar a nuevo método ActionToControl, que recibe el nombre del control ("" + )
+                //Asignar valor a las propiedades por Reflexion - haciendo macth por nombre
+                UsuarioAlumno_Name.Text = ((dynamic)Model).Name;
+                UsuarioAlumno_Surname.Text = ((dynamic)Model).Surname;
+                UsuarioAlumno_BirthDate.Text = ((dynamic)Model).BirthDate.ToString("dd/MM/yyyy");
+                UsuarioAlumno_Mail.Text = ((dynamic)Model).Mail;
+                UsuarioAlumno_UserName.Text = ((dynamic)Model).UserName;
+                UsuarioAlumno_Password.Text = ((dynamic)Model).Password;
+                UsuarioAlumno_Entered.Checked = ((dynamic)Model).Entered;
+                UsuarioAlumno_Active.Checked = ((dynamic)Model).Active;
+                UsuarioAlumno_Phone.Text = ((dynamic)Model).Phone.ToString();
+                UsuarioAlumno_Message.Value = "more info...";
 
-            var createdDate = string.Empty;
-            var updateDate = string.Empty;
-            SetCreatedUpdatedData(ref createdDate, ref updateDate);
-            privateUserCreated.Text = createdDate;
-            privateUserUpdated.Text = updateDate;
+                var createdDate = string.Empty;
+                var updateDate = string.Empty;
+                SetCreatedUpdatedData(ref createdDate, ref updateDate);
+                UsuarioAlumno_Created.Text = createdDate;
+                UsuarioAlumno_Updated.Text = updateDate;
+            }
         }
         catch (Exception ex) {
             ErrorTreatment(ex); 
@@ -149,58 +153,54 @@ public partial class EditUserAlumno : BasePage, IModelEdition
     public bool IsValidModel()
     {
         try {
-            IModel uiModel = (IModel)CreateNewModelInstance();
-            //Type modelType = newObject.GetType();
+            IModel uiModel = (IModel)CreateNewModelInstance(); 
+            bool validationResult = true; 
 
-            bool validationResult = true;
-
-            SetBorderToDefaultColor();
-
-            if (string.IsNullOrEmpty(privateUserName.Text.Trim()))
-                SetControlAsInvalid(privateUserName, ref validationResult);
+            if (string.IsNullOrEmpty(UsuarioAlumno_Name.Text.Trim()))
+                SetControlAsInvalid(UsuarioAlumno_Name, ref validationResult);
             else
-                ((dynamic)uiModel).Name = privateUserName.Text;
+                ((dynamic)uiModel).Name = UsuarioAlumno_Name.Text;
 
-            if (string.IsNullOrEmpty(privateUserSurname.Text.Trim()))
-                SetControlAsInvalid(privateUserSurname, ref validationResult);
+            if (string.IsNullOrEmpty(UsuarioAlumno_Surname.Text.Trim()))
+                SetControlAsInvalid(UsuarioAlumno_Surname, ref validationResult);
             else
-                ((dynamic)uiModel).Surname = privateUserSurname.Text;
+                ((dynamic)uiModel).Surname = UsuarioAlumno_Surname.Text;
 
-            if (string.IsNullOrEmpty(privateUserMail.Text.Trim()))
-                SetControlAsInvalid(privateUserMail, ref validationResult);
+            if (string.IsNullOrEmpty(UsuarioAlumno_Mail.Text.Trim()))
+                SetControlAsInvalid(UsuarioAlumno_Mail, ref validationResult);
             else
-                ((dynamic)uiModel).Mail = privateUserMail.Text;
+                ((dynamic)uiModel).Mail = UsuarioAlumno_Mail.Text;
 
-            if (string.IsNullOrEmpty(privateUserBirthDate.Text.Trim()))
-                SetControlAsInvalid(privateUserBirthDate, ref validationResult);
+            if (string.IsNullOrEmpty(UsuarioAlumno_BirthDate.Text.Trim()))
+                SetControlAsInvalid(UsuarioAlumno_BirthDate, ref validationResult);
             else
-                ((dynamic)uiModel).BirthDate = HelperDataTypesConversion.GetDateTimeFromText(privateUserBirthDate.Text, 
+                ((dynamic)uiModel).BirthDate = HelperDataTypesConversion.GetDateTimeFromText(UsuarioAlumno_BirthDate.Text, 
                                                                                   Constants.inputDateTimeFormat_ddmmaaaa, 
                                                                                   CultureInfo.CurrentCulture);
 
-            if (string.IsNullOrEmpty(privateUserPhone.Text.Trim()))
-                SetControlAsInvalid(privateUserSurname, ref validationResult);
+            if (string.IsNullOrEmpty(UsuarioAlumno_Phone.Text.Trim()))
+                SetControlAsInvalid(UsuarioAlumno_Surname, ref validationResult);
             else
-                ((dynamic)uiModel).Phone = Int32.Parse(privateUserPhone.Text);
+                ((dynamic)uiModel).Phone = Int32.Parse(UsuarioAlumno_Phone.Text);
 
-            if (string.IsNullOrEmpty(privateUserUserName.Text.Trim()))
-                SetControlAsInvalid(privateUserUserName, ref validationResult);
+            if (string.IsNullOrEmpty(UsuarioAlumno_UserName.Text.Trim()))
+                SetControlAsInvalid(UsuarioAlumno_UserName, ref validationResult);
             else
-                ((dynamic)uiModel).UserName = privateUserUserName.Text;
+                ((dynamic)uiModel).UserName = UsuarioAlumno_UserName.Text;
 
-            if (string.IsNullOrEmpty(privateUserPassword.Text.Trim()))
-                SetControlAsInvalid(privateUserPassword, ref validationResult);
+            if (string.IsNullOrEmpty(UsuarioAlumno_Password.Text.Trim()))
+                SetControlAsInvalid(UsuarioAlumno_Password, ref validationResult);
             else
-                ((dynamic)uiModel).Password = privateUserPassword.Text;
+                ((dynamic)uiModel).Password = UsuarioAlumno_Password.Text;
 
-            ((dynamic)uiModel).Active = privateUserActive.Checked;
-            ((dynamic)uiModel).Entered = privateUserEntered.Checked;
+            ((dynamic)uiModel).Active = UsuarioAlumno_Active.Checked;
+            ((dynamic)uiModel).Entered = UsuarioAlumno_Entered.Checked;
 
-            uiModel.Created = HelperDataTypesConversion.GetDateTimeFromText(privateUserCreated.Text, 
+            uiModel.Created = HelperDataTypesConversion.GetDateTimeFromText(UsuarioAlumno_Created.Text, 
                                                                             Constants.inputDateTimeFormat_ddmmaaaa, 
                                                                             CultureInfo.CurrentCulture);
 
-            uiModel.Updated = HelperDataTypesConversion.GetDateTimeFromText(privateUserUpdated.Text,
+            uiModel.Updated = HelperDataTypesConversion.GetDateTimeFromText(UsuarioAlumno_Updated.Text,
                                                                             Constants.inputDateTimeFormat_ddmmaaaa, 
                                                                             CultureInfo.CurrentCulture);
             //UIModel.Productos = ;
@@ -229,7 +229,7 @@ public partial class EditUserAlumno : BasePage, IModelEdition
 
                     //var now = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                     //int active = UIModel.Active ? 1 : 0;
-                    //var consulta = "UPDATE USER_ALUMNO SET NAME='" + privateUserName.Text + "', surname='" + privateUserSurname.Text + "', birth_date='" + UIModel.BirthDate.ToString("yyyy-MM-dd HH:mm:ss") + "', mail='" + privateUserMail.Text + "', user_name='" + privateUserUserName.Text + "', PASSWORD='" + privateUserPassword.Text + "', active=" + active + ", updated='" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "', phone=" + privateUserPhone.Text + " WHERE ID=" + UIModel.Id;
+                    //var consulta = "UPDATE USER_ALUMNO SET NAME='" + UsuarioAlumno_Name.Text + "', surname='" + UsuarioAlumno_Surname.Text + "', birth_date='" + UIModel.BirthDate.ToString("yyyy-MM-dd HH:mm:ss") + "', mail='" + UsuarioAlumno_Mail.Text + "', user_name='" + UsuarioAlumno_UserName.Text + "', PASSWORD='" + UsuarioAlumno_Password.Text + "', active=" + active + ", updated='" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "', phone=" + UsuarioAlumno_Phone.Text + " WHERE ID=" + UIModel.Id;
                     break;
             }
         }
@@ -268,16 +268,17 @@ public partial class EditUserAlumno : BasePage, IModelEdition
     }
     private void SetBorderToDefaultColor()
     {
-        // Cambiar por método polivalente(recibe accion a realizar en formato Enum) que recorra la lista de controles y setee el color del borde
+        // Cambiar por método polivalente(recibe accion a realizar en formato ActionsForControl) que recorra la lista de controles y 
+        // setee el color del borde 
         // Después de este cambio mover este metodo a BasePage
 
-        privateUserName.BorderColor = GrayHtmlColor;
-        privateUserSurname.BorderColor = GrayHtmlColor;
-        privateUserMail.BorderColor = GrayHtmlColor;
-        privateUserBirthDate.BorderColor = GrayHtmlColor;
-        privateUserPhone.BorderColor = GrayHtmlColor;
-        privateUserUserName.BorderColor = GrayHtmlColor;
-        privateUserPassword.BorderColor = GrayHtmlColor;
+        UsuarioAlumno_Name.BorderColor = GrayHtmlColor;
+        UsuarioAlumno_Surname.BorderColor = GrayHtmlColor;
+        UsuarioAlumno_Mail.BorderColor = GrayHtmlColor;
+        UsuarioAlumno_BirthDate.BorderColor = GrayHtmlColor;
+        UsuarioAlumno_Phone.BorderColor = GrayHtmlColor;
+        UsuarioAlumno_UserName.BorderColor = GrayHtmlColor;
+        UsuarioAlumno_Password.BorderColor = GrayHtmlColor;
     } 
 
     #endregion
@@ -290,6 +291,7 @@ public partial class EditUserAlumno : BasePage, IModelEdition
     }
     public void SaveModelClick(object sender, EventArgs e)
     {
+        SetBorderToDefaultColor();
         if (IsValidModel() && SaveModel()) {
             //Response.Redirect("PAGE_TITLE_UserAlumnoList.aspx");
         }

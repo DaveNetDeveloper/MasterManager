@@ -17,7 +17,13 @@ public class BasePage : Page
         Edit,
         Create
     }
-
+    public enum ActionsForControl
+    {
+        ClearValue,
+        SetValue,
+        GetValue,
+        SetBorderColor
+    }
     #region [ properties ]
 
     public string PrimaryKey
@@ -73,14 +79,15 @@ public class BasePage : Page
             Session["Entity"] = value;
         }
     }
-    public BussinesTypes.BussinesObjectTypeEnum BussinesObject { get; set; }
-    public BussinesTypes.ProyectNameEnum ProyectName{
+    public BussinesTypes.BussinesObjectType BussinesObject { get; set; }
+    public BussinesTypes.ProyectName ProyectName{
         get {
-            return (BussinesTypes.ProyectNameEnum)Enum.Parse(typeof(BussinesTypes.ProyectNameEnum), Settings.ProyectName);
+            return (BussinesTypes.ProyectName)Enum.Parse(typeof(BussinesTypes.ProyectName), Settings.ProyectName);
         }
     }
 
     protected Color GrayHtmlColor = ColorTranslator.FromHtml("#e2e2e2");
+    protected string UIControlPrefix;
 
     private Color invalidDataColor = Color.Red;
 
@@ -148,7 +155,7 @@ public class BasePage : Page
             if (form.GetType().Name.Equals("HtmlForm")) {
                 foreach (Control c in form.Controls) {
                     if ((c.GetType().Name.Equals("TextBox")) || (c.GetType().Name.Equals("CheckBox"))) {
-                        if (c.ID.Contains("privateUser")) ControlList.Add(c);
+                        if (c.ID.Contains(UIControlPrefix)) ControlList.Add(c);
                     }
                     else {
                         try {

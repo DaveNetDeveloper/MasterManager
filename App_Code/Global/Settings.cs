@@ -49,14 +49,14 @@ internal static class Settings
         }
     }
 
-    //private static string _logTextFileName = WebConfigurationManager.AppSettings["settings_TextLogFileName"];
-    //public static string LogTextFileName
-    //{
-    //    get
-    //    {
-    //        return _logTextFileName;
-    //    }
-    //}
+    private static string _logTextFileName = WebConfigurationManager.AppSettings["settings_TextLogFileName"];
+    public static string LogTextFileName
+    {
+        get
+        {
+            return _logTextFileName;
+        }
+    }
 
     #endregion
 
