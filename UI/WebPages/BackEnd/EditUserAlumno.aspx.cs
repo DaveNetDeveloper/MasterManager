@@ -17,7 +17,7 @@ public partial class EditUserAlumno : BasePage, IModelEdition
             catch (Exception ex) { 
                 throw ex;
             }
-            return Convertion(Session["Model"], EntityManager.TypedBO.ModelLayerType);
+            return (IModel)Session["Model"];
         }
         set {
             Session["Model"] = value;
@@ -149,7 +149,7 @@ public partial class EditUserAlumno : BasePage, IModelEdition
     public bool IsValidModel()
     {
         try {
-            var uiModel = Convertion((IModel)CreateNewInstance(EntityManager.TypedBO.ModelLayerType), EntityManager.TypedBO.ModelLayerType);
+            IModel uiModel = (IModel)CreateNewModelInstance();
             //Type modelType = newObject.GetType();
 
             bool validationResult = true;
@@ -159,42 +159,42 @@ public partial class EditUserAlumno : BasePage, IModelEdition
             if (string.IsNullOrEmpty(privateUserName.Text.Trim()))
                 SetControlAsInvalid(privateUserName, ref validationResult);
             else
-                uiModel.Name = privateUserName.Text;
+                ((dynamic)uiModel).Name = privateUserName.Text;
 
             if (string.IsNullOrEmpty(privateUserSurname.Text.Trim()))
                 SetControlAsInvalid(privateUserSurname, ref validationResult);
             else
-                uiModel.Surname = privateUserSurname.Text;
+                ((dynamic)uiModel).Surname = privateUserSurname.Text;
 
             if (string.IsNullOrEmpty(privateUserMail.Text.Trim()))
                 SetControlAsInvalid(privateUserMail, ref validationResult);
             else
-                uiModel.Mail = privateUserMail.Text;
+                ((dynamic)uiModel).Mail = privateUserMail.Text;
 
             if (string.IsNullOrEmpty(privateUserBirthDate.Text.Trim()))
                 SetControlAsInvalid(privateUserBirthDate, ref validationResult);
             else
-                uiModel.BirthDate = HelperDataTypesConversion.GetDateTimeFromText(privateUserBirthDate.Text, 
+                ((dynamic)uiModel).BirthDate = HelperDataTypesConversion.GetDateTimeFromText(privateUserBirthDate.Text, 
                                                                                   Constants.inputDateTimeFormat_ddmmaaaa, 
                                                                                   CultureInfo.CurrentCulture);
 
             if (string.IsNullOrEmpty(privateUserPhone.Text.Trim()))
                 SetControlAsInvalid(privateUserSurname, ref validationResult);
             else
-                uiModel.Phone = Int32.Parse(privateUserPhone.Text);
+                ((dynamic)uiModel).Phone = Int32.Parse(privateUserPhone.Text);
 
             if (string.IsNullOrEmpty(privateUserUserName.Text.Trim()))
                 SetControlAsInvalid(privateUserUserName, ref validationResult);
             else
-                uiModel.UserName = privateUserUserName.Text;
+                ((dynamic)uiModel).UserName = privateUserUserName.Text;
 
             if (string.IsNullOrEmpty(privateUserPassword.Text.Trim()))
                 SetControlAsInvalid(privateUserPassword, ref validationResult);
             else
-                uiModel.Password = privateUserPassword.Text;
+                ((dynamic)uiModel).Password = privateUserPassword.Text;
 
-            uiModel.Active = privateUserActive.Checked;
-            uiModel.Entered = privateUserEntered.Checked;
+            ((dynamic)uiModel).Active = privateUserActive.Checked;
+            ((dynamic)uiModel).Entered = privateUserEntered.Checked;
 
             uiModel.Created = HelperDataTypesConversion.GetDateTimeFromText(privateUserCreated.Text, 
                                                                             Constants.inputDateTimeFormat_ddmmaaaa, 
@@ -259,16 +259,12 @@ public partial class EditUserAlumno : BasePage, IModelEdition
                 break;
         }
     }
-    private Object CreateNewInstance(Type type)
+    private Object CreateNewModelInstance()
     {
         var bussinesAssembly = Assembly.GetAssembly(EntityManager.TypedBO.ModelLayerType);
         ObjectHandle handle = Activator.CreateInstance(bussinesAssembly.GetName().Name, EntityManager.TypedBO.ModelLayerType.Name);
         Object modelInstance = handle.Unwrap();
         return modelInstance;
-    }
-    private static dynamic Convertion(dynamic source, Type dest)
-    {
-        return Convert.ChangeType(source, dest);
     }
     private void SetBorderToDefaultColor()
     {
