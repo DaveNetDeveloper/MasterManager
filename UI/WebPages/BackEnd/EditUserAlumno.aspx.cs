@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Runtime.Remoting;
 
-public partial class EditUserAlumno : BasePage//, IModelEdition
+public partial class EditUserAlumno : BasePage //, IEntityEdition
 {
     #region [ properties ]
 

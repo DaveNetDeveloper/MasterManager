@@ -16,14 +16,12 @@ public partial class EntityEdition : BaseUC //, IModelEdition
             try {
                 if (Session["Model"] == null) Session["Model"] = Entity.GetByPrimaryKey(Int32.Parse(PrimaryKey));
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {  
                 throw ex;
             }
             return (IModel)Session["Model"];
         }
-        set
-        {
+        set {  
             Session["Model"] = value;
         }
     }
@@ -35,25 +33,16 @@ public partial class EntityEdition : BaseUC //, IModelEdition
 
     protected override void OnLoad(EventArgs e)
     {
-        if (!IsPostBack) {
-            
-            ApplyLayout();
-            FillFromModel();
-        }
+        if (IsPostBack) return;
+        ApplyLayout();
+        FillFromModel();
     }
     protected override void OnInit(EventArgs e)
     {
         try {
-            if (!IsPostBack) { 
-                DisposeProperties(); 
-                Session.RemoveAll();
-                GetPageParameters();
-
-                InitializeSession(); 
-                EntityManager.InitializeTypes(BussinesObject, ProyectName); 
-                 
-                LoadControls();
-            }
+            if (IsPostBack) return;
+            InitializeCache();
+            InitializeData();
         }
         catch (Exception ex) {
             Session["error"] = ex;
@@ -62,7 +51,7 @@ public partial class EntityEdition : BaseUC //, IModelEdition
             //Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
         }
     }
-    
+
     #endregion
 
     #region [ methods ]
@@ -282,10 +271,8 @@ public partial class EntityEdition : BaseUC //, IModelEdition
         // setee el color del borde 
         // Después de este cambio mover este metodo a BasePage
 
-        foreach (Control c in ControlList)
-        {
-            switch (c.GetType().Name)
-            {
+        foreach (Control c in ControlList) { 
+            switch (c.GetType().Name) { 
                 case "TextBox":
                     ((TextBox)c).BorderColor = GrayHtmlColor;
                     break;
@@ -309,13 +296,24 @@ public partial class EntityEdition : BaseUC //, IModelEdition
         entityControl_UserName.BorderColor = GrayHtmlColor;
         entityControl_Password.BorderColor = GrayHtmlColor;
     }
+    private void InitializeData()
+    {
+        GetPageParameters();
+        EntityManager.InitializeTypes(BussinesObject, ProyectName);
+        LoadControls();
+    }
+    private void InitializeCache()
+    {
+        DisposeProperties();
+        InitializeSession();
+    }
     private void DisposeProperties()
     {
         EntityManager = null;
         Model = null;
         Entity = null;
     }
-    
+
     #endregion
 
     #region [ button events ]
