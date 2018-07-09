@@ -24,6 +24,7 @@ public class BasePage : Page
         GetValue,
         SetBorderColor
     }
+
     #region [ properties ]
 
     public string PrimaryKey

@@ -15,12 +15,12 @@
 	<title>Test Template with UserControl</title>
 	<link rel="shortcut icon" type="image/x-icon" href="images/theme-mountain-favicon.ico">
     
-    <script src="js/jquery-1.8.2.min.js"></script>
+    <script src="../js/jquery-1.8.2.min.js"></script>
     <%--<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>--%>
 	
-    <script src="js/timber.master.min.js"></script>
-    <link rel="stylesheet" href="css/core.min.css" />
-    <link rel="stylesheet" href="css/skin.css" />
+    <script src="../js/timber.master.min.js"></script>
+    <link rel="stylesheet" href="../css/core.min.css" />
+    <link rel="stylesheet" href="../css/skin.css" />
 	<!--[if lt IE 9]>
     	<script type="text/javascript" src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]--> 

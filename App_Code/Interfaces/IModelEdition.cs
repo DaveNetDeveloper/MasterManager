@@ -1,10 +1,10 @@
-﻿using System; 
+﻿using System;
 
 public interface IModelEdition
 {
     #region [ properties ]
 
-    BasePage.ViewMode Mode { get; set; }
+    BaseUC.ViewMode Mode { get; set; }
     string PrimaryKey { get; set; }
     string PageTitle { get; }
 

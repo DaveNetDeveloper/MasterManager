@@ -1,19 +1,19 @@
-﻿using BussinesTypedObject;
-using System;
+﻿using System;   
 using System.Globalization;
 using System.Reflection;
 using System.Runtime.Remoting;
+using System.Web.UI;
+using System.Web.UI.HtmlControls;
+using System.Web.UI.WebControls;
 
-public partial class EditUserAlumno : BasePage//, IModelEdition
+public partial class EntityEdition : BaseUC //, IModelEdition
 {
     #region [ properties ]
 
     public IModel Model
     {
-        get
-        {
-            try
-            {
+        get {
+            try {
                 if (Session["Model"] == null) Session["Model"] = Entity.GetByPrimaryKey(Int32.Parse(PrimaryKey));
             }
             catch (Exception ex)
@@ -27,66 +27,58 @@ public partial class EditUserAlumno : BasePage//, IModelEdition
             Session["Model"] = value;
         }
     }
-
     private IModel UIModel;
 
     #endregion
 
     #region [ events ]
 
-    public void Page_Load(object sender, EventArgs e)
+    protected override void OnLoad(EventArgs e)
     {
-        if (!IsPostBack)
-        {
+        if (!IsPostBack) {
+            
             ApplyLayout();
             FillFromModel();
         }
     }
-    public void Page_Init(object sender, EventArgs e)
+    protected override void OnInit(EventArgs e)
     {
-        try
-        {
-            if (!IsPostBack)
-            {
-                Title = PageTitle;
-                BussinesObject = BussinesTypes.BussinesObjectType.Usuario_Alumno;
-                UIControlPrefix = BussinesObject.ToString() + "_";
-
+        try {
+            if (!IsPostBack) { 
+                DisposeProperties(); 
                 Session.RemoveAll();
                 GetPageParameters();
-                LoadPageControls();
 
-                // Informar del type desde el diseñador cuando cree el userControl de edicion de esta entidad --> ModelClass ='<%# typeof(ModelDocumento) %>' 
+                InitializeSession(); 
+                EntityManager.InitializeTypes(BussinesObject, ProyectName); 
+                 
+                LoadControls();
             }
         }
-        catch (Exception ex)
-        {
+        catch (Exception ex) {
             Session["error"] = ex;
             //((MasterPage)(this.Master)).SetLOG("ERROR", "Loading Page", "EditCenter.aspx", "Center", "Page_Init()", ex.Message, DateTime.Now, 1);
             //this.SetLOG("ERROR", "Loading Page", "EditUserContact.aspx", "Center", "Page_Init()", ex.Message, DateTime.Now, 1);
             //Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
         }
     }
-
+    
     #endregion
 
     #region [ methods ]
 
     public void GetPageParameters()
     {
-        if (Request.QueryString.Count > 0)
-        {
+        if (Request.QueryString.Count > 0) {
             GetPrimaryKey();
             GetViewMode();
         }
     }
     public void ApplyLayout()
     {
-        try
-        {
+        try {
             var enabled = false;
-            switch (Mode)
-            {
+            switch (Mode) {
                 case ViewMode.Create:
                     enabled = true;
                     ResetFields();
@@ -119,103 +111,104 @@ public partial class EditUserAlumno : BasePage//, IModelEdition
     }
     public void ResetFields()
     {
-        UsuarioAlumno_Name.Text = string.Empty;
-        UsuarioAlumno_Surname.Text = string.Empty;
-        UsuarioAlumno_Mail.Text = string.Empty;
-        UsuarioAlumno_Phone.Text = string.Empty;
-        UsuarioAlumno_UserName.Text = string.Empty;
-        UsuarioAlumno_Password.Text = string.Empty;
-        UsuarioAlumno_Entered.Checked = false;
-        UsuarioAlumno_Created.Text = DateTime.Now.ToString("dd/MM/yyyy");
-        UsuarioAlumno_BirthDate.Text = string.Empty;
-        UsuarioAlumno_Active.Checked = false;
-        UsuarioAlumno_Updated.Text = string.Empty;
-        UsuarioAlumno_Message.Value = string.Empty;
+        //llamar a nuevo método ActionToControl, que recibe el nombre del control y la acción de reset value
+        ResetControlValues();
+
+        //entityControl_Name.Text = string.Empty;
+        //entityControl_Surname.Text = string.Empty;
+        //entityControl_Mail.Text = string.Empty;
+        //entityControl_Phone.Text = string.Empty;
+        //entityControl_UserName.Text = string.Empty;
+        //entityControl_Password.Text = string.Empty;
+        //entityControl_Entered.Checked = false;
+        //entityControl_Created.Text = DateTime.Now.ToString("dd/MM/yyyy");
+        //entityControl_BirthDate.Text = string.Empty;
+        //entityControl_Active.Checked = false;
+        //entityControl_Updated.Text = string.Empty;
+        //entityControl_Message.Value = string.Empty;
     }
     public void FillFromModel()
     {
-        try
-        {
-            if (Mode.Equals(ViewMode.Edit) || Mode.Equals(ViewMode.View))
-            {
+        try {
+            if (Mode.Equals(ViewMode.Edit) || Mode.Equals(ViewMode.View)) {
+
                 //llamar a nuevo método ActionToControl, que recibe el nombre del control ("" + )
                 //Asignar valor a las propiedades por Reflexion - haciendo macth por nombre
-                UsuarioAlumno_Name.Text = ((dynamic)Model).Name;
-                UsuarioAlumno_Surname.Text = ((dynamic)Model).Surname;
-                UsuarioAlumno_BirthDate.Text = ((dynamic)Model).BirthDate.ToString("dd/MM/yyyy");
-                UsuarioAlumno_Mail.Text = ((dynamic)Model).Mail;
-                UsuarioAlumno_UserName.Text = ((dynamic)Model).UserName;
-                UsuarioAlumno_Password.Text = ((dynamic)Model).Password;
-                UsuarioAlumno_Entered.Checked = ((dynamic)Model).Entered;
-                UsuarioAlumno_Active.Checked = ((dynamic)Model).Active;
-                UsuarioAlumno_Phone.Text = ((dynamic)Model).Phone.ToString();
-                UsuarioAlumno_Message.Value = "more info...";
+                
+                ActionForControl(((dynamic)Model).Name, entityControl_Name.ID);
+
+                entityControl_Name.Text = ((dynamic)Model).Name;
+                entityControl_Surname.Text = ((dynamic)Model).Surname;
+                entityControl_BirthDate.Text = ((dynamic)Model).BirthDate.ToString("dd/MM/yyyy");
+                entityControl_Mail.Text = ((dynamic)Model).Mail;
+                entityControl_UserName.Text = ((dynamic)Model).UserName;
+                entityControl_Password.Text = ((dynamic)Model).Password;
+                entityControl_Entered.Checked = ((dynamic)Model).Entered;
+                entityControl_Active.Checked = ((dynamic)Model).Active;
+                entityControl_Phone.Text = ((dynamic)Model).Phone.ToString();
+                entityControl_Message.Value = "more info...";
 
                 var createdDate = string.Empty;
                 var updateDate = string.Empty;
                 SetCreatedUpdatedData(ref createdDate, ref updateDate);
-                UsuarioAlumno_Created.Text = createdDate;
-                UsuarioAlumno_Updated.Text = updateDate;
+                entityControl_Created.Text = createdDate;
+                entityControl_Updated.Text = updateDate;
             }
         }
-        catch (Exception ex)
-        {
+        catch (Exception ex) {
             ErrorTreatment(ex);
         }
     }
-
-    public bool IsValidModel()
-    {
-        try
-        {
+    public bool IsValidModel() {
+        try {
             IModel uiModel = (IModel)CreateNewModelInstance();
             bool validationResult = true;
 
-            if (string.IsNullOrEmpty(UsuarioAlumno_Name.Text.Trim()))
-                SetControlAsInvalid(UsuarioAlumno_Name, ref validationResult);
+            if (string.IsNullOrEmpty(entityControl_Name.Text.Trim()))
+                SetControlAsInvalid(entityControl_Name, ref validationResult);
             else
-                ((dynamic)uiModel).Name = UsuarioAlumno_Name.Text;
+                ((dynamic)uiModel).Name = entityControl_Name.Text;
 
-            if (string.IsNullOrEmpty(UsuarioAlumno_Surname.Text.Trim()))
-                SetControlAsInvalid(UsuarioAlumno_Surname, ref validationResult);
+            if (string.IsNullOrEmpty(entityControl_Surname.Text.Trim()))
+                SetControlAsInvalid(entityControl_Surname, ref validationResult);
             else
-                ((dynamic)uiModel).Surname = UsuarioAlumno_Surname.Text;
+                ((dynamic)uiModel).Surname = entityControl_Surname.Text;
 
-            if (string.IsNullOrEmpty(UsuarioAlumno_Mail.Text.Trim()))
-                SetControlAsInvalid(UsuarioAlumno_Mail, ref validationResult);
+            if (string.IsNullOrEmpty(entityControl_Mail.Text.Trim()))
+                SetControlAsInvalid(entityControl_Mail, ref validationResult);
             else
-                ((dynamic)uiModel).Mail = UsuarioAlumno_Mail.Text;
+                ((dynamic)uiModel).Mail = entityControl_Mail.Text;
 
-            if (string.IsNullOrEmpty(UsuarioAlumno_BirthDate.Text.Trim()))
-                SetControlAsInvalid(UsuarioAlumno_BirthDate, ref validationResult);
+            if (string.IsNullOrEmpty(entityControl_BirthDate.Text.Trim()))
+                SetControlAsInvalid(entityControl_BirthDate, ref validationResult);
             else
-                ((dynamic)uiModel).BirthDate = HelperDataTypesConversion.GetDateTimeFromText(UsuarioAlumno_BirthDate.Text,
+                ((dynamic)uiModel).BirthDate = HelperDataTypesConversion.GetDateTimeFromText(entityControl_BirthDate.Text,
                                                                                   Constants.inputDateTimeFormat_ddmmaaaa,
                                                                                   CultureInfo.CurrentCulture);
 
-            if (string.IsNullOrEmpty(UsuarioAlumno_Phone.Text.Trim()))
-                SetControlAsInvalid(UsuarioAlumno_Surname, ref validationResult);
+            if (string.IsNullOrEmpty(entityControl_Phone.Text.Trim()))
+                SetControlAsInvalid(entityControl_Surname, ref validationResult);
             else
-                ((dynamic)uiModel).Phone = Int32.Parse(UsuarioAlumno_Phone.Text);
+                ((dynamic)uiModel).Phone = Int32.Parse(entityControl_Phone.Text);
 
-            if (string.IsNullOrEmpty(UsuarioAlumno_UserName.Text.Trim()))
-                SetControlAsInvalid(UsuarioAlumno_UserName, ref validationResult);
+            if (string.IsNullOrEmpty(entityControl_UserName.Text.Trim()))
+                SetControlAsInvalid(entityControl_UserName, ref validationResult);
             else
-                ((dynamic)uiModel).UserName = UsuarioAlumno_UserName.Text;
+                ((dynamic)uiModel).UserName = entityControl_UserName.Text;
 
-            if (string.IsNullOrEmpty(UsuarioAlumno_Password.Text.Trim()))
-                SetControlAsInvalid(UsuarioAlumno_Password, ref validationResult);
+            if (string.IsNullOrEmpty(entityControl_Password.Text.Trim()))
+                SetControlAsInvalid(entityControl_Password, ref validationResult);
             else
-                ((dynamic)uiModel).Password = UsuarioAlumno_Password.Text;
+                ((dynamic)uiModel).Password = entityControl_Password.Text;
 
-            ((dynamic)uiModel).Active = UsuarioAlumno_Active.Checked;
-            ((dynamic)uiModel).Entered = UsuarioAlumno_Entered.Checked;
+            ((dynamic)uiModel).Active = entityControl_Active.Checked;
+            ((dynamic)uiModel).Entered = entityControl_Entered.Checked;
 
-            uiModel.Created = HelperDataTypesConversion.GetDateTimeFromText(UsuarioAlumno_Created.Text,
+            uiModel.Created = HelperDataTypesConversion.GetDateTimeFromText(entityControl_Created.Text,
                                                                             Constants.inputDateTimeFormat_ddmmaaaa,
                                                                             CultureInfo.CurrentCulture);
 
-            uiModel.Updated = HelperDataTypesConversion.GetDateTimeFromText(UsuarioAlumno_Updated.Text,
+            uiModel.Updated = HelperDataTypesConversion.GetDateTimeFromText(entityControl_Updated.Text,
                                                                             Constants.inputDateTimeFormat_ddmmaaaa,
                                                                             CultureInfo.CurrentCulture);
             //UIModel.Productos = ;
@@ -231,12 +224,10 @@ public partial class EditUserAlumno : BasePage//, IModelEdition
             return false;
         }
     }
-    public bool SaveModel()
-    {
+    public bool SaveModel() {
         try
         {
-            switch (Mode)
-            {
+            switch (Mode) {
                 case ViewMode.Create:
                     Entity.Insert(UIModel);
                     break;
@@ -247,7 +238,7 @@ public partial class EditUserAlumno : BasePage//, IModelEdition
 
                     //var now = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                     //int active = UIModel.Active ? 1 : 0;
-                    //var consulta = "UPDATE USER_ALUMNO SET NAME='" + UsuarioAlumno_Name.Text + "', surname='" + UsuarioAlumno_Surname.Text + "', birth_date='" + UIModel.BirthDate.ToString("yyyy-MM-dd HH:mm:ss") + "', mail='" + UsuarioAlumno_Mail.Text + "', user_name='" + UsuarioAlumno_UserName.Text + "', PASSWORD='" + UsuarioAlumno_Password.Text + "', active=" + active + ", updated='" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "', phone=" + UsuarioAlumno_Phone.Text + " WHERE ID=" + UIModel.Id;
+                    //var consulta = "UPDATE USER_ALUMNO SET NAME='" + entityControl_Name.Text + "', surname='" + entityControl_Surname.Text + "', birth_date='" + UIModel.BirthDate.ToString("yyyy-MM-dd HH:mm:ss") + "', mail='" + entityControl_Mail.Text + "', user_name='" + entityControl_UserName.Text + "', PASSWORD='" + entityControl_Password.Text + "', active=" + active + ", updated='" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "', phone=" + entityControl_Phone.Text + " WHERE ID=" + UIModel.Id;
                     break;
             }
         }
@@ -260,10 +251,10 @@ public partial class EditUserAlumno : BasePage//, IModelEdition
         return true;
     }
 
+    //privates
     private void SetCreatedUpdatedData(ref string createdDate, ref string updateDate)
     {
-        switch (Mode)
-        {
+        switch (Mode) {
             case ViewMode.Create:
                 updateDate = string.Empty;
                 createdDate = DateTime.Now.ToString("dd/MM/yyyy");
@@ -291,15 +282,40 @@ public partial class EditUserAlumno : BasePage//, IModelEdition
         // setee el color del borde 
         // Después de este cambio mover este metodo a BasePage
 
-        UsuarioAlumno_Name.BorderColor = GrayHtmlColor;
-        UsuarioAlumno_Surname.BorderColor = GrayHtmlColor;
-        UsuarioAlumno_Mail.BorderColor = GrayHtmlColor;
-        UsuarioAlumno_BirthDate.BorderColor = GrayHtmlColor;
-        UsuarioAlumno_Phone.BorderColor = GrayHtmlColor;
-        UsuarioAlumno_UserName.BorderColor = GrayHtmlColor;
-        UsuarioAlumno_Password.BorderColor = GrayHtmlColor;
-    }
+        foreach (Control c in ControlList)
+        {
+            switch (c.GetType().Name)
+            {
+                case "TextBox":
+                    ((TextBox)c).BorderColor = GrayHtmlColor;
+                    break;
+                case "CheckBox":
+                    ((CheckBox)c).BorderColor = GrayHtmlColor;
+                    break;
+                case "HtmlInputCheckBox":
+                    ((HtmlInputCheckBox)c).Attributes.CssStyle["bordercolor"] = GrayHtmlColor.ToString();
+                    break;
+                case "HtmlTextArea":
+                    ((HtmlTextArea)c).Attributes.CssStyle["bordercolor"] = GrayHtmlColor.ToString();
+                    break;
+            }
+        }
 
+        entityControl_Name.BorderColor = GrayHtmlColor;
+        entityControl_Surname.BorderColor = GrayHtmlColor;
+        entityControl_Mail.BorderColor = GrayHtmlColor;
+        entityControl_BirthDate.BorderColor = GrayHtmlColor;
+        entityControl_Phone.BorderColor = GrayHtmlColor;
+        entityControl_UserName.BorderColor = GrayHtmlColor;
+        entityControl_Password.BorderColor = GrayHtmlColor;
+    }
+    private void DisposeProperties()
+    {
+        EntityManager = null;
+        Model = null;
+        Entity = null;
+    }
+    
     #endregion
 
     #region [ button events ]
@@ -311,8 +327,7 @@ public partial class EditUserAlumno : BasePage//, IModelEdition
     public void SaveModelClick(object sender, EventArgs e)
     {
         SetBorderToDefaultColor();
-        if (IsValidModel() && SaveModel())
-        {
+        if (IsValidModel() && SaveModel()) {
             //Response.Redirect("PAGE_TITLE_UserAlumnoList.aspx");
         }
         else
