@@ -96,7 +96,7 @@ public class BasePage : Page
 
     #region [ methods ]
 
-    protected void AplicarIdioma(CultureInfo culture)
+    protected void ApplyLanguage(CultureInfo culture)
     {
         try {
             Thread.CurrentThread.CurrentUICulture = culture;

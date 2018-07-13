@@ -66,7 +66,6 @@ public class BaseUC : UserControl
         }
     }
 
-
     public EntityManager EntityManager
     {
         get {
@@ -114,7 +113,7 @@ public class BaseUC : UserControl
 
     #region [ methods ]
 
-    protected void AplicarIdioma(CultureInfo culture)
+    protected void ApplyLanguage(CultureInfo culture)
     {
         try {
             Thread.CurrentThread.CurrentUICulture = culture;
@@ -167,7 +166,6 @@ public class BaseUC : UserControl
     }
     protected void LoadControls()
     {
-        ControlList = new List<Control>();
         foreach (Control form in Controls) {
             if (form.GetType().Name.Equals("HtmlForm")) {
                 foreach (Control c in form.Controls) {

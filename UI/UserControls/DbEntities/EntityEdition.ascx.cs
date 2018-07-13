@@ -16,14 +16,12 @@ public partial class EntityEdition : BaseUC //, IModelEdition
             try {
                 if (Session["Model"] == null) Session["Model"] = Entity.GetByPrimaryKey(Int32.Parse(PrimaryKey));
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 throw ex;
             }
             return (IModel)Session["Model"];
         }
-        set
-        {
+        set {
             Session["Model"] = value;
         }
     }
@@ -38,6 +36,7 @@ public partial class EntityEdition : BaseUC //, IModelEdition
         if (!IsPostBack) {
             
             ApplyLayout();
+            LoadControls();
             FillFromModel();
         }
     }
@@ -47,12 +46,13 @@ public partial class EntityEdition : BaseUC //, IModelEdition
             if (!IsPostBack) { 
                 DisposeProperties(); 
                 Session.RemoveAll();
-                GetPageParameters();
 
+                GetPageParameters();
                 InitializeSession(); 
-                EntityManager.InitializeTypes(BussinesObject, ProyectName); 
-                 
-                LoadControls();
+                EntityManager.InitializeTypes(BussinesObject, ProyectName);
+
+                CreateControls();
+                AddControlsToHtmlForm();
             }
         }
         catch (Exception ex) {
@@ -62,7 +62,73 @@ public partial class EntityEdition : BaseUC //, IModelEdition
             //Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
         }
     }
-    
+
+    private void CreateControls()
+    {
+        short tabIndex = 0;
+        var ModelClass = EntityManager.TypedBO.ModelLayerType;
+        foreach (PropertyInfo property in ModelClass.GetProperties()) {
+
+            tabIndex++;
+            var propertyName = UIControlPrefix + property.Name;
+            Control control = null;
+            bool addControl = false;
+
+            switch (property.PropertyType.Name.ToLower()) {
+                case "string":
+                    control = new TextBox(); 
+                    ((TextBox)control).CssClass = "form-lname form-element large";
+                    ((TextBox)control).Attributes["placeholder"] = property.Name;
+                    ((TextBox)control).Attributes["required"] = "required";
+                    ((TextBox)control).Attributes["name"] = propertyName;
+                    ((TextBox)control).TabIndex = tabIndex;
+                    control.ID = propertyName;
+                    addControl = true;
+                    break;
+
+                case "boolean":
+                    control = new HtmlInputCheckBox();
+                    //id="entityControl_Active"   name="entityControl_Active"  
+                    ((HtmlInputCheckBox)control).Attributes["placeholder"] = property.Name;
+                    ((HtmlInputCheckBox)control).Attributes["required"] = "required";
+                    //((HtmlInputCheckBox)control).TabIndex = tabIndex;
+                    ((HtmlInputCheckBox)control).Attributes["class"] = "form-element checkbox";
+                    ((HtmlInputCheckBox)control).Attributes["name"] = propertyName;
+                    control.ID = propertyName;
+                    addControl = true;
+                    break;
+
+                //case "CheckBox":
+                //    control = new CheckBox(); 
+                //    break;
+
+                case "datetime":
+                    control = new TextBox();
+                    ((TextBox)control).CssClass = "form-lname form-element large";
+                    ((TextBox)control).Attributes["placeholder"] = property.Name;
+                    ((TextBox)control).Attributes["required"] = "required";
+                    ((TextBox)control).TabIndex = tabIndex;
+                    control.ID = propertyName;
+                    addControl = true;
+                    break; 
+            }
+
+            if(addControl) ControlList.Add(control);
+        }
+    }
+
+    private void AddControlsToHtmlForm()
+    {
+        Control myPlaceHolder = FindControl("form"); 
+        HtmlControl divContaiunerPpal = (HtmlControl)myPlaceHolder.FindControl("entityControlsContainer");
+        foreach (var control in ControlList) {
+            HtmlGenericControl divContainer = new HtmlGenericControl("div");
+            divContainer.Attributes.Add("class", "column width-6");
+            divContainer.Controls.Add(control);
+            divContaiunerPpal.Controls.Add(divContainer);
+        }
+    }
+
     #endregion
 
     #region [ methods ]
@@ -132,27 +198,57 @@ public partial class EntityEdition : BaseUC //, IModelEdition
         try {
             if (Mode.Equals(ViewMode.Edit) || Mode.Equals(ViewMode.View)) {
 
-                //llamar a nuevo método ActionToControl, que recibe el nombre del control ("" + )
-                //Asignar valor a las propiedades por Reflexion - haciendo macth por nombre
-                
-                ActionForControl(((dynamic)Model).Name, entityControl_Name.ID);
+                foreach (var control in ControlList) {
+                    var simplyName = control.ID.Substring(control.ID.LastIndexOf("_") + 1, control.ID.Length - control.ID.LastIndexOf("_") -1);
+                    var property = GetModelProperty(simplyName);
+                    if(null != property) {
+                        Object fieldValue = null;
+                        switch (property.PropertyType.Name.ToString().ToLower()) {
+                            case "string":
+                                fieldValue = property.GetValue(Model);
+                                ((TextBox)control).Text = (string)fieldValue;
+                                break;
+                            case "datetime":
+                                fieldValue = property.GetValue(Model);
+                                ((TextBox)control).Text = fieldValue.ToString();
+                                break;
+                            case "boolean":
+                                fieldValue = property.GetValue(Model);
+                                ((HtmlInputCheckBox)control).Checked = ((bool)fieldValue) ? true : false;
+                                break;
+                            //case "int32":
+                            //    fieldValue = property.GetValue(Model);
+                            //    ((TextBox)control).Text = (string)fieldValue;
+                            //    break;
+                            //case "decimal":
+                            //    fieldValue = property.GetValue(Model);
+                            //    ((TextBox)control).Text = (string)fieldValue;
+                            //    break;
+                            default:
+                                fieldValue = null;
+                                break;
+                        }
+                    }
+                }
 
-                entityControl_Name.Text = ((dynamic)Model).Name;
-                entityControl_Surname.Text = ((dynamic)Model).Surname;
-                entityControl_BirthDate.Text = ((dynamic)Model).BirthDate.ToString("dd/MM/yyyy");
-                entityControl_Mail.Text = ((dynamic)Model).Mail;
-                entityControl_UserName.Text = ((dynamic)Model).UserName;
-                entityControl_Password.Text = ((dynamic)Model).Password;
-                entityControl_Entered.Checked = ((dynamic)Model).Entered;
-                entityControl_Active.Checked = ((dynamic)Model).Active;
-                entityControl_Phone.Text = ((dynamic)Model).Phone.ToString();
-                entityControl_Message.Value = "more info...";
+                //ActionForControl(((dynamic)Model).Name, entityControl_Name.ID);
+
+                //entityControl_Name.Text = ((dynamic)Model).Name;
+                //entityControl_Surname.Text = ((dynamic)Model).Surname;
+                //entityControl_BirthDate.Text = ((dynamic)Model).BirthDate.ToString("dd/MM/yyyy");
+                //entityControl_Mail.Text = ((dynamic)Model).Mail;
+                //entityControl_UserName.Text = ((dynamic)Model).UserName;
+                //entityControl_Password.Text = ((dynamic)Model).Password;
+                //entityControl_Entered.Checked = ((dynamic)Model).Entered;
+                //entityControl_Active.Checked = ((dynamic)Model).Active;
+                //entityControl_Phone.Text = ((dynamic)Model).Phone.ToString();
+                //entityControl_Message.Value = "more info...";
 
                 var createdDate = string.Empty;
                 var updateDate = string.Empty;
                 SetCreatedUpdatedData(ref createdDate, ref updateDate);
-                entityControl_Created.Text = createdDate;
-                entityControl_Updated.Text = updateDate;
+                //entityControl_Created.Text = createdDate;
+                //entityControl_Updated.Text = updateDate;
             }
         }
         catch (Exception ex) {
@@ -164,53 +260,53 @@ public partial class EntityEdition : BaseUC //, IModelEdition
             IModel uiModel = (IModel)CreateNewModelInstance();
             bool validationResult = true;
 
-            if (string.IsNullOrEmpty(entityControl_Name.Text.Trim()))
-                SetControlAsInvalid(entityControl_Name, ref validationResult);
-            else
-                ((dynamic)uiModel).Name = entityControl_Name.Text;
+            //if (string.IsNullOrEmpty(entityControl_Name.Text.Trim()))
+            //    SetControlAsInvalid(entityControl_Name, ref validationResult);
+           // else
+            //    ((dynamic)uiModel).Name = entityControl_Name.Text;
 
-            if (string.IsNullOrEmpty(entityControl_Surname.Text.Trim()))
-                SetControlAsInvalid(entityControl_Surname, ref validationResult);
-            else
-                ((dynamic)uiModel).Surname = entityControl_Surname.Text;
+            //if (string.IsNullOrEmpty(entityControl_Surname.Text.Trim()))
+            //    SetControlAsInvalid(entityControl_Surname, ref validationResult);
+            //else
+            //    ((dynamic)uiModel).Surname = entityControl_Surname.Text;
 
-            if (string.IsNullOrEmpty(entityControl_Mail.Text.Trim()))
-                SetControlAsInvalid(entityControl_Mail, ref validationResult);
-            else
-                ((dynamic)uiModel).Mail = entityControl_Mail.Text;
+            //if (string.IsNullOrEmpty(entityControl_Mail.Text.Trim()))
+            //    SetControlAsInvalid(entityControl_Mail, ref validationResult);
+            //else
+            //    ((dynamic)uiModel).Mail = entityControl_Mail.Text;
 
-            if (string.IsNullOrEmpty(entityControl_BirthDate.Text.Trim()))
-                SetControlAsInvalid(entityControl_BirthDate, ref validationResult);
-            else
-                ((dynamic)uiModel).BirthDate = HelperDataTypesConversion.GetDateTimeFromText(entityControl_BirthDate.Text,
-                                                                                  Constants.inputDateTimeFormat_ddmmaaaa,
-                                                                                  CultureInfo.CurrentCulture);
+            //if (string.IsNullOrEmpty(entityControl_BirthDate.Text.Trim()))
+            //    SetControlAsInvalid(entityControl_BirthDate, ref validationResult);
+            //else
+            //    ((dynamic)uiModel).BirthDate = HelperDataTypesConversion.GetDateTimeFromText(entityControl_BirthDate.Text,
+            //                                                                      Constants.inputDateTimeFormat_ddmmaaaa,
+            //                                                                      CultureInfo.CurrentCulture);
 
-            if (string.IsNullOrEmpty(entityControl_Phone.Text.Trim()))
-                SetControlAsInvalid(entityControl_Surname, ref validationResult);
-            else
-                ((dynamic)uiModel).Phone = Int32.Parse(entityControl_Phone.Text);
+            //if (string.IsNullOrEmpty(entityControl_Phone.Text.Trim()))
+            //    SetControlAsInvalid(entityControl_Surname, ref validationResult);
+            //else
+            //    ((dynamic)uiModel).Phone = Int32.Parse(entityControl_Phone.Text);
 
-            if (string.IsNullOrEmpty(entityControl_UserName.Text.Trim()))
-                SetControlAsInvalid(entityControl_UserName, ref validationResult);
-            else
-                ((dynamic)uiModel).UserName = entityControl_UserName.Text;
+            //if (string.IsNullOrEmpty(entityControl_UserName.Text.Trim()))
+            //    SetControlAsInvalid(entityControl_UserName, ref validationResult);
+            //else
+            //    ((dynamic)uiModel).UserName = entityControl_UserName.Text;
 
-            if (string.IsNullOrEmpty(entityControl_Password.Text.Trim()))
-                SetControlAsInvalid(entityControl_Password, ref validationResult);
-            else
-                ((dynamic)uiModel).Password = entityControl_Password.Text;
+            //if (string.IsNullOrEmpty(entityControl_Password.Text.Trim()))
+            //    SetControlAsInvalid(entityControl_Password, ref validationResult);
+            //else
+            //    ((dynamic)uiModel).Password = entityControl_Password.Text;
 
-            ((dynamic)uiModel).Active = entityControl_Active.Checked;
-            ((dynamic)uiModel).Entered = entityControl_Entered.Checked;
+            //((dynamic)uiModel).Active = entityControl_Active.Checked;
+            //((dynamic)uiModel).Entered = entityControl_Entered.Checked;
 
-            uiModel.Created = HelperDataTypesConversion.GetDateTimeFromText(entityControl_Created.Text,
-                                                                            Constants.inputDateTimeFormat_ddmmaaaa,
-                                                                            CultureInfo.CurrentCulture);
+            //uiModel.Created = HelperDataTypesConversion.GetDateTimeFromText(entityControl_Created.Text,
+            //                                                                Constants.inputDateTimeFormat_ddmmaaaa,
+            //                                                                CultureInfo.CurrentCulture);
 
-            uiModel.Updated = HelperDataTypesConversion.GetDateTimeFromText(entityControl_Updated.Text,
-                                                                            Constants.inputDateTimeFormat_ddmmaaaa,
-                                                                            CultureInfo.CurrentCulture);
+            //uiModel.Updated = HelperDataTypesConversion.GetDateTimeFromText(entityControl_Updated.Text,
+            //                                                                Constants.inputDateTimeFormat_ddmmaaaa,
+            //                                                                CultureInfo.CurrentCulture);
             //UIModel.Productos = ;
 
             UIModel = uiModel;
@@ -252,6 +348,13 @@ public partial class EntityEdition : BaseUC //, IModelEdition
     }
 
     //privates
+    private PropertyInfo GetModelProperty(string propertyName)
+    {
+        foreach (var property in Model.GetType().GetProperties()) {
+            if (propertyName.ToLower().Equals(property.Name.ToLower()) || propertyName.ToLower().Trim().Contains(property.Name.ToLower())) return property; 
+        }
+        return null;
+    }
     private void SetCreatedUpdatedData(ref string createdDate, ref string updateDate)
     {
         switch (Mode) {
@@ -301,13 +404,13 @@ public partial class EntityEdition : BaseUC //, IModelEdition
             }
         }
 
-        entityControl_Name.BorderColor = GrayHtmlColor;
-        entityControl_Surname.BorderColor = GrayHtmlColor;
-        entityControl_Mail.BorderColor = GrayHtmlColor;
-        entityControl_BirthDate.BorderColor = GrayHtmlColor;
-        entityControl_Phone.BorderColor = GrayHtmlColor;
-        entityControl_UserName.BorderColor = GrayHtmlColor;
-        entityControl_Password.BorderColor = GrayHtmlColor;
+       // entityControl_Name.BorderColor = GrayHtmlColor;
+        //entityControl_Surname.BorderColor = GrayHtmlColor;
+        //entityControl_Mail.BorderColor = GrayHtmlColor;
+        //entityControl_BirthDate.BorderColor = GrayHtmlColor;
+        //entityControl_Phone.BorderColor = GrayHtmlColor;
+        //entityControl_UserName.BorderColor = GrayHtmlColor;
+        //entityControl_Password.BorderColor = GrayHtmlColor;
     }
     private void DisposeProperties()
     {
