@@ -5,6 +5,7 @@ using System.Threading;
 using System.Web.UI.WebControls;
 using System.Web.UI;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Web.UI.HtmlControls;
 using BussinesTypedObject;
 
@@ -48,13 +49,6 @@ public class BaseUC : UserControl
             Session["Mode"] = value;
         }
     }
-    public string PageTitle
-    {
-        get {
-            return "Título";
-        }
-    }
-     
     public List<Control> ControlList
     {
         get {
@@ -99,8 +93,7 @@ public class BaseUC : UserControl
     public BussinesTypes.BussinesObjectType BussinesObject { get; set; }
     public BussinesTypes.ProyectName ProyectName
     {
-        get
-        {
+        get {
             return (BussinesTypes.ProyectName)Enum.Parse(typeof(BussinesTypes.ProyectName), Settings.ProyectName);
         }
     }
@@ -137,7 +130,7 @@ public class BaseUC : UserControl
     protected void GetViewMode()
     {
         if (Request.QueryString["M"] != null) {
-            switch (Request.QueryString["M"].ToString()) {
+            switch (Request.QueryString["M"]) {
                 case "V":
                     Mode = ViewMode.View;
                     break;
@@ -195,7 +188,7 @@ public class BaseUC : UserControl
                     ((TextBox)c).Enabled = enabled;
                     break;
                 case "HtmlInputCheckBox":
-                    ((HtmlInputCheckBox)c).Disabled = (enabled) ? false : true;
+                    ((HtmlInputCheckBox)c).Disabled = (!enabled);
                     break;
                 case "CheckBox":
                     ((CheckBox)c).Enabled = enabled;
@@ -211,20 +204,31 @@ public class BaseUC : UserControl
         foreach (Control c in ControlList) {
             switch (c.GetType().Name) {
                 case "TextBox":
+
                     ((TextBox)c).Text = string.Empty;
+                    if (ContainsDateTimeData(((TextBox)c).Text)) ((TextBox)c).Text = dateTimeDefaultMask;
                     break;
                 case "CheckBox":
+
                     ((CheckBox)c).Checked = false;
                     break;
                 case "HtmlInputCheckBox":
+
                     ((HtmlInputCheckBox)c).Checked = false;
                     break;
                 case "HtmlTextArea":
+
                     ((HtmlTextArea)c).Value = string.Empty;
                     break;
             }
         }
     }
+
+    private bool ContainsDateTimeData(string textData)
+    {
+        return textData.Contains("/") && textData.Trim().Length.Equals(10);
+    }
+
     protected void ActionForControl(object value, string propertyName)
     {
         //if(action == ActionsForControl.SetValue)
@@ -251,11 +255,10 @@ public class BaseUC : UserControl
     }
     protected void InitializeSession()
     {
-        if (null == Session || !(Session.Count > 0)) {
-            Session["SessionStartTicks"] = DateTime.Now.Ticks;
-            Session["SessionID"] = Session.SessionID;
-            Session["UserClosedCokkiesBar"] = false;
-        }
+        Session.RemoveAll();
+        Session["SessionStartTicks"] = DateTime.Now.Ticks;
+        Session["SessionID"] = Session.SessionID;
+        Session["UserClosedCokkiesBar"] = false;
     }
 
     #endregion 

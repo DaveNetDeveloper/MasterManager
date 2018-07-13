@@ -16,12 +16,14 @@ public partial class EntityEdition : BaseUC //, IModelEdition
             try {
                 if (Session["Model"] == null) Session["Model"] = Entity.GetByPrimaryKey(Int32.Parse(PrimaryKey));
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 throw ex;
             }
             return (IModel)Session["Model"];
         }
-        set {
+        set
+        {
             Session["Model"] = value;
         }
     }
@@ -385,10 +387,8 @@ public partial class EntityEdition : BaseUC //, IModelEdition
         // setee el color del borde 
         // Después de este cambio mover este metodo a BasePage
 
-        foreach (Control c in ControlList)
-        {
-            switch (c.GetType().Name)
-            {
+        foreach (Control c in ControlList) { 
+            switch (c.GetType().Name) { 
                 case "TextBox":
                     ((TextBox)c).BorderColor = GrayHtmlColor;
                     break;
@@ -412,13 +412,24 @@ public partial class EntityEdition : BaseUC //, IModelEdition
         //entityControl_UserName.BorderColor = GrayHtmlColor;
         //entityControl_Password.BorderColor = GrayHtmlColor;
     }
+    private void InitializeData()
+    {
+        GetPageParameters();
+        EntityManager.InitializeTypes(BussinesObject, ProyectName);
+        LoadControls();
+    }
+    private void InitializeCache()
+    {
+        DisposeProperties();
+        InitializeSession();
+    }
     private void DisposeProperties()
     {
         EntityManager = null;
         Model = null;
         Entity = null;
     }
-    
+
     #endregion
 
     #region [ button events ]
