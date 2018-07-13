@@ -41,80 +41,70 @@ public class BaseUC : UserControl
     }
     public ViewMode Mode
     {
-        get
-        {
+        get { 
             if (Session["Mode"] == null) Session["Mode"] = ViewMode.None;
             return (ViewMode)Session["Mode"];
         }
-        set
-        {
+        set {
             Session["Mode"] = value;
         }
     }
     public List<Control> ControlList
     {
-        get
-        {
+        get {
             if (null == Session["ControlList"]) Session["ControlList"] = new List<Control>();
             return (List<Control>)Session["ControlList"];
         }
-        set
-        {
+        set {
             Session["ControlList"] = value;
         }
     }
- 
+<<<<<<< .merge_file_a09076
+
+=======
+>>>>>>> .merge_file_a18972
     public EntityManager EntityManager
     {
-        get
-        {
-            try
-            {
+        get {
+            try {
                 if (Session["EntityManager"] == null) Session["EntityManager"] = new EntityManager(ProyectName);
                 return (EntityManager)Session["EntityManager"];
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex){
                 throw ex;
             }
         }
-        set
-        {
+        set {
             Session["EntityManager"] = value;
         }
     }
     public IEntity Entity
     {
-        get
-        {
-            try
-            {
+        get {
+            try {
                 if (Session["Entity"] == null) Session["Entity"] = EntityManager.GetEntity();
                 return (IEntity)Session["Entity"];
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 throw ex;
             }
         }
-        set
-        {
+        set {
             Session["Entity"] = value;
         }
     }
     public BussinesTypes.BussinesObjectType BussinesObject { get; set; }
     public BussinesTypes.ProyectName ProyectName
     {
-        get
-        {
+        get {
             return (BussinesTypes.ProyectName)Enum.Parse(typeof(BussinesTypes.ProyectName), Settings.ProyectName);
         }
     }
 
     protected Color GrayHtmlColor = ColorTranslator.FromHtml("#e2e2e2");
-    protected const string UIControlPrefix = "entityControl_";
-    protected Color invalidDataColor = Color.Red;
-    protected const string dateTimeDefaultMask = "__/__/____";
+    private const string UIControlPrefix = "entityControl_";
+    private Color invalidDataColor = Color.Red;
+    private const string dateTimeDefaultMask = "__/__/____";
 
     #endregion
 
@@ -122,12 +112,10 @@ public class BaseUC : UserControl
 
     protected void ApplyLanguage(CultureInfo culture)
     {
-        try
-        {
+        try {
             Thread.CurrentThread.CurrentUICulture = culture;
         }
-        catch (Exception ex)
-        {
+        catch (Exception ex) {
             throw ex;
         }
     }
@@ -145,10 +133,8 @@ public class BaseUC : UserControl
     }
     protected void GetViewMode()
     {
-        if (Request.QueryString["M"] != null)
-        {
-            switch (Request.QueryString["M"])
-            {
+        if (Request.QueryString["M"] != null) {
+            switch (Request.QueryString["M"]) {
                 case "V":
                     Mode = ViewMode.View;
                     break;
@@ -163,8 +149,7 @@ public class BaseUC : UserControl
                     break;
             }
         }
-        else
-        {
+        else {
             Mode = ViewMode.None;
         }
 
@@ -178,27 +163,19 @@ public class BaseUC : UserControl
     }
     protected void LoadControls()
     {
-        foreach (Control form in Controls)
-        {
-            if (form.GetType().Name.Equals("HtmlForm"))
-            {
-                foreach (Control c in form.Controls)
-                {
-                    if ((c.GetType().Name.ToLower().Equals("textbox")) || (c.GetType().Name.ToLower().Contains("checkbox")))
-                    {
+        foreach (Control form in Controls) {
+            if (form.GetType().Name.Equals("HtmlForm")) {
+                foreach (Control c in form.Controls) {
+                    if ((c.GetType().Name.ToLower().Equals("textbox")) || (c.GetType().Name.ToLower().Contains("checkbox"))) {
                         if (c.ID.Contains(UIControlPrefix)) ControlList.Add(c);
                     }
-                    else
-                    {
-                        try
-                        {
-                            if (((HtmlControl)c).TagName.ToLower().Equals("textarea"))
-                            {
+                    else {
+                        try {
+                            if (((HtmlControl)c).TagName.ToLower().Equals("textarea")) {
                                 ControlList.Add(c);
                             }
                         }
-                        catch (Exception ex)
-                        {
+                        catch (Exception ex) {
                             var except = ex;
                         }
                     }
@@ -209,10 +186,8 @@ public class BaseUC : UserControl
     }
     protected void ActivateControls(bool enabled)
     {
-        foreach (Control c in ControlList)
-        {
-            switch (c.GetType().Name)
-            {
+        foreach (Control c in ControlList) {
+            switch (c.GetType().Name) {
                 case "TextBox":
                     ((TextBox)c).Enabled = enabled;
                     break;
@@ -230,10 +205,8 @@ public class BaseUC : UserControl
     }
     protected void ResetControlValues()
     {
-        foreach (Control c in ControlList)
-        {
-            switch (c.GetType().Name)
-            {
+        foreach (Control c in ControlList) {
+            switch (c.GetType().Name) {
                 case "TextBox":
 
                     ((TextBox)c).Text = string.Empty;
@@ -264,25 +237,23 @@ public class BaseUC : UserControl
     {
         //if(action == ActionsForControl.SetValue)
 
-        foreach (Control c in ControlList)
-        {
+        foreach (Control c in ControlList) {
             if (c.ClientID.Contains(propertyName))
-            {
-                switch (c.GetType().Name)
-                {
-                    case "TextBox":
-                        ((TextBox)c).Text = value.ToString();
-                        break;
-                    case "CheckBox":
-                        ((CheckBox)c).Checked = (bool)value;
-                        break;
-                    case "HtmlInputCheckBox":
-                        ((HtmlInputCheckBox)c).Checked = (bool)value;
-                        break;
-                    case "HtmlTextArea":
-                        ((HtmlTextArea)c).Value = value.ToString();
-                        break;
-                }
+            { 
+                switch (c.GetType().Name) {
+                case "TextBox": 
+                    ((TextBox)c).Text = value.ToString(); 
+                    break;
+                case "CheckBox":
+                    ((CheckBox)c).Checked = (bool)value;
+                    break;
+                case "HtmlInputCheckBox":
+                    ((HtmlInputCheckBox)c).Checked = (bool)value;
+                    break;
+                case "HtmlTextArea":
+                    ((HtmlTextArea)c).Value = value.ToString();
+                    break;
+                    } 
             }
         }
     }
