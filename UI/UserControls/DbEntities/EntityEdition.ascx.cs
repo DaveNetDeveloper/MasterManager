@@ -267,7 +267,6 @@ public partial class EntityEdition : BaseUC
     {
         return propertyLowerName.Equals("id") || (IsForeingKeyField(propertyLowerName));
     }
-
     private bool IsForeingKeyField(string propertyLowerName)
     {
         foreach (var item in Model.FkRelationsList) {
@@ -275,7 +274,6 @@ public partial class EntityEdition : BaseUC
         }
         return false;
     }
-
     private void InitializeControls()
     {
         CreateControls();
