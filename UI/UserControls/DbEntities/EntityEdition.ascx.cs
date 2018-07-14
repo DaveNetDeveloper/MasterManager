@@ -51,6 +51,7 @@ public partial class EntityEdition : BaseUC
             Session["error"] = ex;
         }
     } 
+
     #endregion
 
     #region [ methods ]
@@ -123,7 +124,7 @@ public partial class EntityEdition : BaseUC
                     var property = GetModelProperty(GetSimplyName(control.ID));
                     if(null != property) {
                         Object fieldValue = null;
-                        switch (property.PropertyType.Name.ToString().ToLower()) {
+                        switch (property.PropertyType.Name.ToLower()) {
 
                             case "string":
                                 fieldValue = property.GetValue(Model);
@@ -131,9 +132,12 @@ public partial class EntityEdition : BaseUC
                                 break;
 
                             case "datetime":
-                                if(IsAuditField(property.Name.ToLower())) fieldValue = GetAuditFieldValue(property);
+                                if(IsAuditField(property.Name.ToLower())){
+                                    fieldValue = GetAuditFieldValue(property);
+                                    ((TextBox)control).Enabled = false;
+                                    ((TextBox)control).ReadOnly = true;
+                                }
                                 else fieldValue = property.GetValue(Model);
-
                                 ((TextBox)control).Text = fieldValue.ToString();
                                 break;
 
@@ -144,6 +148,12 @@ public partial class EntityEdition : BaseUC
                             
                             case "int32":
                             case "decimal":
+
+                                if(IsSpecialField(property.Name.ToLower())) {
+                                    ((TextBox)control).Enabled = false;
+                                    ((TextBox)control).ReadOnly = true;
+                                }
+
                                 fieldValue = property.GetValue(Model);
                                 ((TextBox)control).Text = ((Int32)fieldValue).ToString();
                                 break; 
@@ -154,14 +164,13 @@ public partial class EntityEdition : BaseUC
                         }
                     }
                 }
-                //TODO
-                //entityControl_Message.Value = "more info...";
+                //TODO: entityControl_Message.Value = "more info...";
             }
         }
         catch (Exception ex) {
             ErrorTreatment(ex);
         }
-    } 
+    }
     public bool IsValidModel() {
         try {
             IModel uiModel = (IModel)CreateNewModelInstance();
@@ -254,7 +263,10 @@ public partial class EntityEdition : BaseUC
         return true;
     }
 
-    //privates
+    private bool IsSpecialField(string propertyLowerName)
+    {
+        return propertyLowerName.Equals("id");
+    }
     private void InitializeControls()
     {
         CreateControls();
@@ -419,7 +431,7 @@ public partial class EntityEdition : BaseUC
         {
             case "created":
                 return createdDate;
-            case "update":
+            case "updated":
                 return updateDate;
             default:
                 return string.Empty;
