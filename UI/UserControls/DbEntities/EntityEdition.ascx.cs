@@ -1,11 +1,11 @@
-﻿using System;   
+﻿using System;
 using System.Reflection;
 using System.Runtime.Remoting;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 
-public partial class EntityEdition : BaseUC //, IModelEdition
+public partial class EntityEdition : BaseUC
 {
     #region [ properties ]
 
@@ -34,7 +34,6 @@ public partial class EntityEdition : BaseUC //, IModelEdition
     {
         if (!IsPostBack) {
             ApplyLayout();
-            //LoadControls();
             FillFromModel();
         }
     }
@@ -45,19 +44,13 @@ public partial class EntityEdition : BaseUC //, IModelEdition
                 InitializeCache();
                 GetPageParameters();
                 EntityManager.InitializeTypes(BussinesObject, ProyectName);
-
-                CreateControls();
-                AddControlsToHtmlForm();
+                InitializeControls();
             }
         }
         catch (Exception ex) {
             Session["error"] = ex;
-            //((MasterPage)(this.Master)).SetLOG("ERROR", "Loading Page", "EditCenter.aspx", "Center", "Page_Init()", ex.Message, DateTime.Now, 1);
-            //this.SetLOG("ERROR", "Loading Page", "EditUserContact.aspx", "Center", "Page_Init()", ex.Message, DateTime.Now, 1);
-            //Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
         }
-    }
-     
+    } 
     #endregion
 
     #region [ methods ]
@@ -126,65 +119,49 @@ public partial class EntityEdition : BaseUC //, IModelEdition
     {
         try {
             if (Mode.Equals(ViewMode.Edit) || Mode.Equals(ViewMode.View)) {
-
                 foreach (var control in ControlList) {
-                    var simplyName = control.ID.Substring(control.ID.LastIndexOf("_") + 1, control.ID.Length - control.ID.LastIndexOf("_") -1);
-                    var property = GetModelProperty(simplyName);
+                    var property = GetModelProperty(GetSimplyName(control.ID));
                     if(null != property) {
                         Object fieldValue = null;
                         switch (property.PropertyType.Name.ToString().ToLower()) {
+
                             case "string":
                                 fieldValue = property.GetValue(Model);
                                 ((TextBox)control).Text = (string)fieldValue;
                                 break;
+
                             case "datetime":
-                                fieldValue = property.GetValue(Model);
+                                if(IsAuditField(property.Name.ToLower())) fieldValue = GetAuditFieldValue(property);
+                                else fieldValue = property.GetValue(Model);
+
                                 ((TextBox)control).Text = fieldValue.ToString();
                                 break;
+
                             case "boolean":
                                 fieldValue = property.GetValue(Model);
                                 ((HtmlInputCheckBox)control).Checked = ((bool)fieldValue) ? true : false;
                                 break;
-                            #region " Commented "
-                            //case "int32":
-                            //    fieldValue = property.GetValue(Model);
-                            //    ((TextBox)control).Text = (string)fieldValue;
-                            //    break;
-                            //case "decimal":
-                            //    fieldValue = property.GetValue(Model);
-                            //    ((TextBox)control).Text = (string)fieldValue;
-                            //    break;
-                            #endregion
+                            
+                            case "int32":
+                            case "decimal":
+                                fieldValue = property.GetValue(Model);
+                                ((TextBox)control).Text = ((Int32)fieldValue).ToString();
+                                break; 
+
                             default:
                                 fieldValue = null;
                                 break;
                         }
                     }
                 }
-
-                //entityControl_Name.Text = ((dynamic)Model).Name;
-                //entityControl_Surname.Text = ((dynamic)Model).Surname;
-                //entityControl_BirthDate.Text = ((dynamic)Model).BirthDate.ToString("dd/MM/yyyy");
-                //entityControl_Mail.Text = ((dynamic)Model).Mail;
-                //entityControl_UserName.Text = ((dynamic)Model).UserName;
-                //entityControl_Password.Text = ((dynamic)Model).Password;
-                //entityControl_Entered.Checked = ((dynamic)Model).Entered;
-                //entityControl_Active.Checked = ((dynamic)Model).Active;
-                //entityControl_Phone.Text = ((dynamic)Model).Phone.ToString();
+                //TODO
                 //entityControl_Message.Value = "more info...";
-
-                var createdDate = string.Empty;
-                var updateDate = string.Empty;
-                SetCreatedUpdatedData(ref createdDate, ref updateDate);
-
-                //entityControl_Created.Text = createdDate;
-                //entityControl_Updated.Text = updateDate;
             }
         }
         catch (Exception ex) {
             ErrorTreatment(ex);
         }
-    }
+    } 
     public bool IsValidModel() {
         try {
             IModel uiModel = (IModel)CreateNewModelInstance();
@@ -278,6 +255,11 @@ public partial class EntityEdition : BaseUC //, IModelEdition
     }
 
     //privates
+    private void InitializeControls()
+    {
+        CreateControls();
+        AddControlsToHtmlForm();
+    }
     private PropertyInfo GetModelProperty(string propertyName)
     {
         foreach (var property in Model.GetType().GetProperties()) {
@@ -292,20 +274,18 @@ public partial class EntityEdition : BaseUC //, IModelEdition
         Object modelInstance = handle.Unwrap();
         return modelInstance;
     }
-
     private void CreateControls()
     {
         short tabIndex = 0;
         var ModelClass = EntityManager.TypedBO.ModelLayerType;
-        foreach (PropertyInfo property in ModelClass.GetProperties())
-        {
+        foreach (PropertyInfo property in ModelClass.GetProperties()) {
             tabIndex++;
             var propertyName = UIControlPrefix + property.Name;
             Control control = null;
             bool addControl = false;
 
-            switch (property.PropertyType.Name.ToLower())
-            {
+            switch (property.PropertyType.Name.ToLower()) {
+
                 case "string":
                     control = new TextBox();
                     ((TextBox)control).CssClass = "form-lname form-element large";
@@ -319,10 +299,8 @@ public partial class EntityEdition : BaseUC //, IModelEdition
 
                 case "boolean":
                     control = new HtmlInputCheckBox();
-                    //id="entityControl_Active"   name="entityControl_Active"  
                     ((HtmlInputCheckBox)control).Attributes["placeholder"] = property.Name;
                     ((HtmlInputCheckBox)control).Attributes["required"] = "required";
-                    //((HtmlInputCheckBox)control).TabIndex = tabIndex;
                     ((HtmlInputCheckBox)control).Attributes["class"] = "form-element checkbox";
                     ((HtmlInputCheckBox)control).Attributes["name"] = propertyName;
                     control.ID = propertyName;
@@ -338,6 +316,17 @@ public partial class EntityEdition : BaseUC //, IModelEdition
                     control.ID = propertyName;
                     addControl = true;
                     break;
+
+                case "int32":
+                    control = new TextBox();
+                    ((TextBox)control).CssClass = "form-lname form-element large";
+                    ((TextBox)control).Attributes["placeholder"] = property.Name;
+                    ((TextBox)control).Attributes["required"] = "required";
+                    ((TextBox)control).Attributes["name"] = propertyName;
+                    ((TextBox)control).TabIndex = tabIndex;
+                    control.ID = propertyName;
+                    addControl = true;
+                    break;
             }
 
             if (addControl) ControlList.Add(control);
@@ -347,13 +336,10 @@ public partial class EntityEdition : BaseUC //, IModelEdition
     {
         Control myPlaceHolder = FindControl("form");
         HtmlControl divContaiunerPpal = (HtmlControl)myPlaceHolder.FindControl("entityControlsContainer");
-        foreach (var control in ControlList)
-        {
-            //Main contaniner
+        foreach (var control in ControlList) {
             HtmlGenericControl divContainer = new HtmlGenericControl("div");
             divContainer.Attributes.Add("class", "column width-6");
 
-            //Special container for CheckBoxs
             switch (control.GetType().Name) {
 
                 case "HtmlInputCheckBox":
@@ -373,27 +359,21 @@ public partial class EntityEdition : BaseUC //, IModelEdition
                 //  ((HtmlTextArea)control).Disabled = !enabled;
                 //  break;
             }
-            
-            //<div class="column width-6">
-            //   <div class="field-wrapper pt-10 pb-10">
-            //       <input id = "entityControl_Active" runat="server" class="form-element checkbox" name="entityControl_Active" type="checkbox" />
-            //       <label for="entityControl_Active" class="checkbox-label">Activo?</label>
-            //   </div>
-            //</div>
-
             divContaiunerPpal.Controls.Add(divContainer);
         }
     }
-
     private Control GetAdditionalLabelControlForCheckBox(string controlId)
     {
         var labelForCheckBox = new HtmlGenericControl("label");
         labelForCheckBox.Attributes.Add("class", "checkbox-label");
-        labelForCheckBox.Attributes.Add("for", UIControlPrefix + controlId);
-        labelForCheckBox.InnerHtml = controlId + "?";
+        labelForCheckBox.Attributes.Add("for", UIControlPrefix + GetSimplyName(controlId));
+        labelForCheckBox.InnerHtml = GetSimplyName(controlId) + "?";
         return labelForCheckBox;
+    } 
+    private string GetSimplyName(string controlId)
+    {
+        return controlId.Substring(controlId.LastIndexOf("_") + 1, controlId.Length - controlId.LastIndexOf("_") - 1);
     }
-
     private void SetBorderToDefaultColor()
         {
             // Cambiar por método polivalente(recibe accion a realizar en formato ActionsForControl) que recorra la lista de controles y 
@@ -425,7 +405,27 @@ public partial class EntityEdition : BaseUC //, IModelEdition
             //entityControl_UserName.BorderColor = GrayHtmlColor;
             //entityControl_Password.BorderColor = GrayHtmlColor;
         }
-    private void SetCreatedUpdatedData(ref string createdDate, ref string updateDate)
+    private bool IsAuditField(string propertyName)
+    {
+        return (propertyName.Equals("updated") || propertyName.Equals("created"));
+    }
+    private string GetAuditFieldValue(PropertyInfo property)
+    {
+        var createdDate = string.Empty;
+        var updateDate = string.Empty;
+
+        FillCreatedUpdatedData(ref createdDate, ref updateDate, property);
+        switch (property.Name.ToLower())
+        {
+            case "created":
+                return createdDate;
+            case "update":
+                return updateDate;
+            default:
+                return string.Empty;
+        }
+    }
+    private void FillCreatedUpdatedData(ref string createdDate, ref string updateDate, PropertyInfo property)
     {
         switch (Mode) {
             case ViewMode.Create:
@@ -433,12 +433,22 @@ public partial class EntityEdition : BaseUC //, IModelEdition
                 createdDate = DateTime.Now.ToString("dd/MM/yyyy");
                 break;
             case ViewMode.Edit:
-                updateDate = DateTime.Now.ToString("dd/MM/yyyy");
-                createdDate = Model.Created.ToString("dd/MM/yyyy");
+
+                if(property.Name.ToLower().Equals("created")) {
+                    createdDate = property.GetValue(Model).ToString();
+                }
+                else if(property.Name.ToLower().Equals("updated")) {
+                    updateDate = DateTime.Now.ToString("dd/MM/yyyy");
+                }
                 break;
             case ViewMode.View:
-                updateDate = Model.Updated.ToString("dd/MM/yyyy");
-                createdDate = Model.Created.ToString("dd/MM/yyyy");
+
+                if (property.Name.ToLower().Equals("created")) {
+                    createdDate = (property.GetValue(Model)).ToString();
+                }
+                else if (property.Name.ToLower().Equals("updated")) {
+                    createdDate = (property.GetValue(Model)).ToString();
+                }
                 break;
         }
     }

@@ -5,7 +5,6 @@ using System.Threading;
 using System.Web.UI.WebControls;
 using System.Web.UI;
 using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Web.UI.HtmlControls;
 using BussinesTypedObject;
 
@@ -59,7 +58,6 @@ public class BaseUC : UserControl
             Session["ControlList"] = value;
         }
     }
- 
     public EntityManager EntityManager
     {
         get {
