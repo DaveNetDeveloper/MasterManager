@@ -265,8 +265,17 @@ public partial class EntityEdition : BaseUC
 
     private bool IsSpecialField(string propertyLowerName)
     {
-        return propertyLowerName.Equals("id");
+        return propertyLowerName.Equals("id") || (IsForeingKeyField(propertyLowerName));
     }
+
+    private bool IsForeingKeyField(string propertyLowerName)
+    {
+        foreach (var item in Model.FkRelationsList) {
+            if (item.ColumnName.Equals(propertyLowerName)) return true;
+        }
+        return false;
+    }
+
     private void InitializeControls()
     {
         CreateControls();
@@ -340,7 +349,6 @@ public partial class EntityEdition : BaseUC
                     addControl = true;
                     break;
             }
-
             if (addControl) ControlList.Add(control);
         }
     }

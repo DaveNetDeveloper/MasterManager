@@ -157,29 +157,6 @@ public class BaseUC : UserControl
         control.BorderColor = invalidDataColor;
         control.BorderWidth = new Unit(1);
     }
-    //protected void LoadControls()
-    //{
-    //    foreach (Control form in Controls) {
-    //        if (form.GetType().Name.Equals("HtmlForm")) {
-    //            foreach (Control c in form.Controls) {
-    //                if ((c.GetType().Name.ToLower().Equals("textbox")) || (c.GetType().Name.ToLower().Contains("checkbox"))) {
-    //                    if (c.ID.Contains(UIControlPrefix)) ControlList.Add(c);
-    //                }
-    //                else {
-    //                    try {
-    //                        if (((HtmlControl)c).TagName.ToLower().Equals("textarea")) {
-    //                            ControlList.Add(c);
-    //                        }
-    //                    }
-    //                    catch (Exception ex) {
-    //                        var except = ex;
-    //                    }
-    //                }
-    //            }
-    //            break;
-    //        }
-    //    }
-    //}
     protected void ActivateControls(bool enabled)
     {
         foreach (Control c in ControlList) {
@@ -228,13 +205,9 @@ public class BaseUC : UserControl
     protected void ActionForControl(object value, string propertyName)
     {
         //if(action == ActionsForControl.SetValue)
-
-        foreach (Control c in ControlList)
-        {
-            if (c.ClientID.Contains(propertyName))
-            {
-                switch (c.GetType().Name)
-                {
+        foreach (Control c in ControlList) {
+            if (c.ClientID.Contains(propertyName)) {
+                switch (c.GetType().Name) {
                     case "TextBox":
                         ((TextBox)c).Text = value.ToString();
                         break;
