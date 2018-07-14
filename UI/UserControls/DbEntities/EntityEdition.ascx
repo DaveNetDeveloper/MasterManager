@@ -89,7 +89,7 @@
 									    <asp:TextBox runat="server" id="entityControl_Updated" TextMode="DateTime" name="entityControl_Updated" CssClass="form-lname form-element large" tabindex="2" />
 								    </div>
                                 </div> --%>
-							    <div class="column width-12">
+							    <div id="buttonsContainer" class="column width-12">
 								    <asp:Button runat="server" ID="btnGuardar" Text="Guardar" OnClick="SaveModelClick" CssClass="form-submit button medium bkg-theme bkg-hover-theme color-white color-hover-white" />
                                     <asp:Button runat="server" ID="btnVolver" Text="Volver" OnClick="GoBackClick" CssClass="form-submit button medium bkg-theme bkg-hover-theme color-white color-hover-white" />
 							    </div>

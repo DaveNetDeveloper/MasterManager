@@ -1,5 +1,4 @@
 ﻿using System;   
-using System.Globalization;
 using System.Reflection;
 using System.Runtime.Remoting;
 using System.Web.UI;
@@ -16,14 +15,12 @@ public partial class EntityEdition : BaseUC //, IModelEdition
             try {
                 if (Session["Model"] == null) Session["Model"] = Entity.GetByPrimaryKey(Int32.Parse(PrimaryKey));
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 throw ex;
             }
             return (IModel)Session["Model"];
         }
-        set
-        {
+        set {
             Session["Model"] = value;
         }
     }
@@ -36,21 +33,17 @@ public partial class EntityEdition : BaseUC //, IModelEdition
     protected override void OnLoad(EventArgs e)
     {
         if (!IsPostBack) {
-            
             ApplyLayout();
-            LoadControls();
+            //LoadControls();
             FillFromModel();
         }
     }
     protected override void OnInit(EventArgs e)
     {
         try {
-            if (!IsPostBack) { 
-                DisposeProperties(); 
-                Session.RemoveAll();
-
+            if (!IsPostBack) {
+                InitializeCache();
                 GetPageParameters();
-                InitializeSession(); 
                 EntityManager.InitializeTypes(BussinesObject, ProyectName);
 
                 CreateControls();
@@ -64,73 +57,7 @@ public partial class EntityEdition : BaseUC //, IModelEdition
             //Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
         }
     }
-
-    private void CreateControls()
-    {
-        short tabIndex = 0;
-        var ModelClass = EntityManager.TypedBO.ModelLayerType;
-        foreach (PropertyInfo property in ModelClass.GetProperties()) {
-
-            tabIndex++;
-            var propertyName = UIControlPrefix + property.Name;
-            Control control = null;
-            bool addControl = false;
-
-            switch (property.PropertyType.Name.ToLower()) {
-                case "string":
-                    control = new TextBox(); 
-                    ((TextBox)control).CssClass = "form-lname form-element large";
-                    ((TextBox)control).Attributes["placeholder"] = property.Name;
-                    ((TextBox)control).Attributes["required"] = "required";
-                    ((TextBox)control).Attributes["name"] = propertyName;
-                    ((TextBox)control).TabIndex = tabIndex;
-                    control.ID = propertyName;
-                    addControl = true;
-                    break;
-
-                case "boolean":
-                    control = new HtmlInputCheckBox();
-                    //id="entityControl_Active"   name="entityControl_Active"  
-                    ((HtmlInputCheckBox)control).Attributes["placeholder"] = property.Name;
-                    ((HtmlInputCheckBox)control).Attributes["required"] = "required";
-                    //((HtmlInputCheckBox)control).TabIndex = tabIndex;
-                    ((HtmlInputCheckBox)control).Attributes["class"] = "form-element checkbox";
-                    ((HtmlInputCheckBox)control).Attributes["name"] = propertyName;
-                    control.ID = propertyName;
-                    addControl = true;
-                    break;
-
-                //case "CheckBox":
-                //    control = new CheckBox(); 
-                //    break;
-
-                case "datetime":
-                    control = new TextBox();
-                    ((TextBox)control).CssClass = "form-lname form-element large";
-                    ((TextBox)control).Attributes["placeholder"] = property.Name;
-                    ((TextBox)control).Attributes["required"] = "required";
-                    ((TextBox)control).TabIndex = tabIndex;
-                    control.ID = propertyName;
-                    addControl = true;
-                    break; 
-            }
-
-            if(addControl) ControlList.Add(control);
-        }
-    }
-
-    private void AddControlsToHtmlForm()
-    {
-        Control myPlaceHolder = FindControl("form"); 
-        HtmlControl divContaiunerPpal = (HtmlControl)myPlaceHolder.FindControl("entityControlsContainer");
-        foreach (var control in ControlList) {
-            HtmlGenericControl divContainer = new HtmlGenericControl("div");
-            divContainer.Attributes.Add("class", "column width-6");
-            divContainer.Controls.Add(control);
-            divContaiunerPpal.Controls.Add(divContainer);
-        }
-    }
-
+     
     #endregion
 
     #region [ methods ]
@@ -218,6 +145,7 @@ public partial class EntityEdition : BaseUC //, IModelEdition
                                 fieldValue = property.GetValue(Model);
                                 ((HtmlInputCheckBox)control).Checked = ((bool)fieldValue) ? true : false;
                                 break;
+                            #region " Commented "
                             //case "int32":
                             //    fieldValue = property.GetValue(Model);
                             //    ((TextBox)control).Text = (string)fieldValue;
@@ -226,14 +154,13 @@ public partial class EntityEdition : BaseUC //, IModelEdition
                             //    fieldValue = property.GetValue(Model);
                             //    ((TextBox)control).Text = (string)fieldValue;
                             //    break;
+                            #endregion
                             default:
                                 fieldValue = null;
                                 break;
                         }
                     }
                 }
-
-                //ActionForControl(((dynamic)Model).Name, entityControl_Name.ID);
 
                 //entityControl_Name.Text = ((dynamic)Model).Name;
                 //entityControl_Surname.Text = ((dynamic)Model).Surname;
@@ -249,6 +176,7 @@ public partial class EntityEdition : BaseUC //, IModelEdition
                 var createdDate = string.Empty;
                 var updateDate = string.Empty;
                 SetCreatedUpdatedData(ref createdDate, ref updateDate);
+
                 //entityControl_Created.Text = createdDate;
                 //entityControl_Updated.Text = updateDate;
             }
@@ -353,10 +281,150 @@ public partial class EntityEdition : BaseUC //, IModelEdition
     private PropertyInfo GetModelProperty(string propertyName)
     {
         foreach (var property in Model.GetType().GetProperties()) {
-            if (propertyName.ToLower().Equals(property.Name.ToLower()) || propertyName.ToLower().Trim().Contains(property.Name.ToLower())) return property; 
+            if (propertyName.ToLower().Equals(property.Name.ToLower())) return property; 
         }
         return null;
     }
+    private Object CreateNewModelInstance()
+    {
+        var bussinesAssembly = Assembly.GetAssembly(EntityManager.TypedBO.ModelLayerType);
+        ObjectHandle handle = Activator.CreateInstance(bussinesAssembly.GetName().Name, EntityManager.TypedBO.ModelLayerType.Name);
+        Object modelInstance = handle.Unwrap();
+        return modelInstance;
+    }
+
+    private void CreateControls()
+    {
+        short tabIndex = 0;
+        var ModelClass = EntityManager.TypedBO.ModelLayerType;
+        foreach (PropertyInfo property in ModelClass.GetProperties())
+        {
+            tabIndex++;
+            var propertyName = UIControlPrefix + property.Name;
+            Control control = null;
+            bool addControl = false;
+
+            switch (property.PropertyType.Name.ToLower())
+            {
+                case "string":
+                    control = new TextBox();
+                    ((TextBox)control).CssClass = "form-lname form-element large";
+                    ((TextBox)control).Attributes["placeholder"] = property.Name;
+                    ((TextBox)control).Attributes["required"] = "required";
+                    ((TextBox)control).Attributes["name"] = propertyName;
+                    ((TextBox)control).TabIndex = tabIndex;
+                    control.ID = propertyName;
+                    addControl = true;
+                    break;
+
+                case "boolean":
+                    control = new HtmlInputCheckBox();
+                    //id="entityControl_Active"   name="entityControl_Active"  
+                    ((HtmlInputCheckBox)control).Attributes["placeholder"] = property.Name;
+                    ((HtmlInputCheckBox)control).Attributes["required"] = "required";
+                    //((HtmlInputCheckBox)control).TabIndex = tabIndex;
+                    ((HtmlInputCheckBox)control).Attributes["class"] = "form-element checkbox";
+                    ((HtmlInputCheckBox)control).Attributes["name"] = propertyName;
+                    control.ID = propertyName;
+                    addControl = true;
+                    break;
+
+                case "datetime":
+                    control = new TextBox();
+                    ((TextBox)control).CssClass = "form-lname form-element large";
+                    ((TextBox)control).Attributes["placeholder"] = property.Name;
+                    ((TextBox)control).Attributes["required"] = "required";
+                    ((TextBox)control).TabIndex = tabIndex;
+                    control.ID = propertyName;
+                    addControl = true;
+                    break;
+            }
+
+            if (addControl) ControlList.Add(control);
+        }
+    }
+    private void AddControlsToHtmlForm()
+    {
+        Control myPlaceHolder = FindControl("form");
+        HtmlControl divContaiunerPpal = (HtmlControl)myPlaceHolder.FindControl("entityControlsContainer");
+        foreach (var control in ControlList)
+        {
+            //Main contaniner
+            HtmlGenericControl divContainer = new HtmlGenericControl("div");
+            divContainer.Attributes.Add("class", "column width-6");
+
+            //Special container for CheckBoxs
+            switch (control.GetType().Name) {
+
+                case "HtmlInputCheckBox":
+                case "CheckBox":
+
+                    var divWrapperForCheckBox = new HtmlGenericControl("div");
+                    divWrapperForCheckBox.Attributes.Add("class", "field-wrapper pt-10 pb-10");
+                    divWrapperForCheckBox.Controls.Add(control);
+                    divWrapperForCheckBox.Controls.Add(GetAdditionalLabelControlForCheckBox(control.ID));
+                    divContainer.Controls.Add(divWrapperForCheckBox);
+                    break;
+
+                default:
+                    divContainer.Controls.Add(control);
+                    break;
+                //case "HtmlTextArea":
+                //  ((HtmlTextArea)control).Disabled = !enabled;
+                //  break;
+            }
+            
+            //<div class="column width-6">
+            //   <div class="field-wrapper pt-10 pb-10">
+            //       <input id = "entityControl_Active" runat="server" class="form-element checkbox" name="entityControl_Active" type="checkbox" />
+            //       <label for="entityControl_Active" class="checkbox-label">Activo?</label>
+            //   </div>
+            //</div>
+
+            divContaiunerPpal.Controls.Add(divContainer);
+        }
+    }
+
+    private Control GetAdditionalLabelControlForCheckBox(string controlId)
+    {
+        var labelForCheckBox = new HtmlGenericControl("label");
+        labelForCheckBox.Attributes.Add("class", "checkbox-label");
+        labelForCheckBox.Attributes.Add("for", UIControlPrefix + controlId);
+        labelForCheckBox.InnerHtml = controlId + "?";
+        return labelForCheckBox;
+    }
+
+    private void SetBorderToDefaultColor()
+        {
+            // Cambiar por método polivalente(recibe accion a realizar en formato ActionsForControl) que recorra la lista de controles y 
+            // setee el color del borde 
+            // Después de este cambio mover este metodo a BasePage
+
+            foreach (Control c in ControlList) { 
+                switch (c.GetType().Name) { 
+                    case "TextBox":
+                        ((TextBox)c).BorderColor = GrayHtmlColor;
+                        break;
+                    case "CheckBox":
+                        ((CheckBox)c).BorderColor = GrayHtmlColor;
+                        break;
+                    case "HtmlInputCheckBox":
+                        ((HtmlInputCheckBox)c).Attributes.CssStyle["bordercolor"] = GrayHtmlColor.ToString();
+                        break;
+                    case "HtmlTextArea":
+                        ((HtmlTextArea)c).Attributes.CssStyle["bordercolor"] = GrayHtmlColor.ToString();
+                        break;
+                }
+            }
+
+           // entityControl_Name.BorderColor = GrayHtmlColor;
+            //entityControl_Surname.BorderColor = GrayHtmlColor;
+            //entityControl_Mail.BorderColor = GrayHtmlColor;
+            //entityControl_BirthDate.BorderColor = GrayHtmlColor;
+            //entityControl_Phone.BorderColor = GrayHtmlColor;
+            //entityControl_UserName.BorderColor = GrayHtmlColor;
+            //entityControl_Password.BorderColor = GrayHtmlColor;
+        }
     private void SetCreatedUpdatedData(ref string createdDate, ref string updateDate)
     {
         switch (Mode) {
@@ -373,50 +441,6 @@ public partial class EntityEdition : BaseUC //, IModelEdition
                 createdDate = Model.Created.ToString("dd/MM/yyyy");
                 break;
         }
-    }
-    private Object CreateNewModelInstance()
-    {
-        var bussinesAssembly = Assembly.GetAssembly(EntityManager.TypedBO.ModelLayerType);
-        ObjectHandle handle = Activator.CreateInstance(bussinesAssembly.GetName().Name, EntityManager.TypedBO.ModelLayerType.Name);
-        Object modelInstance = handle.Unwrap();
-        return modelInstance;
-    }
-    private void SetBorderToDefaultColor()
-    {
-        // Cambiar por método polivalente(recibe accion a realizar en formato ActionsForControl) que recorra la lista de controles y 
-        // setee el color del borde 
-        // Después de este cambio mover este metodo a BasePage
-
-        foreach (Control c in ControlList) { 
-            switch (c.GetType().Name) { 
-                case "TextBox":
-                    ((TextBox)c).BorderColor = GrayHtmlColor;
-                    break;
-                case "CheckBox":
-                    ((CheckBox)c).BorderColor = GrayHtmlColor;
-                    break;
-                case "HtmlInputCheckBox":
-                    ((HtmlInputCheckBox)c).Attributes.CssStyle["bordercolor"] = GrayHtmlColor.ToString();
-                    break;
-                case "HtmlTextArea":
-                    ((HtmlTextArea)c).Attributes.CssStyle["bordercolor"] = GrayHtmlColor.ToString();
-                    break;
-            }
-        }
-
-       // entityControl_Name.BorderColor = GrayHtmlColor;
-        //entityControl_Surname.BorderColor = GrayHtmlColor;
-        //entityControl_Mail.BorderColor = GrayHtmlColor;
-        //entityControl_BirthDate.BorderColor = GrayHtmlColor;
-        //entityControl_Phone.BorderColor = GrayHtmlColor;
-        //entityControl_UserName.BorderColor = GrayHtmlColor;
-        //entityControl_Password.BorderColor = GrayHtmlColor;
-    }
-    private void InitializeData()
-    {
-        GetPageParameters();
-        EntityManager.InitializeTypes(BussinesObject, ProyectName);
-        LoadControls();
     }
     private void InitializeCache()
     {

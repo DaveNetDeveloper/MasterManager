@@ -30,24 +30,20 @@ public class BaseUC : UserControl
 
     public string PrimaryKey
     {
-        get
-        {
+        get {
             return (string)Session["PrimaryKey"];
         }
-        set
-        {
+        set {
             Session["PrimaryKey"] = value;
         }
     }
     public ViewMode Mode
     {
-        get
-        {
+        get {
             if (Session["Mode"] == null) Session["Mode"] = ViewMode.None;
             return (ViewMode)Session["Mode"];
         }
-        set
-        {
+        set {
             Session["Mode"] = value;
         }
     }
@@ -66,39 +62,31 @@ public class BaseUC : UserControl
  
     public EntityManager EntityManager
     {
-        get
-        {
-            try
-            {
+        get {
+            try {
                 if (Session["EntityManager"] == null) Session["EntityManager"] = new EntityManager(ProyectName);
                 return (EntityManager)Session["EntityManager"];
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 throw ex;
             }
         }
-        set
-        {
+        set {
             Session["EntityManager"] = value;
         }
     }
     public IEntity Entity
     {
-        get
-        {
-            try
-            {
+        get {
+            try {
                 if (Session["Entity"] == null) Session["Entity"] = EntityManager.GetEntity();
                 return (IEntity)Session["Entity"];
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 throw ex;
             }
         }
-        set
-        {
+        set {
             Session["Entity"] = value;
         }
     }
@@ -122,12 +110,10 @@ public class BaseUC : UserControl
 
     protected void ApplyLanguage(CultureInfo culture)
     {
-        try
-        {
+        try {
             Thread.CurrentThread.CurrentUICulture = culture;
         }
-        catch (Exception ex)
-        {
+        catch (Exception ex) {
             throw ex;
         }
     }
@@ -145,10 +131,8 @@ public class BaseUC : UserControl
     }
     protected void GetViewMode()
     {
-        if (Request.QueryString["M"] != null)
-        {
-            switch (Request.QueryString["M"])
-            {
+        if (Request.QueryString["M"] != null) {
+            switch (Request.QueryString["M"]) {
                 case "V":
                     Mode = ViewMode.View;
                     break;
@@ -163,8 +147,7 @@ public class BaseUC : UserControl
                     break;
             }
         }
-        else
-        {
+        else {
             Mode = ViewMode.None;
         }
 
@@ -176,43 +159,33 @@ public class BaseUC : UserControl
         control.BorderColor = invalidDataColor;
         control.BorderWidth = new Unit(1);
     }
-    protected void LoadControls()
-    {
-        foreach (Control form in Controls)
-        {
-            if (form.GetType().Name.Equals("HtmlForm"))
-            {
-                foreach (Control c in form.Controls)
-                {
-                    if ((c.GetType().Name.ToLower().Equals("textbox")) || (c.GetType().Name.ToLower().Contains("checkbox")))
-                    {
-                        if (c.ID.Contains(UIControlPrefix)) ControlList.Add(c);
-                    }
-                    else
-                    {
-                        try
-                        {
-                            if (((HtmlControl)c).TagName.ToLower().Equals("textarea"))
-                            {
-                                ControlList.Add(c);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            var except = ex;
-                        }
-                    }
-                }
-                break;
-            }
-        }
-    }
+    //protected void LoadControls()
+    //{
+    //    foreach (Control form in Controls) {
+    //        if (form.GetType().Name.Equals("HtmlForm")) {
+    //            foreach (Control c in form.Controls) {
+    //                if ((c.GetType().Name.ToLower().Equals("textbox")) || (c.GetType().Name.ToLower().Contains("checkbox"))) {
+    //                    if (c.ID.Contains(UIControlPrefix)) ControlList.Add(c);
+    //                }
+    //                else {
+    //                    try {
+    //                        if (((HtmlControl)c).TagName.ToLower().Equals("textarea")) {
+    //                            ControlList.Add(c);
+    //                        }
+    //                    }
+    //                    catch (Exception ex) {
+    //                        var except = ex;
+    //                    }
+    //                }
+    //            }
+    //            break;
+    //        }
+    //    }
+    //}
     protected void ActivateControls(bool enabled)
     {
-        foreach (Control c in ControlList)
-        {
-            switch (c.GetType().Name)
-            {
+        foreach (Control c in ControlList) {
+            switch (c.GetType().Name) {
                 case "TextBox":
                     ((TextBox)c).Enabled = enabled;
                     break;
@@ -254,12 +227,6 @@ public class BaseUC : UserControl
             }
         }
     }
-
-    private bool ContainsDateTimeData(string textData)
-    {
-        return textData.Contains("/") && textData.Trim().Length.Equals(10);
-    }
-
     protected void ActionForControl(object value, string propertyName)
     {
         //if(action == ActionsForControl.SetValue)
@@ -292,6 +259,11 @@ public class BaseUC : UserControl
         Session["SessionStartTicks"] = DateTime.Now.Ticks;
         Session["SessionID"] = Session.SessionID;
         Session["UserClosedCokkiesBar"] = false;
+    }
+
+    private bool ContainsDateTimeData(string textData)
+    {
+        return textData.Contains("/") && textData.Trim().Length.Equals(10);
     }
 
     #endregion 
