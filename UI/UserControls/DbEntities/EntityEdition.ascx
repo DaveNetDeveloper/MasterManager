@@ -16,35 +16,8 @@
 				    <div class="column width-8 left">
 					    <div runat="server" class="contact-form-container"> 	 
 						    <div class="row" runat="server" id="entityControlsContainer">
-
-
-                                <%-- <div class="column width-6">
-								    <input type="text" name="honeypot" class="form-honeypot form-element large" />
-							    </div> --%>
-							    
                                 
-                                
-                                <%-- 
-							    <div class="column width-6"> 
-
-								    <div class="form-select form-element large">
-									    <select name="options" class="form-aux" data-label="Options" tabindex="5">
-										    <option selected="selected" value=""></option>
-										    <option value="">From a friend</option>
-										    <option value="">Found Sartre online</option>
-										    <option value="">Previous client</option>
-										    <option value="">Through advertising</option>
-									    </select>
-								    </div>
-
-
-
-							    </div> 
-
-
-
-
-							    <div class="column width-6">
+                                <%--  <div class="column width-6">
 								    <input type="text" name="honeypot" class="form-honeypot form-element large" />
 							    </div>
 
@@ -53,33 +26,15 @@
 									    <textarea runat ="server" name="entityControl_Message" id="entityControl_Message" class="form-message form-element large" placeholder="mensaje" tabindex="7" required="required"></textarea>
 								    </div>
 							    </div>
+                            </div> 
+                                
+                            <div class="column width-6">
+                                <input type="datetime-local" id="date" name="date" value="<%:DateTime.Now.ToString("mm/dd/yyyy") %>"/>
+                            </div>
 
+                            <div class="column width-6">
+                                <input type="date" name="bday" max="2000-01-01" value="<%:DateTime.Now.ToString("o") %>">
                             </div> --%>
-
-
-                                <%--<div class="column width-6">
-                                    <input type="datetime-local" id="date" name="date" value="<%:DateTime.Now.ToString("mm/dd/yyyy") %>"/>
-                                </div>--%>
-                                 
-                                <%--<div class="column width-6">
-                                    <input type="date" name="bday" max="2000-01-01" value="<%:DateTime.Now.ToString("o") %>">
-                                </div>
-
-                                <div class="column width-6">
-								    <div class="form-select form-element large">
-									    <select name="options" class="form-aux" data-label="Options" tabindex="5">
-										    <option selected="selected" value="">Productos</option>
-										    <option value="">LNA</option>
-										    <option value="">PNB</option>
-										    <option value="">PER</option>
-										    <option value="">Patron de Yate</option>
-										    <option value="">Capitán de Yate</option>
-									    </select>
-								    </div>
-							    </div>--%>
-
-
-
 
 						    </div>  
                             <div id="buttonsContainer" style="text-align: right;" class="column width-12">

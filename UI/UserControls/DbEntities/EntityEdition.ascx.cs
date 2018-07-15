@@ -168,26 +168,18 @@ public partial class EntityEdition : BaseUC
                                 if(null != fieldValueList && fieldValueList.Count > 0) {
                                     foreach (var field in fieldValueList) {
 
-                                        var model = CreateNewModelInstanceByType(field.GetType());
-                                        if(null != model) {
-
-                                            var item = new ListItem();
-                                            item.Value = model.GetType().GetProperties()[0].GetValue(field).ToString();
-                                            item.Text = model.GetType().GetProperties()[1].GetValue(field).ToString();
-                                            item.Selected = false;
-
-                                            ((HtmlSelect)control).Items.Add(item);
-
-                                            //foreach (var prop in model.GetType().GetProperties()) {
-                                            //    var item = new ListItem();
-                                            //    item.Value = prop.GetValue(field).ToString();
-                                            //    item.Text = "";
-                                            //    item.Selected = false;
-
-                                            //    ((HtmlSelect)control).Items.Add(item);
-                                            //}
+                                        if (!field.GetType().Equals(typeof(ModelDataBaseFKRelation))) {
+                                            var model = CreateNewModelInstanceByType(field.GetType());
+                                            if (null != model) {
+                                                var item = new ListItem();
+                                                item.Value = model.GetType().GetProperties()[0].GetValue(field).ToString();
+                                                item.Text = model.GetType().GetProperties()[1].GetValue(field).ToString();
+                                                item.Selected = false;
+                                                ((HtmlSelect)control).Items.Add(item);
+                                            }
                                         }
                                     }
+                                    if (((HtmlSelect)control).Items.Count > 0) ((HtmlSelect)control).Items[0].Selected = true;
                                 } 
                                 break;
                         }
