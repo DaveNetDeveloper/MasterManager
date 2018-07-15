@@ -20,8 +20,10 @@
     <link rel="stylesheet" href="../css/core.min.css" />
     <link rel="stylesheet" href="../css/skin.css" /> 
 </head>
-<body>  
+<body>
     <uc:EntityEdit BussinesObject="Usuario_Alumno" runat="server" ID="UcEntity" /> 
+
+    <%--<uc:EntityEdit BussinesObject="Usuario_Gestor" runat="server" ID="UcEntity" /> --%>
 </body>  
 </html>
 

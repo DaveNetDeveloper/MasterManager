@@ -2,8 +2,4 @@
 
 public partial class EntityEdition : Page
 { 
-
-
-
-
 }

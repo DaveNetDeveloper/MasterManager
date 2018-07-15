@@ -1,14 +1,14 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true"  CodeFile="EntityEdition.ascx.cs" Inherits="EntityEdition" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="EntityEdition.ascx.cs" Inherits="EntityEdition" %>
 <form id="form" runat="server"> 
     <div runat="server" class="wrapper reveal-side-navigation">
 	    <div runat="server" class="wrapper-inner"> 
             <section runat="server" class="section-block replicable-content contact-2">
                 <div runat="server" class="row">
 				    <div class="column width-4">
-					    <h2 class="mb-30">Edición de alumno</h2>
+					    <h2 class="mb-30">Edición de [Entity]</h2>
 					    <div class="row">
 						    <div class="column width-10">
-							    <p>Aquí puedes editar los detalles de un alumno.</p>
+							    <p>Aquí puedes editar los detalles de un [Entity].</p>
 						    </div>
 					    </div>
 				    </div>
