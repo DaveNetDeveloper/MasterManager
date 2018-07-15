@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.Remoting;
 using System.Web.UI;
@@ -100,7 +102,6 @@ public partial class EntityEdition : BaseUC
     }
     public void ResetFields()
     {
-        //llamar a nuevo método ActionToControl, que recibe el nombre del control y la acción de reset value
         ResetControlValues();
 
         //entityControl_Name.Text = string.Empty;
@@ -132,7 +133,7 @@ public partial class EntityEdition : BaseUC
                                 break;
 
                             case "datetime":
-                                if(IsAuditField(property.Name.ToLower())){
+                                if(IsAuditField(property.Name.ToLower())) {
                                     fieldValue = GetAuditFieldValue(property);
                                     ((TextBox)control).Enabled = false;
                                     ((TextBox)control).ReadOnly = true;
@@ -149,17 +150,45 @@ public partial class EntityEdition : BaseUC
                             case "int32":
                             case "decimal":
 
-                                if(IsSpecialField(property.Name.ToLower())) {
+                                fieldValue = property.GetValue(Model);
+                                ((TextBox)control).Text = ((Int32)fieldValue).ToString();
+
+                                if (IsPrimaryField(property.Name.ToLower())) {
                                     ((TextBox)control).Enabled = false;
                                     ((TextBox)control).ReadOnly = true;
                                 }
+                                else if (IsForeingKeyField(property.Name.ToLower())) {
+                                    ((TextBox)control).Visible = false;
+                                }
+                                break;
 
-                                fieldValue = property.GetValue(Model);
-                                ((TextBox)control).Text = ((Int32)fieldValue).ToString();
-                                break; 
+                            case "list`1":
 
-                            default:
-                                fieldValue = null;
+                                var fieldValueList = (IList)property.GetValue(Model);
+                                if(null != fieldValueList && fieldValueList.Count > 0) {
+                                    foreach (var field in fieldValueList) {
+
+                                        var model = CreateNewModelInstanceByType(field.GetType());
+                                        if(null != model) {
+
+                                            var item = new ListItem();
+                                            item.Value = model.GetType().GetProperties()[0].GetValue(field).ToString();
+                                            item.Text = model.GetType().GetProperties()[1].GetValue(field).ToString();
+                                            item.Selected = false;
+
+                                            ((HtmlSelect)control).Items.Add(item);
+
+                                            //foreach (var prop in model.GetType().GetProperties()) {
+                                            //    var item = new ListItem();
+                                            //    item.Value = prop.GetValue(field).ToString();
+                                            //    item.Text = "";
+                                            //    item.Selected = false;
+
+                                            //    ((HtmlSelect)control).Items.Add(item);
+                                            //}
+                                        }
+                                    }
+                                } 
                                 break;
                         }
                     }
@@ -176,46 +205,55 @@ public partial class EntityEdition : BaseUC
             IModel uiModel = (IModel)CreateNewModelInstance();
             bool validationResult = true;
 
-            //if (string.IsNullOrEmpty(entityControl_Name.Text.Trim()))
-            //    SetControlAsInvalid(entityControl_Name, ref validationResult);
-           // else
-            //    ((dynamic)uiModel).Name = entityControl_Name.Text;
+            foreach (Control c in ControlList) {
+                switch (c.GetType().Name) {
 
-            //if (string.IsNullOrEmpty(entityControl_Surname.Text.Trim()))
-            //    SetControlAsInvalid(entityControl_Surname, ref validationResult);
-            //else
-            //    ((dynamic)uiModel).Surname = entityControl_Surname.Text;
+                    case "TextBox":
 
-            //if (string.IsNullOrEmpty(entityControl_Mail.Text.Trim()))
-            //    SetControlAsInvalid(entityControl_Mail, ref validationResult);
-            //else
-            //    ((dynamic)uiModel).Mail = entityControl_Mail.Text;
+                        if (string.IsNullOrEmpty(((TextBox)c).Text.Trim())) SetControlAsInvalid(((TextBox)c), ref validationResult);
+                        else SetPropertyValueIntoInternalModel(((TextBox)c).Text, GetSimplyName(((TextBox)c).ID), uiModel);
+                         
 
-            //if (string.IsNullOrEmpty(entityControl_BirthDate.Text.Trim()))
-            //    SetControlAsInvalid(entityControl_BirthDate, ref validationResult);
-            //else
-            //    ((dynamic)uiModel).BirthDate = HelperDataTypesConversion.GetDateTimeFromText(entityControl_BirthDate.Text,
-            //                                                                      Constants.inputDateTimeFormat_ddmmaaaa,
-            //                                                                      CultureInfo.CurrentCulture);
+                        //if (string.IsNullOrEmpty(entityControl_Phone.Text.Trim()))
+                        //    SetControlAsInvalid(entityControl_Surname, ref validationResult);
+                        //else
+                        //    ((dynamic)uiModel).Phone = Int32.Parse(entityControl_Phone.Text);
 
-            //if (string.IsNullOrEmpty(entityControl_Phone.Text.Trim()))
-            //    SetControlAsInvalid(entityControl_Surname, ref validationResult);
-            //else
-            //    ((dynamic)uiModel).Phone = Int32.Parse(entityControl_Phone.Text);
 
-            //if (string.IsNullOrEmpty(entityControl_UserName.Text.Trim()))
-            //    SetControlAsInvalid(entityControl_UserName, ref validationResult);
-            //else
-            //    ((dynamic)uiModel).UserName = entityControl_UserName.Text;
 
-            //if (string.IsNullOrEmpty(entityControl_Password.Text.Trim()))
-            //    SetControlAsInvalid(entityControl_Password, ref validationResult);
-            //else
-            //    ((dynamic)uiModel).Password = entityControl_Password.Text;
+                        //if (string.IsNullOrEmpty(entityControl_BirthDate.Text.Trim()))
+                        //    SetControlAsInvalid(entityControl_BirthDate, ref validationResult);
+                        //else
+                        //    ((dynamic)uiModel).BirthDate = HelperDataTypesConversion.GetDateTimeFromText(entityControl_BirthDate.Text,
+                        //                                                                      Constants.inputDateTimeFormat_ddmmaaaa,
+                        //                                                                      CultureInfo.CurrentCulture);
 
-            //((dynamic)uiModel).Active = entityControl_Active.Checked;
-            //((dynamic)uiModel).Entered = entityControl_Entered.Checked;
+                         
+                        break;
+                    case "CheckBox":
 
+                        if (string.IsNullOrEmpty(((TextBox)c).Text.Trim())) SetControlAsInvalid(((TextBox)c), ref validationResult);
+                        //else // Asignar valor del control a la propiedad del modelo [uiModel]
+                        ((CheckBox)c).BorderColor = GrayHtmlColor;
+
+                        //((dynamic)uiModel).Active = entityControl_Active.Checked;
+                        //((dynamic)uiModel).Entered = entityControl_Entered.Checked; 
+
+                        break;
+                    case "HtmlInputCheckBox":
+                        ((HtmlInputCheckBox)c).Attributes.CssStyle["bordercolor"] = GrayHtmlColor.ToString();
+
+                        //((dynamic)uiModel).Active = entityControl_Active.Checked;
+                        //((dynamic)uiModel).Entered = entityControl_Entered.Checked; 
+
+                        break;
+                    case "HtmlTextArea":
+                        //if (string.IsNullOrEmpty(((HtmlTextArea)c).Value.Trim())) SetControlAsInvalid(((HtmlTextArea)c), ref validationResult);
+                        //else SetPropertyValueIntoInternalModel(((HtmlTextArea)c).Value, GetSimplyName(((HtmlTextArea)c).ID), uiModel);
+                        break;
+                }
+            }
+            
             //uiModel.Created = HelperDataTypesConversion.GetDateTimeFromText(entityControl_Created.Text,
             //                                                                Constants.inputDateTimeFormat_ddmmaaaa,
             //                                                                CultureInfo.CurrentCulture);
@@ -237,8 +275,7 @@ public partial class EntityEdition : BaseUC
         }
     }
     public bool SaveModel() {
-        try
-        {
+        try {
             switch (Mode) {
                 case ViewMode.Create:
                     Entity.Insert(UIModel);
@@ -254,8 +291,7 @@ public partial class EntityEdition : BaseUC
                     break;
             }
         }
-        catch (Exception ex)
-        {
+        catch (Exception ex) {
             Session["error"] = ex;
             //this.SetLOG("ERROR", "Loading Page", "EditUserContact.aspx", "Center", "FillCenter()", ex.Message, DateTime.Now, 1);
             //Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
@@ -263,9 +299,18 @@ public partial class EntityEdition : BaseUC
         return true;
     }
 
-    private bool IsSpecialField(string propertyLowerName)
+    private void SetPropertyValueIntoInternalModel(object value, string propertyName, IModel internalUiModel)
     {
-        return propertyLowerName.Equals("id") || (IsForeingKeyField(propertyLowerName));
+        foreach (var modelProperty in internalUiModel.GetType().GetProperties()) {
+
+            if (propertyName.ToLower().Equals(modelProperty.Name.ToLower())) {
+                modelProperty.SetValue(internalUiModel, value);
+            }
+        }
+    }
+    private bool IsPrimaryField(string propertyLowerName)
+    {
+        return propertyLowerName.Equals("id");
     }
     private bool IsForeingKeyField(string propertyLowerName)
     {
@@ -281,8 +326,8 @@ public partial class EntityEdition : BaseUC
     }
     private PropertyInfo GetModelProperty(string propertyName)
     {
-        foreach (var property in Model.GetType().GetProperties()) {
-            if (propertyName.ToLower().Equals(property.Name.ToLower())) return property; 
+        foreach (var modelProperty in Model.GetType().GetProperties()) {
+            if (propertyName.ToLower().Equals(modelProperty.Name.ToLower())) return modelProperty; 
         }
         return null;
     }
@@ -293,17 +338,50 @@ public partial class EntityEdition : BaseUC
         Object modelInstance = handle.Unwrap();
         return modelInstance;
     }
+
+    private Object CreateNewModelInstanceByType(Type _type)
+    {
+        var bussinesAssembly = Assembly.GetAssembly(_type);
+        ObjectHandle handle = Activator.CreateInstance(bussinesAssembly.GetName().Name, _type.Name);
+        Object modelInstance = handle.Unwrap();
+        return modelInstance;
+    }
+
     private void CreateControls()
     {
+        //TODO: Crear Clase y/o enumeracion para los tipos de datos relativos a las propiedades de la clase (meter esto en e Helper Model/Properties ??)
+
         short tabIndex = 0;
         var ModelClass = EntityManager.TypedBO.ModelLayerType;
         foreach (PropertyInfo property in ModelClass.GetProperties()) {
+
             tabIndex++;
             var propertyName = UIControlPrefix + property.Name;
             Control control = null;
             bool addControl = false;
 
-            switch (property.PropertyType.Name.ToLower()) {
+            string type = property.PropertyType.Name.ToLower();
+
+            var interfacesImplemented = ((TypeInfo)property.PropertyType).ImplementedInterfaces;
+            foreach (var implementedInterface in ((TypeInfo)property.PropertyType).ImplementedInterfaces) {
+
+                if (implementedInterface.Name.Equals(typeof(IModel).Name)) {
+                    type = typeof(IModel).Name;
+                    break;
+                }
+                if (implementedInterface.Name.Equals(typeof(IList).Name)) {
+
+                    //TODO: pendiente determinar el tipo de la colección, para descartar las listas que no seas colecciones de entidades reales
+                    // Por excluir la lista de claves foraneas = no crear control
+                    var listFKType = new List<ModelDataBaseFKRelation>().GetType().Name; 
+                    if (property.PropertyType.Name.Equals(listFKType)) {
+                        type = typeof(IList).Name;
+                        break;
+                    } 
+                }
+            }
+            
+            switch (type) {
 
                 case "string":
                     control = new TextBox();
@@ -312,6 +390,9 @@ public partial class EntityEdition : BaseUC
                     ((TextBox)control).Attributes["required"] = "required";
                     ((TextBox)control).Attributes["name"] = propertyName;
                     ((TextBox)control).TabIndex = tabIndex;
+
+                    //if (property.Name.ToLower().Contains("password")) ((TextBox)control).TextMode = TextBoxMode.Password;
+
                     control.ID = propertyName;
                     addControl = true;
                     break;
@@ -332,6 +413,7 @@ public partial class EntityEdition : BaseUC
                     ((TextBox)control).Attributes["placeholder"] = property.Name;
                     ((TextBox)control).Attributes["required"] = "required";
                     ((TextBox)control).TabIndex = tabIndex;
+                    ((TextBox)control).TextMode = TextBoxMode.DateTimeLocal;
                     control.ID = propertyName;
                     addControl = true;
                     break;
@@ -346,6 +428,36 @@ public partial class EntityEdition : BaseUC
                     control.ID = propertyName;
                     addControl = true;
                     break;
+
+
+                case "IModel": 
+                    
+                    //TODO
+                    break;
+                    
+                case "IList":
+
+                    control = new HtmlSelect();
+                    control.ID = propertyName;
+                    ((HtmlSelect)control).Name = propertyName;
+                    ((HtmlSelect)control).Attributes["class"] = "form-aux";
+                    ((HtmlSelect)control).Attributes["data-label"] = "Options";
+
+                    //var item = new ListItem();
+                    //item.Value = "1";
+                    //item.Text = String.Empty;
+                    //item.Selected = false;
+                    //((HtmlSelect)control).Items.Add(item);
+
+                    //var item2 = new ListItem();
+                    //item2.Value = "2";
+                    //item2.Text = String.Empty;
+                    //item.Selected = true;
+                    //((HtmlSelect)control).Items.Add(item2);
+
+                    addControl = true;
+
+                    break;
             }
             if (addControl) ControlList.Add(control);
         }
@@ -355,6 +467,7 @@ public partial class EntityEdition : BaseUC
         Control myPlaceHolder = FindControl("form");
         HtmlControl divContaiunerPpal = (HtmlControl)myPlaceHolder.FindControl("entityControlsContainer");
         foreach (var control in ControlList) {
+
             HtmlGenericControl divContainer = new HtmlGenericControl("div");
             divContainer.Attributes.Add("class", "column width-6");
 
@@ -368,6 +481,13 @@ public partial class EntityEdition : BaseUC
                     divWrapperForCheckBox.Controls.Add(control);
                     divWrapperForCheckBox.Controls.Add(GetAdditionalLabelControlForCheckBox(control.ID));
                     divContainer.Controls.Add(divWrapperForCheckBox);
+                    break;
+
+                case "HtmlSelect":
+                    var divWrapperForSelectOptions = new HtmlGenericControl("div");
+                    divWrapperForSelectOptions.Attributes.Add("class", "form-select form-element large");
+                    divWrapperForSelectOptions.Controls.Add(control);
+                    divContainer.Controls.Add(divWrapperForSelectOptions);
                     break;
 
                 default:
@@ -393,27 +513,23 @@ public partial class EntityEdition : BaseUC
         return controlId.Substring(controlId.LastIndexOf("_") + 1, controlId.Length - controlId.LastIndexOf("_") - 1);
     }
     private void SetBorderToDefaultColor()
-        {
-            // Cambiar por método polivalente(recibe accion a realizar en formato ActionsForControl) que recorra la lista de controles y 
-            // setee el color del borde 
-            // Después de este cambio mover este metodo a BasePage
-
-            foreach (Control c in ControlList) { 
-                switch (c.GetType().Name) { 
-                    case "TextBox":
-                        ((TextBox)c).BorderColor = GrayHtmlColor;
-                        break;
-                    case "CheckBox":
-                        ((CheckBox)c).BorderColor = GrayHtmlColor;
-                        break;
-                    case "HtmlInputCheckBox":
-                        ((HtmlInputCheckBox)c).Attributes.CssStyle["bordercolor"] = GrayHtmlColor.ToString();
-                        break;
-                    case "HtmlTextArea":
-                        ((HtmlTextArea)c).Attributes.CssStyle["bordercolor"] = GrayHtmlColor.ToString();
-                        break;
-                }
+    {
+        foreach (Control c in ControlList) { 
+            switch (c.GetType().Name) { 
+                case "TextBox":
+                    ((TextBox)c).BorderColor = GrayHtmlColor;
+                    break;
+                case "CheckBox":
+                    ((CheckBox)c).BorderColor = GrayHtmlColor;
+                    break;
+                case "HtmlInputCheckBox":
+                    ((HtmlInputCheckBox)c).Attributes.CssStyle["bordercolor"] = GrayHtmlColor.ToString();
+                    break;
+                case "HtmlTextArea":
+                    ((HtmlTextArea)c).Attributes.CssStyle["bordercolor"] = GrayHtmlColor.ToString();
+                    break;
             }
+        }
 
            // entityControl_Name.BorderColor = GrayHtmlColor;
             //entityControl_Surname.BorderColor = GrayHtmlColor;
@@ -422,7 +538,7 @@ public partial class EntityEdition : BaseUC
             //entityControl_Phone.BorderColor = GrayHtmlColor;
             //entityControl_UserName.BorderColor = GrayHtmlColor;
             //entityControl_Password.BorderColor = GrayHtmlColor;
-        }
+    }
     private bool IsAuditField(string propertyName)
     {
         return (propertyName.Equals("updated") || propertyName.Equals("created"));
@@ -432,7 +548,7 @@ public partial class EntityEdition : BaseUC
         var createdDate = string.Empty;
         var updateDate = string.Empty;
 
-        FillCreatedUpdatedData(ref createdDate, ref updateDate, property);
+        FillAuditFieldData(ref createdDate, ref updateDate, property);
         switch (property.Name.ToLower())
         {
             case "created":
@@ -443,7 +559,7 @@ public partial class EntityEdition : BaseUC
                 return string.Empty;
         }
     }
-    private void FillCreatedUpdatedData(ref string createdDate, ref string updateDate, PropertyInfo property)
+    private void FillAuditFieldData(ref string createdDate, ref string updateDate, PropertyInfo property)
     {
         switch (Mode) {
             case ViewMode.Create:
@@ -496,8 +612,7 @@ public partial class EntityEdition : BaseUC
         if (IsValidModel() && SaveModel()) {
             //Response.Redirect("PAGE_TITLE_UserAlumnoList.aspx");
         }
-        else
-        {
+        else {
             // TODO Alerta --> revisar los campos no válidos
         }
     }

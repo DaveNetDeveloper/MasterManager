@@ -178,49 +178,24 @@ public class BaseUC : UserControl
     }
     protected void ResetControlValues()
     {
-        foreach (Control c in ControlList)
-        {
-            switch (c.GetType().Name)
-            {
+        foreach (Control c in ControlList) {
+            switch (c.GetType().Name) {
                 case "TextBox":
-
                     ((TextBox)c).Text = string.Empty;
                     if (ContainsDateTimeData(((TextBox)c).Text)) ((TextBox)c).Text = dateTimeDefaultMask;
                     break;
-                case "CheckBox":
 
+                case "CheckBox":
                     ((CheckBox)c).Checked = false;
                     break;
-                case "HtmlInputCheckBox":
 
+                case "HtmlInputCheckBox":
                     ((HtmlInputCheckBox)c).Checked = false;
                     break;
-                case "HtmlTextArea":
 
+                case "HtmlTextArea":
                     ((HtmlTextArea)c).Value = string.Empty;
                     break;
-            }
-        }
-    }
-    protected void ActionForControl(object value, string propertyName)
-    {
-        //if(action == ActionsForControl.SetValue)
-        foreach (Control c in ControlList) {
-            if (c.ClientID.Contains(propertyName)) {
-                switch (c.GetType().Name) {
-                    case "TextBox":
-                        ((TextBox)c).Text = value.ToString();
-                        break;
-                    case "CheckBox":
-                        ((CheckBox)c).Checked = (bool)value;
-                        break;
-                    case "HtmlInputCheckBox":
-                        ((HtmlInputCheckBox)c).Checked = (bool)value;
-                        break;
-                    case "HtmlTextArea":
-                        ((HtmlTextArea)c).Value = value.ToString();
-                        break;
-                }
             }
         }
     }
@@ -231,8 +206,7 @@ public class BaseUC : UserControl
         Session["SessionID"] = Session.SessionID;
         Session["UserClosedCokkiesBar"] = false;
     }
-
-    private bool ContainsDateTimeData(string textData)
+    protected bool ContainsDateTimeData(string textData)
     {
         return textData.Contains("/") && textData.Trim().Length.Equals(10);
     }
