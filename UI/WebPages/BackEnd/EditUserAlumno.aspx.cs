@@ -49,7 +49,7 @@ public partial class EditUserAlumno : BasePage //, IEntityEdition
             if (!IsPostBack)
             {
                 Title = PageTitle;
-                BussinesObject = BussinesTypes.BussinesObjectType.Usuario_Alumno;
+                BussinesObject = BussinesTypes.BussinesObjectType.Alumno;
                 UIControlPrefix = BussinesObject.ToString() + "_";
 
                 Session.RemoveAll();

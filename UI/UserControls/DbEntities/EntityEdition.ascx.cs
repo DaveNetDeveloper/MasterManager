@@ -306,7 +306,7 @@ public partial class EntityEdition : BaseUC
     }
     private bool IsForeingKeyField(string propertyLowerName)
     {
-        foreach (var item in Model.FkRelationsList) {
+        foreach (var item in Model.FkInputRelationsList) {
             if (item.ColumnName.Equals(propertyLowerName)) return true;
         }
         return false;
