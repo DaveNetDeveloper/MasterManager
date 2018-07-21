@@ -11,7 +11,7 @@
 	<meta property="og:image" content="Your-Image-Url" />
 	<meta property="og:description" content="Your-Page-Description" />
 
-	<title>Test Template with UserControl</title>
+	<title>Entity Edition Form</title>
 	<link rel="shortcut icon" type="image/x-icon" href="images/theme-mountain-favicon.ico">
     
     <script src="../js/jquery-1.8.2.min.js"></script>
@@ -25,4 +25,3 @@
     <%--<uc:EntityEdit BussinesObject="Usuario_Gestor" runat="server" ID="UcEntity" /> --%>
 </body>  
 </html>
-

@@ -172,8 +172,8 @@ public partial class EntityEdition : BaseUC
                                             var model = CreateNewModelInstanceByType(field.GetType());
                                             if (null != model) {
                                                 var item = new ListItem();
-                                                item.Value = model.GetType().GetProperties()[0].GetValue(field).ToString();
-                                                item.Text = model.GetType().GetProperties()[1].GetValue(field).ToString();
+                                                item.Value = model.GetType().GetProperties()[1].GetValue(field).ToString();
+                                                item.Text = model.GetType().GetProperties()[2].GetValue(field).ToString();
                                                 item.Selected = false;
                                                 ((HtmlSelect)control).Items.Add(item);
                                             }
@@ -330,7 +330,6 @@ public partial class EntityEdition : BaseUC
         Object modelInstance = handle.Unwrap();
         return modelInstance;
     }
-
     private Object CreateNewModelInstanceByType(Type _type)
     {
         var bussinesAssembly = Assembly.GetAssembly(_type);
@@ -338,7 +337,6 @@ public partial class EntityEdition : BaseUC
         Object modelInstance = handle.Unwrap();
         return modelInstance;
     }
-
     private void CreateControls()
     {
         //TODO: Crear Clase y/o enumeracion para los tipos de datos relativos a las propiedades de la clase (meter esto en e Helper Model/Properties ??)
@@ -405,7 +403,7 @@ public partial class EntityEdition : BaseUC
                     ((TextBox)control).Attributes["placeholder"] = property.Name;
                     ((TextBox)control).Attributes["required"] = "required";
                     ((TextBox)control).TabIndex = tabIndex;
-                    ((TextBox)control).TextMode = TextBoxMode.DateTimeLocal;
+                    ((TextBox)control).TextMode = TextBoxMode.DateTime;
                     control.ID = propertyName;
                     addControl = true;
                     break;
@@ -421,9 +419,7 @@ public partial class EntityEdition : BaseUC
                     addControl = true;
                     break;
 
-
                 case "IModel": 
-                    
                     //TODO
                     break;
                     
@@ -434,21 +430,7 @@ public partial class EntityEdition : BaseUC
                     ((HtmlSelect)control).Name = propertyName;
                     ((HtmlSelect)control).Attributes["class"] = "form-aux";
                     ((HtmlSelect)control).Attributes["data-label"] = "Options";
-
-                    //var item = new ListItem();
-                    //item.Value = "1";
-                    //item.Text = String.Empty;
-                    //item.Selected = false;
-                    //((HtmlSelect)control).Items.Add(item);
-
-                    //var item2 = new ListItem();
-                    //item2.Value = "2";
-                    //item2.Text = String.Empty;
-                    //item.Selected = true;
-                    //((HtmlSelect)control).Items.Add(item2);
-
                     addControl = true;
-
                     break;
             }
             if (addControl) ControlList.Add(control);
@@ -556,24 +538,24 @@ public partial class EntityEdition : BaseUC
         switch (Mode) {
             case ViewMode.Create:
                 updateDate = string.Empty;
-                createdDate = DateTime.Now.ToString("dd/MM/yyyy");
+                createdDate = DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss");
                 break;
             case ViewMode.Edit:
 
                 if(property.Name.ToLower().Equals("created")) {
-                    createdDate = property.GetValue(Model).ToString();
+                    createdDate = ((DateTime)property.GetValue(Model)).ToString("MM/dd/yyyy HH:mm:ss");
                 }
                 else if(property.Name.ToLower().Equals("updated")) {
-                    updateDate = DateTime.Now.ToString("dd/MM/yyyy");
+                    updateDate = DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss");
                 }
                 break;
             case ViewMode.View:
 
                 if (property.Name.ToLower().Equals("created")) {
-                    createdDate = (property.GetValue(Model)).ToString();
+                    createdDate = ((DateTime)(property.GetValue(Model))).ToString("MM/dd/yyyy HH:mm:ss");
                 }
                 else if (property.Name.ToLower().Equals("updated")) {
-                    createdDate = (property.GetValue(Model)).ToString();
+                    createdDate = ((DateTime)(property.GetValue(Model))).ToString("MM/dd/yyyy HH:mm:ss");
                 }
                 break;
         }
