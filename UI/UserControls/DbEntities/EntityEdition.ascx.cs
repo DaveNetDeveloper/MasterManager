@@ -209,7 +209,6 @@ public partial class EntityEdition : BaseUC
             ((HtmlSelect)control).Items.Add(item);
         }
     }
-
     private void CreateControlsForRelationalEntityListData(object field, Control control)
     {
         foreach (var fieldData in (IEnumerable)field) {
@@ -457,14 +456,12 @@ public partial class EntityEdition : BaseUC
             if (addControl) ControlList.Add(control);
         }
     }
-
     private static void SetSpecialTextBoxMode(PropertyInfo property, Control control)
     {
         //if (property.Name.ToLower().Contains("password")) ((TextBox)control).TextMode = TextBoxMode.Password;
         if (property.Name.ToLower().Contains("mail")) ((TextBox)control).TextMode = TextBoxMode.Email;
         if (property.Name.ToLower().Contains("phone")) ((TextBox)control).TextMode = TextBoxMode.Phone;
     }
-
     private void AddControlsToHtmlForm()
     {
         Control myPlaceHolder = FindControl("form");
