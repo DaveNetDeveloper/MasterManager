@@ -10,15 +10,13 @@ using BussinesTypedObject;
 
 public class BaseUC : UserControl
 {
-    public enum ViewMode
-    {
+    public enum ViewMode {
         None,
         View,
         Edit,
         Create
     }
-    public enum ActionsForControl
-    {
+    public enum ActionsForControl {
         ClearValue,
         SetValue,
         GetValue,
@@ -48,13 +46,11 @@ public class BaseUC : UserControl
     }
     public List<Control> ControlList
     {
-        get
-        {
+        get {
             if (null == Session["ControlList"]) Session["ControlList"] = new List<Control>();
             return (List<Control>)Session["ControlList"];
         }
-        set
-        {
+        set {
             Session["ControlList"] = value;
         }
     }
@@ -91,8 +87,7 @@ public class BaseUC : UserControl
     public BussinesTypes.BussinesObjectType BussinesObject { get; set; }
     public BussinesTypes.ProyectName ProyectName
     {
-        get
-        {
+        get {
             return (BussinesTypes.ProyectName)Enum.Parse(typeof(BussinesTypes.ProyectName), Settings.ProyectName);
         }
     }
@@ -182,7 +177,7 @@ public class BaseUC : UserControl
             switch (c.GetType().Name) {
                 case "TextBox":
                     ((TextBox)c).Text = string.Empty;
-                    if (ContainsDateTimeData(((TextBox)c).Text)) ((TextBox)c).Text = dateTimeDefaultMask;
+                    //if (ContainsDateTimeData(((TextBox)c).Text)) ((TextBox)c).Text = dateTimeDefaultMask;
                     break;
 
                 case "CheckBox":

@@ -67,6 +67,15 @@ public partial class EntityEdition : BaseUC
     }
     public void ApplyLayout()
     {
+        //if(EntityManager.HasEntityRelations((IModelRelations)Model)) {
+
+        //    foreach (var modelTypesList in EntityManager.GetModelTypesFromRelationalEntityList((IModelRelations)Model)) {
+
+        //        // P.E: Si IModel actual es "Alumno" -> su entitdadRelacionada es "ModelAlumnoProducto"
+        //        // Tratamiento de los modelos con los que tiene relación el [IModel] actual
+        //    }
+        //}
+
         try {
             var enabled = false;
             switch (Mode) {
@@ -168,17 +177,13 @@ public partial class EntityEdition : BaseUC
                                 if(null != fieldValueList && fieldValueList.Count > 0) {
                                     foreach (var field in fieldValueList) {
 
-                                        if (!field.GetType().Equals(typeof(ModelDataBaseFKRelation))) {
-                                            var model = CreateNewModelInstanceByType(field.GetType());
-                                            if (null != model) {
-                                                var item = new ListItem();
-                                                item.Value = model.GetType().GetProperties()[1].GetValue(field).ToString();
-                                                item.Text = model.GetType().GetProperties()[2].GetValue(field).ToString();
-                                                item.Selected = false;
-                                                ((HtmlSelect)control).Items.Add(item);
-                                            }
+                                        if (field.GetType().Name.ToLower().Equals("list`1")) {
+                                            CreateControlsForRelationalEntityListData(field, control);
                                         }
-                                    }
+                                        else {
+                                            CreateControlForForeingKeysList(field, control);
+                                        }
+                                                                            }
                                     if (((HtmlSelect)control).Items.Count > 0) ((HtmlSelect)control).Items[0].Selected = true;
                                 } 
                                 break;
@@ -192,6 +197,33 @@ public partial class EntityEdition : BaseUC
             ErrorTreatment(ex);
         }
     }
+
+    private void CreateControlForForeingKeysList(object field, Control control)
+    {
+        var model = Helpers.HelperModel.CreateNewModelInstanceByType(field.GetType());
+        if (null != model) {
+            var item = new ListItem();
+            item.Value = model.GetType().GetProperties()[1].GetValue(field).ToString();
+            item.Text = model.GetType().GetProperties()[2].GetValue(field).ToString();
+            item.Selected = false;
+            ((HtmlSelect)control).Items.Add(item);
+        }
+    }
+
+    private void CreateControlsForRelationalEntityListData(object field, Control control)
+    {
+        foreach (var fieldData in (IEnumerable)field) {
+            var model = Helpers.HelperModel.CreateNewModelInstanceByType(fieldData.GetType());
+            if (null != model) {
+                var item = new ListItem();
+                item.Value = model.GetType().GetProperties()[0].GetValue(fieldData).ToString() + " - " + model.GetType().GetProperties()[1].GetValue(fieldData).ToString();
+                item.Text = model.GetType().GetProperties()[1].Name + " - " + model.GetType().GetProperties()[2].Name;
+                item.Selected = false;
+                ((HtmlSelect)control).Items.Add(item);
+            }
+        }
+    }
+
     public bool IsValidModel() {
         try {
             IModel uiModel = (IModel)CreateNewModelInstance();
@@ -339,19 +371,10 @@ public partial class EntityEdition : BaseUC
     }
     private void CreateControls()
     {
-        //TODO: Crear Clase y/o enumeracion para los tipos de datos relativos a las propiedades de la clase (meter esto en e Helper Model/Properties ??)
-
-        short tabIndex = 0;
-        var ModelClass = EntityManager.TypedBO.ModelLayerType;
-        foreach (PropertyInfo property in ModelClass.GetProperties()) {
-
-            tabIndex++;
-            var propertyName = UIControlPrefix + property.Name;
-            Control control = null;
-            bool addControl = false;
-
+        short tabIndex = 0; 
+        foreach (PropertyInfo property in EntityManager.TypedBO.ModelLayerType.GetProperties()) {
+            
             string type = property.PropertyType.Name.ToLower();
-
             var interfacesImplemented = ((TypeInfo)property.PropertyType).ImplementedInterfaces;
             foreach (var implementedInterface in ((TypeInfo)property.PropertyType).ImplementedInterfaces) {
 
@@ -360,9 +383,8 @@ public partial class EntityEdition : BaseUC
                     break;
                 }
                 if (implementedInterface.Name.Equals(typeof(IList).Name)) {
-
-                    //TODO: pendiente determinar el tipo de la colección, para descartar las listas que no seas colecciones de entidades reales
-                    // Por excluir la lista de claves foraneas = no crear control
+                    // TODO: pendiente determinar el tipo de la colección, para descartar las listas que no seas colecciones de entidades reales
+                    //       Excluir la lista de claves foraneas? (no crear control)
                     var listFKType = new List<ModelDataBaseFKRelation>().GetType().Name; 
                     if (property.PropertyType.Name.Equals(listFKType)) {
                         type = typeof(IList).Name;
@@ -370,52 +392,52 @@ public partial class EntityEdition : BaseUC
                     } 
                 }
             }
-            
-            switch (type) {
 
+            Control control = null;
+            bool addControl = false;
+            var propertyName = UIControlPrefix + property.Name;
+            tabIndex++;
+
+            switch (type) {
                 case "string":
-                    control = new TextBox();
+                    control = new TextBox { ID = propertyName };
                     ((TextBox)control).CssClass = "form-lname form-element large";
                     ((TextBox)control).Attributes["placeholder"] = property.Name;
                     ((TextBox)control).Attributes["required"] = "required";
                     ((TextBox)control).Attributes["name"] = propertyName;
                     ((TextBox)control).TabIndex = tabIndex;
-
-                    //if (property.Name.ToLower().Contains("password")) ((TextBox)control).TextMode = TextBoxMode.Password;
-
-                    control.ID = propertyName;
+                    SetSpecialTextBoxMode(property, control); 
                     addControl = true;
                     break;
 
                 case "boolean":
-                    control = new HtmlInputCheckBox();
+                    control = new HtmlInputCheckBox { ID = propertyName }; 
                     ((HtmlInputCheckBox)control).Attributes["placeholder"] = property.Name;
                     ((HtmlInputCheckBox)control).Attributes["required"] = "required";
                     ((HtmlInputCheckBox)control).Attributes["class"] = "form-element checkbox";
-                    ((HtmlInputCheckBox)control).Attributes["name"] = propertyName;
-                    control.ID = propertyName;
+                    ((HtmlInputCheckBox)control).Attributes["name"] = propertyName; 
                     addControl = true;
                     break;
 
                 case "datetime":
-                    control = new TextBox();
+                    control = new TextBox { ID = propertyName };
                     ((TextBox)control).CssClass = "form-lname form-element large";
                     ((TextBox)control).Attributes["placeholder"] = property.Name;
                     ((TextBox)control).Attributes["required"] = "required";
                     ((TextBox)control).TabIndex = tabIndex;
                     ((TextBox)control).TextMode = TextBoxMode.DateTime;
-                    control.ID = propertyName;
+                    SetSpecialTextBoxMode(property, control); 
                     addControl = true;
                     break;
 
                 case "int32":
-                    control = new TextBox();
+                    control = new TextBox { ID = propertyName };
                     ((TextBox)control).CssClass = "form-lname form-element large";
                     ((TextBox)control).Attributes["placeholder"] = property.Name;
                     ((TextBox)control).Attributes["required"] = "required";
                     ((TextBox)control).Attributes["name"] = propertyName;
                     ((TextBox)control).TabIndex = tabIndex;
-                    control.ID = propertyName;
+                    
                     addControl = true;
                     break;
 
@@ -425,8 +447,7 @@ public partial class EntityEdition : BaseUC
                     
                 case "IList":
 
-                    control = new HtmlSelect();
-                    control.ID = propertyName;
+                    control = new HtmlSelect { ID = propertyName };
                     ((HtmlSelect)control).Name = propertyName;
                     ((HtmlSelect)control).Attributes["class"] = "form-aux";
                     ((HtmlSelect)control).Attributes["data-label"] = "Options";
@@ -436,6 +457,14 @@ public partial class EntityEdition : BaseUC
             if (addControl) ControlList.Add(control);
         }
     }
+
+    private static void SetSpecialTextBoxMode(PropertyInfo property, Control control)
+    {
+        //if (property.Name.ToLower().Contains("password")) ((TextBox)control).TextMode = TextBoxMode.Password;
+        if (property.Name.ToLower().Contains("mail")) ((TextBox)control).TextMode = TextBoxMode.Email;
+        if (property.Name.ToLower().Contains("phone")) ((TextBox)control).TextMode = TextBoxMode.Phone;
+    }
+
     private void AddControlsToHtmlForm()
     {
         Control myPlaceHolder = FindControl("form");
