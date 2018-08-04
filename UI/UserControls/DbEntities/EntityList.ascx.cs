@@ -52,24 +52,115 @@ public partial class EntityList : BaseUC
 
     #endregion
 
-    #region [ uc events ]
+    #region [ UC Events ]
 
     protected void Page_Init(object sender, EventArgs e)
     {
-        if (!IsPostBack) ModelClass = typeof(ModelDocumento);
+        if (!IsPostBack) { 
+            InitializeDesigner();
+        }
     }
-
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack) {
-            InitializeList(); 
+            InitializeList();
         }
     }
-
+    
     #endregion
 
     #region [ private methods ]
 
+   private void InitializeDesigner()
+    {
+        InitializeGridView();
+        InitializeColumns();
+    }
+
+    private void InitializeColumns()
+    {
+        //GvEntityList.Columns.Clear();
+ 
+        BoundField tempId = new BoundField(); 
+        tempId.HeaderText = "Id";
+        tempId.DataField = "Id";
+        tempId.SortExpression = "Id";
+        GvEntityList.Columns.Add(tempId);
+
+        BoundField tempNombre = new BoundField();
+        tempNombre.HeaderText = "Nombre";
+        tempId.SortExpression = "Nombre";
+        tempNombre.DataField = "Nombre";
+        GvEntityList.Columns.Add(tempNombre);
+
+        BoundField tempUbicacion = new BoundField();
+        tempUbicacion.HeaderText = "Ubicacion";
+        tempUbicacion.SortExpression = "Ubicacion";
+        tempUbicacion.DataField = "Ubicacion";
+        GvEntityList.Columns.Add(tempUbicacion);
+
+        BoundField tempDescripcion = new BoundField();
+        tempDescripcion.HeaderText = "Descripcion";
+        tempDescripcion.SortExpression = "Descripcion";
+        tempDescripcion.DataField = "Descripcion";
+        GvEntityList.Columns.Add(tempDescripcion);
+
+        BoundField tempTamaño = new BoundField();
+        tempTamaño.HeaderText = "Tamaño";
+        tempTamaño.SortExpression = "Tamaño";
+        tempTamaño.DataField = "Tamaño";
+        GvEntityList.Columns.Add(tempTamaño);
+
+        //TemplateField tempTamaño = new TemplateField();
+        //tempTamaño.HeaderText = "Tamaño"; 
+        //var label = new Label();
+        //label.ID = "lblTamaño";
+        //label.Text = " Mb";
+
+       // tempTamaño.ItemTemplate = label as ITemplate;
+
+    }
+
+    private void InitializeGridView()
+    { 
+        //GridView gridView = new GridView();
+        GvEntityList.Visible = true;
+        GvEntityList.ID = "GvEntityList";
+        GvEntityList.ClientIDMode = ClientIDMode.AutoID;
+        GvEntityList.Width = Get100PErcentValue();
+        GvEntityList.RowDataBound += GvEntityList_RowDataBound;
+        GvEntityList.RowCommand += GvEntityList_RowCommand;
+        GvEntityList.DataKeyNames = new string[] { "Id" }; 
+        GvEntityList.AutoGenerateColumns = false;
+        GvEntityList.CssClass = "gridClass";
+        GvEntityList.EmptyDataText = "No hay datos.";
+        GvEntityList.HeaderStyle.Font.Bold = true;
+        //GvEntityList.Bold = true;
+        GvEntityList.HeaderStyle.BackColor = Color.DimGray;//Transparent;
+        GvEntityList.HeaderStyle.HorizontalAlign = HorizontalAlign.Center;
+        GvEntityList.HeaderStyle.Height = 40;
+        GvEntityList.GridLines = GridLines.Horizontal;
+        GvEntityList.AllowPaging = true;
+        GvEntityList.PageIndexChanging += GvEntityList_OnPaging;
+        GvEntityList.AllowSorting = true;
+        GvEntityList.Sorting += GvEntityList_Sorting;
+        GvEntityList.PagerStyle.CssClass = "pgr";
+        GvEntityList.PageSize = 15;
+        GvEntityList.ShowFooter = false;
+        GvEntityList.AutoGenerateSelectButton = false;
+        GvEntityList.PagerStyle.Font.Bold = true;
+        GvEntityList.PagerStyle.HorizontalAlign = HorizontalAlign.Center;
+        GvEntityList.PagerStyle.Height = 40;
+         
+        //var pagerSettings = new PagerSettings();
+        //pagerSettings.Mode = PagerButtons.NumericFirstLast;
+        //pagerSettings.PageButtonCount = 5;
+        //pagerSettings.Position = PagerPosition.Bottom;
+        //GvEntityList.PagerSettings = pagerSettings;
+
+        //GvEntityList.Columns = GetColumnItems(); 
+        Controls.Add(GvEntityList);
+    }  
     private void InitializeList()
     {
         GvEntityList.DataSource = DataSource;
@@ -147,6 +238,10 @@ public partial class EntityList : BaseUC
             Session["SelectedDocumentID"] = lstSelectedCentersbyID;
         }
         return (List<Int32>)Session["SelectedDocumentID"];
+    }
+    private Unit Get100PErcentValue()
+    {
+        return new Unit(100, UnitType.Percentage);
     }
 
     #endregion

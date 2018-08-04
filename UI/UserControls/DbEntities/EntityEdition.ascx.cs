@@ -197,32 +197,7 @@ public partial class EntityEdition : BaseUC
             ErrorTreatment(ex);
         }
     }
-
-    private void CreateControlForForeingKeysList(object field, Control control)
-    {
-        var model = Helpers.HelperModel.CreateNewModelInstanceByType(field.GetType());
-        if (null != model) {
-            var item = new ListItem();
-            item.Value = model.GetType().GetProperties()[1].GetValue(field).ToString();
-            item.Text = model.GetType().GetProperties()[2].GetValue(field).ToString();
-            item.Selected = false;
-            ((HtmlSelect)control).Items.Add(item);
-        }
-    }
-    private void CreateControlsForRelationalEntityListData(object field, Control control)
-    {
-        foreach (var fieldData in (IEnumerable)field) {
-            var model = Helpers.HelperModel.CreateNewModelInstanceByType(fieldData.GetType());
-            if (null != model) {
-                var item = new ListItem();
-                item.Value = model.GetType().GetProperties()[0].GetValue(fieldData).ToString() + " - " + model.GetType().GetProperties()[1].GetValue(fieldData).ToString();
-                item.Text = model.GetType().GetProperties()[1].Name + " - " + model.GetType().GetProperties()[2].Name;
-                item.Selected = false;
-                ((HtmlSelect)control).Items.Add(item);
-            }
-        }
-    }
-
+    
     public bool IsValidModel() {
         try {
             IModel uiModel = (IModel)CreateNewModelInstance();
@@ -321,7 +296,30 @@ public partial class EntityEdition : BaseUC
         }
         return true;
     }
-
+    private void CreateControlForForeingKeysList(object field, Control control)
+    {
+        var model = Helpers.HelperModel.CreateNewModelInstanceByType(field.GetType());
+        if (null != model) {
+            var item = new ListItem();
+            item.Value = model.GetType().GetProperties()[1].GetValue(field).ToString();
+            item.Text = model.GetType().GetProperties()[2].GetValue(field).ToString();
+            item.Selected = false;
+            ((HtmlSelect)control).Items.Add(item);
+        }
+    }
+    private void CreateControlsForRelationalEntityListData(object field, Control control)
+    {
+        foreach (var fieldData in (IEnumerable)field) {
+            var model = Helpers.HelperModel.CreateNewModelInstanceByType(fieldData.GetType());
+            if (null != model) {
+                var item = new ListItem();
+                item.Value = model.GetType().GetProperties()[0].GetValue(fieldData).ToString() + " - " + model.GetType().GetProperties()[1].GetValue(fieldData).ToString();
+                item.Text = model.GetType().GetProperties()[1].Name + " - " + model.GetType().GetProperties()[2].Name;
+                item.Selected = false;
+                ((HtmlSelect)control).Items.Add(item);
+            }
+        }
+    }
     private void SetPropertyValueIntoInternalModel(object value, string propertyName, IModel internalUiModel)
     {
         foreach (var modelProperty in internalUiModel.GetType().GetProperties()) {
