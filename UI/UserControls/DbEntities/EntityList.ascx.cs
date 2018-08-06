@@ -10,17 +10,14 @@ public partial class EntityList : BaseUC
 {
     #region [ private properties ]
 
-    //[DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
     public Type ModelClass { get; set; }
 
     private DataTable EntityDataTable
     {
-        get
-        {
+        get {
             return Session["EntityDataTable"] as DataTable;
         }
-        set
-        {
+        set {
             Session["EntityDataTable"] = value;
         }
     }
@@ -36,16 +33,13 @@ public partial class EntityList : BaseUC
     }
     private SortDirection Dir
     {
-        get
-        {
-            if (Session["dirState"] == null)
-            {
+        get {
+            if (Session["dirState"] == null) {
                 Session["dirState"] = SortDirection.Ascending;
             }
             return (SortDirection)Session["dirState"];
         }
-        set
-        {
+        set {
             Session["dirState"] = value;
         } 
     }
@@ -56,27 +50,40 @@ public partial class EntityList : BaseUC
 
     protected void Page_Init(object sender, EventArgs e)
     {
-        if (!IsPostBack) { 
+        if (!IsPostBack) {
+            InitializeCache();
             InitializeDesigner();
         }
-    }
+    } 
+
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack) {
             InitializeList();
         }
     }
-    
+
     #endregion
 
     #region [ private methods ]
 
-   private void InitializeDesigner()
+    private void InitializeCache()
+    {
+        DisposeProperties();
+        InitializeSession();
+    }
+    private void DisposeProperties()
+    {
+        EntityManager = null;
+        DataSource = null;
+        ControlList = null;
+        Entity = null;
+    }
+    private void InitializeDesigner()
     {
         InitializeGridView();
         InitializeColumns();
     }
-
     private void InitializeColumns()
     {
         //GvEntityList.Columns.Clear();
@@ -120,7 +127,6 @@ public partial class EntityList : BaseUC
        // tempTamaño.ItemTemplate = label as ITemplate;
 
     }
-
     private void InitializeGridView()
     { 
         //GridView gridView = new GridView();
@@ -168,16 +174,14 @@ public partial class EntityList : BaseUC
     }
     private void ExportToExcel()
     {
-        try
-        {
+        try {
             StringBuilder sb = new StringBuilder();
             System.IO.StringWriter sw = new System.IO.StringWriter(sb);
             HtmlTextWriter htw = new HtmlTextWriter(sw);
             Page pagina = new Page();
             System.Web.UI.HtmlControls.HtmlForm form = new System.Web.UI.HtmlControls.HtmlForm();
 
-            GridView gridToExport = new GridView
-            {
+            GridView gridToExport = new GridView {
                 DataSource = DataSource
             };
 
@@ -186,8 +190,7 @@ public partial class EntityList : BaseUC
 
             gridToExport.DataBind();
 
-            foreach (TableCell cell in gridToExport.HeaderRow.Cells)
-            {
+            foreach (TableCell cell in gridToExport.HeaderRow.Cells) {
                 cell.BackColor = Color.DeepSkyBlue;
             }
 
@@ -220,20 +223,16 @@ public partial class EntityList : BaseUC
     }
     private List<Int32> ControlSelectedCenter(Int32 _idSC)
     {
-        if (Session["SelectedCenterID"] != null)
-        {
+        if (Session["SelectedCenterID"] != null) {
             List<Int32> lst = (List<Int32>)Session["SelectedCenterID"];
-            if (lst.Count != 0)
-            {
-                if (!lst.Contains(_idSC))
-                {
+            if (lst.Count != 0) {
+                if (!lst.Contains(_idSC)) {
                     lst.Add(_idSC);
                     Session["SelectedCenterID"] = lst;
                 }
             }
         }
-        else
-        {
+        else {
             List<Int32> lstSelectedCentersbyID = new List<Int32> { _idSC };
             Session["SelectedDocumentID"] = lstSelectedCentersbyID;
         }
@@ -250,21 +249,18 @@ public partial class EntityList : BaseUC
 
     protected void ChkSel_Checked(object sender, EventArgs e)
     {
-        try
-        {
+        try {
             Int32 gvSelectedIndex = ((GridViewRow)((CheckBox)sender).Parent.Parent).RowIndex;
             Int32 idselected = Convert.ToInt32(GvEntityList.DataKeys[gvSelectedIndex].Value);
             List<Int32> lst = ControlSelectedCenter(Convert.ToInt32(GvEntityList.DataKeys[gvSelectedIndex].Value));
 
-            if (((CheckBox)sender).Checked)
-            {
+            if (((CheckBox)sender).Checked) {
                 GvEntityList.Rows[gvSelectedIndex].BackColor = ColorTranslator.FromHtml("lemonchiffon");
                 Session["SelectedDocument"] = (Int32)Session["SelectedDocument"] + 1;
                 Int32 SelectedRow = ((GridViewRow)(((CheckBox)sender).Parent.Parent)).RowIndex;
                 EntityDataTable.Rows[gvSelectedIndex]["chkSelect"] = true;
             }
-            else
-            {
+            else {
                 GvEntityList.Rows[gvSelectedIndex].BackColor = Color.White; 
                 Session["SelectedDocument"] = (Int32)Session["SelectedDocument"] - 1; 
                 lst.Remove(idselected);
@@ -272,8 +268,7 @@ public partial class EntityList : BaseUC
                 EntityDataTable.Rows[gvSelectedIndex]["chkSelect"] = false;
             }
         }
-        catch (Exception ex)
-        {
+        catch (Exception ex) {
             Session["error"] = ex;
         }
     } 
