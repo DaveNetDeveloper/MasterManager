@@ -214,15 +214,15 @@ public class BasePage : Page
             throw ex;
         }
     }
-    protected override void OnPreLoad(EventArgs e)
-    {
-        try {
-            if (!IsPostBack) EntityManager.InitializeTypes(BussinesObject, ProyectName);
-        }
-        catch (Exception ex) {
-            throw ex;
-        }
-    }
+    //protected override void OnPreLoad(EventArgs e)
+    //{
+    //    try {
+    //        if (!IsPostBack) EntityManager.InitializeTypes(BussinesObject, ProyectName);
+    //    }
+    //    catch (Exception ex) {
+    //        throw ex;
+    //    }
+    //}
 
     #endregion
 }

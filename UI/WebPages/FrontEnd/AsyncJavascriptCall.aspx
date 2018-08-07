@@ -122,7 +122,7 @@
         <input id="btnUpdateArea" type="button" value="Modificar area existentes" onclick="UpdateAreaById($('#inputUpdateAreaId').val(), $('#inputUpdateAreaNombre').val());" />
     </div>
     <br /><br /> 
-    <uc:EntityList runat="server" BussinesObject="Documento" ID="LisOftDocuments" /> <%--ModelClass='<%# typeof(ModelDocumento) %>'--%>
+    <uc:EntityList runat="server" BussinesObject="Documento" ID="LisOftDocuments" /> 
 </form>
 </body>
 

@@ -48,15 +48,16 @@ public partial class EntityList : BaseUC
 
     #region [ UC Events ]
 
-    protected void Page_Init(object sender, EventArgs e)
+    protected override void OnInit(EventArgs e)
     {
         if (!IsPostBack) {
             InitializeCache();
-            InitializeDesigner();
+            EntityManager.InitializeTypes(BussinesObject, ProyectName);
+            InitializeControls();
         }
-    } 
+    }
 
-    protected void Page_Load(object sender, EventArgs e)
+    protected override void OnLoad(EventArgs e)
     {
         if (!IsPostBack) {
             InitializeList();
@@ -79,7 +80,7 @@ public partial class EntityList : BaseUC
         ControlList = null;
         Entity = null;
     }
-    private void InitializeDesigner()
+    private void InitializeControls()
     {
         InitializeGridView();
         InitializeColumns();
