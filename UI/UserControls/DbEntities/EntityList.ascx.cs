@@ -87,46 +87,51 @@ public partial class EntityList : BaseUC
     }
     private void InitializeColumns()
     {
-        //GvEntityList.Columns.Clear();
- 
-        BoundField tempId = new BoundField(); 
-        tempId.HeaderText = "Id";
-        tempId.DataField = "Id";
-        tempId.SortExpression = "Id";
+        //GvEntityList.Columns.Clear(); 
+
+        BoundField tempId = new BoundField {
+            HeaderText = "Id",
+            DataField = "Id",
+            SortExpression = "Id"
+        };
         GvEntityList.Columns.Add(tempId);
 
-        BoundField tempNombre = new BoundField();
-        tempNombre.HeaderText = "Nombre";
+        BoundField tempNombre = new BoundField {
+            HeaderText = "Nombre"
+        };
         tempId.SortExpression = "Nombre";
         tempNombre.DataField = "Nombre";
         GvEntityList.Columns.Add(tempNombre);
 
-        BoundField tempUbicacion = new BoundField();
-        tempUbicacion.HeaderText = "Ubicacion";
-        tempUbicacion.SortExpression = "Ubicacion";
-        tempUbicacion.DataField = "Ubicacion";
+        BoundField tempUbicacion = new BoundField {
+            HeaderText = "Ubicacion",
+            SortExpression = "Ubicacion",
+            DataField = "Ubicacion"
+        };
         GvEntityList.Columns.Add(tempUbicacion);
 
-        BoundField tempDescripcion = new BoundField();
-        tempDescripcion.HeaderText = "Descripcion";
-        tempDescripcion.SortExpression = "Descripcion";
-        tempDescripcion.DataField = "Descripcion";
+        BoundField tempDescripcion = new BoundField {
+            HeaderText = "Descripcion",
+            SortExpression = "Descripcion",
+            DataField = "Descripcion"
+        };
         GvEntityList.Columns.Add(tempDescripcion);
 
-        BoundField tempTamaño = new BoundField();
-        tempTamaño.HeaderText = "Tamaño";
-        tempTamaño.SortExpression = "Tamaño";
-        tempTamaño.DataField = "Tamaño";
+        BoundField tempTamaño = new BoundField {
+            HeaderText = "Tamaño",
+            SortExpression = "Tamaño",
+            DataField = "Tamaño",
+            DataFormatString = "{0:#.## Mb}",
+            HtmlEncode = false
+        };
         GvEntityList.Columns.Add(tempTamaño);
-
+         
         //TemplateField tempTamaño = new TemplateField();
         //tempTamaño.HeaderText = "Tamaño"; 
         //var label = new Label();
         //label.ID = "lblTamaño";
-        //label.Text = " Mb";
-
-       // tempTamaño.ItemTemplate = label as ITemplate;
-
+        //label.Text = " Mb"; 
+       // tempTamaño.ItemTemplate = label as ITemplate; 
     }
     private void InitializeGridView()
     { 

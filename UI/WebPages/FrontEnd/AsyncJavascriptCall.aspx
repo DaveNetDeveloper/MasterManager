@@ -121,7 +121,7 @@
         <input id="inputUpdateAreaNombre" type="text" value="" /> 
         <input id="btnUpdateArea" type="button" value="Modificar area existentes" onclick="UpdateAreaById($('#inputUpdateAreaId').val(), $('#inputUpdateAreaNombre').val());" />
     </div>
-    <br /><br /> 
+    <br /><br />
     <uc:EntityList runat="server" BussinesObject="Documento" ID="LisOftDocuments" /> 
 </form>
 </body>

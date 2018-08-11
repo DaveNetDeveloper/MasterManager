@@ -13,7 +13,7 @@
                 PagerStyle-CssClass="pgr" PageSize="15" ShowFooter="false" AutoGenerateSelectButton="False"
                 PagerStyle-Font-Bold="true"  PagerStyle-HorizontalAlign="Center" PagerStyle-Height="40px"--%>
             <PagerSettings Mode="NumericFirstLast" PageButtonCount="5" Position="Bottom" /> 
-          <%--  <HeaderStyle Font-Bold="true" BackColor="DimGray" />--%>
+            <%-- <HeaderStyle Font-Bold="true" BackColor="DimGray" /> --%>
             <Columns> 
             <asp:TemplateField> 
                 <HeaderTemplate> 
@@ -44,23 +44,15 @@
             </ItemTemplate>
             </asp:TemplateField> 
 
-            </Columns>
-
+            </Columns> 
             <FooterStyle BackColor="#c1c1c1" BorderWidth="1" ForeColor="#c1c1c1" />
-        </asp:GridView> 
+            </asp:GridView>
+            <br />
+            
 		</div>
-    </div>  
-    <asp:Button Visible="true" runat="server" ID="tnExportExcel" style="border-radius:0px" Text="Exportar a Excel" CssClass="blue" Width="150px" OnClick="BtnExportExcel_Click" /> 
-    <br /> 
-</div>
-
-<%--<script>
-
-    window.onload = function () {
-        var pos = window.name || 0;
-        window.scrollTo(0, pos);
-    }
-    window.onunload = function () {
-        window.name = self.pageYOffset || (document.documentElement.scrollTop + document.body.scrollTop);
-    }
-</script>--%>
+    </div>
+     <div>
+        <asp:Button Visible="true" runat="server" ID="tnExportExcel" style="border-radius:0px" Text="Exportar a Excel" CssClass="blue" Width="150px"             OnClick="BtnExportExcel_Click" /> 
+    </div>
+</div>  
+  
