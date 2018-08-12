@@ -22,9 +22,24 @@ public class BaseUC : UserControl
         GetValue,
         SetBorderColor
     }
+    public enum UserControlTypes {
+        None,
+        EntitiesList,
+        EntityEdition
+    }
 
     #region [ properties ]
 
+    public UserControlTypes UCType
+    {
+        get {
+            if (Session["UCType"] == null) Session["UCType"] = UserControlTypes.None;
+            return (UserControlTypes)Session["UCType"];
+        }
+        set {
+            Session["UCType"] = value;
+        }
+    }
     public string PrimaryKey
     {
         get {

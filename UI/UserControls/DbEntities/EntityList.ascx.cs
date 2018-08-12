@@ -5,14 +5,12 @@ using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Drawing;
-using System.Collections;
-using System.Reflection;
 
 public partial class EntityList : BaseUC
 {
     #region [ private properties ]
 
-    public Type ModelClass { get; set; }
+    public Type ModelClass { get; set; } 
 
     private DataTable EntityDataTable
     {
@@ -53,8 +51,7 @@ public partial class EntityList : BaseUC
     protected override void OnInit(EventArgs e)
     {
         if (!IsPostBack) {
-            InitializeCache();
-            EntityManager.InitializeTypes(BussinesObject, ProyectName);
+            InitializeCache(); 
             InitializeControls();
         }
     }
@@ -69,6 +66,11 @@ public partial class EntityList : BaseUC
 
     #region [ private methods ]
 
+    private void InitializeTypes()
+    {
+        UCType = UserControlTypes.EntitiesList;
+        EntityManager.InitializeTypes(BussinesObject, ProyectName);
+    }
     private void InitializeCache()
     {
         DisposeProperties();
@@ -88,8 +90,7 @@ public partial class EntityList : BaseUC
     }
     private void InitializeColumns()
     {
-        //GvEntityList.Columns.Clear();  
-
+        GvEntityList.Columns.Clear();  
         if(DataSource != null && DataSource.Count > 0) {
             bool exclude = false;
             foreach (var modelProperty in DataSource[0].GetType().GetProperties()) {
@@ -107,36 +108,16 @@ public partial class EntityList : BaseUC
                 }
 
                 if (!exclude) { 
-                    BoundField columnName = new BoundField {
+                    BoundField colum = new BoundField {
                         HeaderText = modelProperty.Name,
                         DataField = modelProperty.Name,
                         SortExpression = modelProperty.Name
                     };
-                    GvEntityList.Columns.Add(columnName);
+                    GvEntityList.Columns.Add(colum);
                 }
             }
-        }
-
-        //BoundField tempId = new BoundField {
-        //    HeaderText = "Id",
-        //    DataField = "Id",
-        //    SortExpression = "Id"
-        //};
-        //GvEntityList.Columns.Add(tempId);
-
-        //BoundField tempNombre = new BoundField {
-        //    HeaderText = "Nombre",
-        //    DataField = "Nombre",
-        //    SortExpression = "Nombre",
-        //};
-        //GvEntityList.Columns.Add(tempNombre);
-
-        //BoundField tempUbicacion = new BoundField {
-        //    HeaderText = "Ubicacion",
-        //    SortExpression = "Ubicacion",
-        //    DataField = "Ubicacion"
-        //};
-        //GvEntityList.Columns.Add(tempUbicacion);
+        } 
+        #region [ commented ]
 
         //BoundField tempDescripcion = new BoundField {
         //    HeaderText = "Descripcion",
@@ -153,13 +134,15 @@ public partial class EntityList : BaseUC
         //    HtmlEncode = false
         //};
         //GvEntityList.Columns.Add(tempTamaño);
-         
+
         //TemplateField tempTamaño = new TemplateField();
         //tempTamaño.HeaderText = "Tamaño"; 
         //var label = new Label();
         //label.ID = "lblTamaño";
         //label.Text = " Mb"; 
-       // tempTamaño.ItemTemplate = label as ITemplate; 
+        // tempTamaño.ItemTemplate = label as ITemplate; 
+
+        #endregion 
     }
     private void InitializeGridView()
     { 

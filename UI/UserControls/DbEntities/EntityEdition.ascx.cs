@@ -26,7 +26,7 @@ public partial class EntityEdition : BaseUC
             Session["Model"] = value;
         }
     }
-    private IModel UIModel;
+    private IModel UIModel;  
 
     #endregion
 
@@ -44,15 +44,15 @@ public partial class EntityEdition : BaseUC
         try {
             if (!IsPostBack) {
                 InitializeCache();
-                GetPageParameters();
-                EntityManager.InitializeTypes(BussinesObject, ProyectName);
+                GetPageParameters(); 
+                InitializeTypes(); 
                 InitializeControls();
             }
         }
         catch (Exception ex) {
             Session["error"] = ex;
         }
-    } 
+    }
 
     #endregion
 
@@ -196,8 +196,7 @@ public partial class EntityEdition : BaseUC
         catch (Exception ex) {
             ErrorTreatment(ex);
         }
-    }
-    
+    } 
     public bool IsValidModel() {
         try {
             IModel uiModel = (IModel)CreateNewModelInstance();
@@ -295,6 +294,12 @@ public partial class EntityEdition : BaseUC
             //Response.Redirect(Constantes.PAGE_TITLE_ERROR_PAGE + Constantes.ASP_PAGE_EXTENSION);
         }
         return true;
+    }
+
+    private void InitializeTypes()
+    {
+        UCType = UserControlTypes.EntityEdition;
+        EntityManager.InitializeTypes(BussinesObject, ProyectName);
     }
     private void CreateControlForForeingKeysList(object field, Control control)
     {
