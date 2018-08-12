@@ -94,16 +94,16 @@ public partial class EntityList : BaseUC
         if(DataSource != null && DataSource.Count > 0) {
             bool exclude = false;
             foreach (var modelProperty in DataSource[0].GetType().GetProperties()) {
-
-                foreach (var relationModelProperty in typeof(IModelRelations).GetProperties()) {
-                    exclude = relationModelProperty.Name.Equals(modelProperty.Name);
-                    if (exclude) break;
+                
+                if(IsInternalProperty(typeof(IModelRelations), modelProperty.Name)) {
+                    exclude = true;
+                    break;
                 }
 
                 if (!exclude) {
-                    foreach (var baseModelProperty in typeof(ModelBase).GetProperties()) {
-                        exclude = baseModelProperty.Name.Equals(modelProperty.Name);
-                        if (exclude) break;
+                    if (IsInternalProperty(typeof(ModelBase), modelProperty.Name)) {
+                        exclude = true;
+                        break;
                     }
                 }
 
@@ -116,7 +116,7 @@ public partial class EntityList : BaseUC
                     GvEntityList.Columns.Add(colum);
                 }
             }
-        } 
+        }
         #region [ commented ]
 
         //BoundField tempDescripcion = new BoundField {
@@ -142,7 +142,15 @@ public partial class EntityList : BaseUC
         //label.Text = " Mb"; 
         // tempTamaño.ItemTemplate = label as ITemplate; 
 
-        #endregion 
+        #endregion
+    }
+
+    private bool IsInternalProperty(Type InterfaceType, string propertyName)
+    {
+        foreach (var relationModelProperty in InterfaceType.GetProperties()) {
+            if (relationModelProperty.Name.Equals(propertyName)) return true;
+        }
+        return false;
     }
     private void InitializeGridView()
     { 
