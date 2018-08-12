@@ -26,12 +26,23 @@ public partial class EntityEdition : BaseUC
             Session["Model"] = value;
         }
     }
-    private IModel UIModel;  
+    private IModel UIModel;
 
     #endregion
 
     #region [ events ]
 
+    protected override void OnInit(EventArgs e)
+    {
+        try {
+            if (!IsPostBack) {
+                Initialize();
+            }
+        }
+        catch (Exception ex) {
+            Session["error"] = ex;
+        }
+    }
     protected override void OnLoad(EventArgs e)
     {
         if (!IsPostBack) {
@@ -39,21 +50,7 @@ public partial class EntityEdition : BaseUC
             FillFromModel();
         }
     }
-    protected override void OnInit(EventArgs e)
-    {
-        try {
-            if (!IsPostBack) {
-                InitializeCache();
-                GetPageParameters(); 
-                InitializeTypes(); 
-                InitializeControls();
-            }
-        }
-        catch (Exception ex) {
-            Session["error"] = ex;
-        }
-    }
-
+    
     #endregion
 
     #region [ methods ]
@@ -296,6 +293,13 @@ public partial class EntityEdition : BaseUC
         return true;
     }
 
+    private void Initialize()
+    {
+        InitializeCache();
+        GetPageParameters();
+        InitializeTypes();
+        InitializeControls();
+    } 
     private void InitializeTypes()
     {
         UCType = UserControlTypes.EntityEdition;

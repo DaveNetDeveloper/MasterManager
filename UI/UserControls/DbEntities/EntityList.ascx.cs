@@ -51,15 +51,13 @@ public partial class EntityList : BaseUC
     protected override void OnInit(EventArgs e)
     {
         if (!IsPostBack) {
-            InitializeCache();
-            InitializeTypes();
-            InitializeControls();
+            Initialize();
         }
-    }
+    } 
     protected override void OnLoad(EventArgs e)
     {
         if (!IsPostBack) {
-            InitializeList();
+            InitializeListData();
         }
     }
 
@@ -67,6 +65,12 @@ public partial class EntityList : BaseUC
 
     #region [ private methods ]
 
+    private void Initialize()
+    {
+        InitializeCache();
+        InitializeTypes();
+        InitializeControls();
+    }
     private void InitializeTypes()
     {
         UCType = UserControlTypes.EntitiesList;
@@ -120,13 +124,6 @@ public partial class EntityList : BaseUC
         }
         #region [ commented ]
 
-        //BoundField tempDescripcion = new BoundField {
-        //    HeaderText = "Descripcion",
-        //    SortExpression = "Descripcion",
-        //    DataField = "Descripcion"
-        //};
-        //GvEntityList.Columns.Add(tempDescripcion);
-
         //BoundField tempTamaño = new BoundField {
         //    HeaderText = "Tamaño",
         //    SortExpression = "Tamaño",
@@ -145,7 +142,6 @@ public partial class EntityList : BaseUC
 
         #endregion
     }
-
     private bool IsInternalProperty(Type InterfaceType, string propertyName)
     {
         foreach (var relationModelProperty in InterfaceType.GetProperties()) {
@@ -193,7 +189,7 @@ public partial class EntityList : BaseUC
         //GvEntityList.Columns = GetColumnItems(); 
         Controls.Add(GvEntityList);
     }  
-    private void InitializeList()
+    private void InitializeListData()
     {
         GvEntityList.DataSource = DataSource;
         GvEntityList.DataBind();
