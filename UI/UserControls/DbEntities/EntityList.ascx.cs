@@ -51,7 +51,8 @@ public partial class EntityList : BaseUC
     protected override void OnInit(EventArgs e)
     {
         if (!IsPostBack) {
-            InitializeCache(); 
+            InitializeCache();
+            InitializeTypes();
             InitializeControls();
         }
     }
