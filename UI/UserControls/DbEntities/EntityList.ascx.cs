@@ -4,7 +4,9 @@ using System.Data;
 using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Drawing;
+using System.Drawing; 
+using System.IO;
+using System.Web.UI.HtmlControls;
 
 public partial class EntityList : BaseUC
 {
@@ -95,31 +97,14 @@ public partial class EntityList : BaseUC
     }
     private void InitializeColumns()
     {
-        GvEntityList.Columns.Clear();  
-        if(DataSource != null && DataSource.Count > 0) {
-            bool exclude = false;
+        if (DataSource != null && DataSource.Count > 0) {
             foreach (var modelProperty in DataSource[0].GetType().GetProperties()) {
-                
-                if(IsInternalProperty(typeof(IModelRelations), modelProperty.Name)) {
-                    exclude = true;
-                    break;
-                }
 
-                if (!exclude) {
-                    if (IsInternalProperty(typeof(ModelBase), modelProperty.Name)) {
-                        exclude = true;
-                        break;
-                    }
-                }
+                var modelPropertyName = modelProperty.Name;
 
-                if (!exclude) { 
-                    BoundField colum = new BoundField {
-                        HeaderText = modelProperty.Name,
-                        DataField = modelProperty.Name,
-                        SortExpression = modelProperty.Name
-                    };
-                    GvEntityList.Columns.Add(colum);
-                }
+                bool exclude = ModelManager.IsInternalProperty(typeof(IModelRelations), modelPropertyName);
+                if (!exclude) exclude = (ModelManager.IsInternalProperty(typeof(ModelBase), modelPropertyName));
+                if (!exclude) AddNewColumnToGridView(modelPropertyName);
             }
         }
         #region [ commented ]
@@ -142,16 +127,19 @@ public partial class EntityList : BaseUC
 
         #endregion
     }
-    private bool IsInternalProperty(Type InterfaceType, string propertyName)
+
+    private void AddNewColumnToGridView(string modelPropertyName)
     {
-        foreach (var relationModelProperty in InterfaceType.GetProperties()) {
-            if (relationModelProperty.Name.Equals(propertyName)) return true;
-        }
-        return false;
+        BoundField colum = new BoundField
+        {
+            HeaderText = modelPropertyName,
+            DataField = modelPropertyName,
+            SortExpression = modelPropertyName
+        };
+        GvEntityList.Columns.Add(colum);
     }
     private void InitializeGridView()
     { 
-        //GridView gridView = new GridView();
         GvEntityList.Visible = true;
         GvEntityList.ID = "GvEntityList";
         GvEntityList.ClientIDMode = ClientIDMode.AutoID;
@@ -164,7 +152,9 @@ public partial class EntityList : BaseUC
         GvEntityList.EmptyDataText = "No hay datos.";
         GvEntityList.HeaderStyle.Font.Bold = true;
         //GvEntityList.Bold = true;
-        GvEntityList.HeaderStyle.BackColor = Color.DimGray;//Transparent;
+        GvEntityList.HeaderStyle.BackColor = Color.DimGray;
+        GvEntityList.HeaderStyle.ForeColor = Color.White;
+        GvEntityList.HeaderStyle.CssClass = "gridClassHeaderText";
         GvEntityList.HeaderStyle.HorizontalAlign = HorizontalAlign.Center;
         GvEntityList.HeaderStyle.Height = 40;
         GvEntityList.GridLines = GridLines.Horizontal;
@@ -197,50 +187,43 @@ public partial class EntityList : BaseUC
     private void ExportToExcel()
     {
         try {
-            StringBuilder sb = new StringBuilder();
-            System.IO.StringWriter sw = new System.IO.StringWriter(sb);
-            HtmlTextWriter htw = new HtmlTextWriter(sw);
-            Page pagina = new Page();
-            System.Web.UI.HtmlControls.HtmlForm form = new System.Web.UI.HtmlControls.HtmlForm();
-
+            // TODO: Hacer dinámica la conversión del DataSource y el gridView a exportar
+            // Mover este método a un ExcelManager que sea agnóstico al tipo de Modelo y al userControl que lo llama(params: [ModelClass])
             GridView gridToExport = new GridView {
-                DataSource = DataSource
+                DataSource = ((List<ModelDocumento>)DataSource)
             };
+            gridToExport.DataBind();
 
             //DataTable tableToExport = dtDocumento;
             //tableToExport.Columns.RemoveAt(7);
 
-            gridToExport.DataBind();
-
             foreach (TableCell cell in gridToExport.HeaderRow.Cells) {
                 cell.BackColor = Color.DeepSkyBlue;
             }
-
             gridToExport.EnableViewState = false;
 
+            StringBuilder sb = new StringBuilder();
+            StringWriter sw = new StringWriter(sb);
+            Page pagina = new Page();
             pagina.EnableEventValidation = false;
             pagina.DesignerInitialize();
+            HtmlForm form = new HtmlForm();
             pagina.Controls.Add(form);
-
             form.Controls.Add(gridToExport);
-
+            HtmlTextWriter htw = new HtmlTextWriter(sw);
             pagina.RenderControl(htw);
             Response.Clear();
             Response.Buffer = true;
-
             Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-
             Response.AddHeader("Content-Disposition", "attachment;filename=DocumentsList.xls");
             Response.Charset = "UTF-8";
             Response.ContentEncoding = Encoding.Default;
             Response.Write(sb.ToString());
             Response.End();
-
             //DataView dv = dtDocumento.DefaultView;
         }
-        catch (Exception)
-        {
-            //Session["error"] = ex;
+        catch (Exception ex) {
+            Session["error"] = ex;
         }
     }
     private List<Int32> ControlSelectedCenter(Int32 _idSC)

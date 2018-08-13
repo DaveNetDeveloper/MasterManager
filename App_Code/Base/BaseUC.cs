@@ -109,8 +109,7 @@ public class BaseUC : UserControl
 
     protected Color GrayHtmlColor = ColorTranslator.FromHtml("#e2e2e2");
     protected const string UIControlPrefix = "entityControl_";
-    protected Color invalidDataColor = Color.Red;
-    //protected const string dateTimeDefaultMask = "__/__/____";
+    protected Color invalidDataColor = Color.Red; 
 
     #endregion
 

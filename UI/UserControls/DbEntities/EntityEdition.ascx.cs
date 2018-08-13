@@ -65,9 +65,7 @@ public partial class EntityEdition : BaseUC
     public void ApplyLayout()
     {
         //if(EntityManager.HasEntityRelations((IModelRelations)Model)) {
-
         //    foreach (var modelTypesList in EntityManager.GetModelTypesFromRelationalEntityList((IModelRelations)Model)) {
-
         //        // P.E: Si IModel actual es "Alumno" -> su entitdadRelacionada es "ModelAlumnoProducto"
         //        // Tratamiento de los modelos con los que tiene relación el [IModel] actual
         //    }
@@ -128,7 +126,7 @@ public partial class EntityEdition : BaseUC
         try {
             if (Mode.Equals(ViewMode.Edit) || Mode.Equals(ViewMode.View)) {
                 foreach (var control in ControlList) {
-                    var property = GetModelProperty(GetSimplyName(control.ID));
+                    var property = GetModelProperty(HelperControl.GetSimplyControlName(control.ID));
                     if(null != property) {
                         Object fieldValue = null;
                         switch (property.PropertyType.Name.ToLower()) {
@@ -180,14 +178,13 @@ public partial class EntityEdition : BaseUC
                                         else {
                                             CreateControlForForeingKeysList(field, control);
                                         }
-                                                                            }
+                                    }
                                     if (((HtmlSelect)control).Items.Count > 0) ((HtmlSelect)control).Items[0].Selected = true;
                                 } 
                                 break;
                         }
                     }
-                }
-                //TODO: entityControl_Message.Value = "more info...";
+                } 
             }
         }
         catch (Exception ex) {
@@ -205,7 +202,7 @@ public partial class EntityEdition : BaseUC
                     case "TextBox":
 
                         if (string.IsNullOrEmpty(((TextBox)c).Text.Trim())) SetControlAsInvalid(((TextBox)c), ref validationResult);
-                        else SetPropertyValueIntoInternalModel(((TextBox)c).Text, GetSimplyName(((TextBox)c).ID), uiModel);
+                        else SetPropertyValueIntoInternalModel(((TextBox)c).Text, HelperControl.GetSimplyControlName(((TextBox)c).ID), uiModel);
                          
 
                         //if (string.IsNullOrEmpty(entityControl_Phone.Text.Trim()))
@@ -511,13 +508,9 @@ public partial class EntityEdition : BaseUC
     {
         var labelForCheckBox = new HtmlGenericControl("label");
         labelForCheckBox.Attributes.Add("class", "checkbox-label");
-        labelForCheckBox.Attributes.Add("for", UIControlPrefix + GetSimplyName(controlId));
-        labelForCheckBox.InnerHtml = GetSimplyName(controlId) + "?";
+        labelForCheckBox.Attributes.Add("for", UIControlPrefix + HelperControl.GetSimplyControlName(controlId));
+        labelForCheckBox.InnerHtml = HelperControl.GetSimplyControlName(controlId) + "?";
         return labelForCheckBox;
-    } 
-    private string GetSimplyName(string controlId)
-    {
-        return controlId.Substring(controlId.LastIndexOf("_") + 1, controlId.Length - controlId.LastIndexOf("_") - 1);
     }
     private void SetBorderToDefaultColor()
     {

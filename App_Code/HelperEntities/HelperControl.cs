@@ -46,4 +46,8 @@ public static class HelperControl
             }
         }
     }
+    public static string GetSimplyControlName(string controlId)
+    {
+        return controlId.Substring(controlId.LastIndexOf("_") + 1, controlId.Length - controlId.LastIndexOf("_") - 1);
+    }
 }

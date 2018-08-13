@@ -8,69 +8,52 @@
     <title>Async Javascript Call Page</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <style type="text/css"> 
-        .gridClass th
-            {  
-                text-align: center;
-                
-            }
-        .gridClass th
-        {       
-                background-image: linear-gradient(to bottom,#337ab7 0,#265a88 100%);
-                color: #ffffff;
-                font-weight: bold;
-                text-transform: uppercase;
-                height: 31px;
-                font-size: 0.9em;
-                cursor: pointer;
-                border: none; 
-
-                
+        .gridClass th         {    
+            text-decoration: none;
+            text-align: center;
+            background-image: linear-gradient(to bottom,#337ab7 0,#265a88 100%);
+            color: #ffffff;
+            font-weight: bold;
+            text-transform: uppercase;
+            height: 31px;
+            font-size: 0.9em;
+            cursor: pointer;
+            border: none; 
         }
-        .gridClass th:hover
-        {       
-                border-right: 2px solid #FFFFFF;
-                color: #ffffff; 
-                text-transform: uppercase;
-                height: 31px;
-                font-size: 0.9em; 
-                font-weight: bold;
-                border: none;
+        .gridClass th:hover {       
+            border-right: 2px solid #FFFFFF;
+            color: #ffffff; 
+            text-transform: uppercase;
+            height: 31px;
+            font-size: 0.9em; 
+            font-weight: bold;
+            border: none;
         }
-        .gridClass td
-        {
+        .gridClass td {
             font-size: 14px;
             border: none;
             font-weight: 100; 
-             border-left: 2px solid #FFFFFF;    
+            border-left: 2px solid #FFFFFF;    
         } 
-        .gridClass tr
-        {
-                height: 40px;
-                border: none;
-                border: 1px solid #D8D8D8 !important;
+        .gridClass tr {
+            height: 40px;
+            border: none;
+            border: 1px solid #D8D8D8 !important;
         } 
-        .gridClass tr:hover
-        {
-            /*background-color: #367fc3; 
-            color: white;
-            cursor: pointer;*/ 
-            /* opacity: 0.8; */
-
+        .gridClass tr:hover {
             background-image: -webkit-linear-gradient(top,#fff 0,#F2F2F2  100%);
             background-image: -o-linear-gradient(top,#fff 0,#F2F2F2  100%);
             background-image: -webkit-gradient(linear,left top,left bottom,from(#fff),to(#F2F2F2 ));
             background-image: linear-gradient(to bottom,#fff 0,#F2F2F2  100%);
 
         } 
-        .gridClass td:hover
-        {
+        .gridClass td:hover {
             /*background-color: #367fc3; 
             /*color: white;*/
             cursor: pointer; 
         } 
 
-        .buttondisable
-        { 
+        .buttondisable { 
             background-image: -webkit-linear-gradient(top,#F5F5DC 0,#ffffff 100%);
             background-image: -o-linear-gradient(top,#F5F5DC 0,#ffffff 100%);
             background-image: -webkit-gradient(linear,left top,left bottom,from(#F5F5DC),to(#ffffff));
@@ -79,13 +62,20 @@
             border-color: darkgray;
 
         } 
-        .buttondisable:hover
-        { 
+        .buttondisable:hover { 
             color:#337ab7;
-        } 
+        }  
+
+        a:hover {
+            text-decoration: none;
+        }
+        a {
+            text-decoration: none;
+        }
         
-        a:hover 
+        .gridClassHeaderText
         {
+            color:white;
             text-decoration: none;
         }
     </style>  
@@ -121,7 +111,9 @@
         <input id="inputUpdateAreaNombre" type="text" value="" /> 
         <input id="btnUpdateArea" type="button" value="Modificar area existentes" onclick="UpdateAreaById($('#inputUpdateAreaId').val(), $('#inputUpdateAreaNombre').val());" />
     </div>
+
     <br /><br />
+    
     <uc:EntityList runat="server" BussinesObject="Documento" ID="LisOftDocuments" /> 
 </form>
 </body>
