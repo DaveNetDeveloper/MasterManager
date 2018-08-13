@@ -190,7 +190,7 @@ public partial class EntityList : BaseUC
             // TODO: Hacer dinámica la conversión del DataSource y el gridView a exportar
             // Mover este método a un ExcelManager que sea agnóstico al tipo de Modelo y al userControl que lo llama(params: [ModelClass])
             GridView gridToExport = new GridView {
-                DataSource = ((List<ModelDocumento>)DataSource)
+                DataSource = ((List<IModel>)DataSource)
             };
             gridToExport.DataBind();
 
