@@ -365,13 +365,13 @@ public partial class EntityEdition : BaseUC
         Object modelInstance = handle.Unwrap();
         return modelInstance;
     }
-    private Object CreateNewModelInstanceByType(Type _type)
-    {
-        var bussinesAssembly = Assembly.GetAssembly(_type);
-        ObjectHandle handle = Activator.CreateInstance(bussinesAssembly.GetName().Name, _type.Name);
-        Object modelInstance = handle.Unwrap();
-        return modelInstance;
-    }
+    //private Object CreateNewModelInstanceByType(Type _type)
+    //{
+    //    var bussinesAssembly = Assembly.GetAssembly(_type);
+    //    ObjectHandle handle = Activator.CreateInstance(bussinesAssembly.GetName().Name, _type.Name);
+    //    Object modelInstance = handle.Unwrap();
+    //    return modelInstance;
+    //}
     private void CreateControls()
     {
         short tabIndex = 0; 
